@@ -1,4 +1,3 @@
-import json
 import requests.auth
 import os
 from dotenv import load_dotenv
@@ -12,11 +11,11 @@ USERNAME = os.getenv('USERNAME')
 PASSWORD = os.getenv('PASSWORD')
 
 event = {
-    'post_id': '123',
-    'img': 'https://www.google.com',
-    'excerpt': 'This is a test post',
-    'title': 'Test Post'
+    'title': 'Link Test Post',
+    'body': 'This is a test post',
+    'link': 'https://nycosborne.com/post/un-severed',
 }
+# Todo: I think body need to me in markdown format
 
 TOKEN_ACCESS_ENDPOINT = 'https://www.reddit.com/api/v1/access_token'
 
@@ -35,27 +34,27 @@ def lambda_handler(event, context):
     if response.status_code == 200:
         token_id = response.json()['access_token']
 
-    # Use Reddit's REST API to perform operations
-    OAUTH_ENDPOINT = 'https://oauth.reddit.com'
-    params_get = {
-        'limit': 100
-    }
-    print(token_id)
-    headers_get = {
-        'User-Agent': 'Bot by nycosborne',
+    headers_post = {
+        # 'Content-type': 'application/json',
+        'User-Agent': 'reposter by nycosborne',
         'Authorization': 'Bearer ' + token_id
     }
 
     data = {
-        'title': '5 post from Python API',
-        'text': 'This is a test post from Python API. Please ignore.',
-        'sr': 'nycosborne',  # Replace with the subreddit you want to post to
+        'title': event['title'],
+        'text': event['body'],
+        'url': event['link'],
+        'sr': 'nycosborne',
+        'kind': 'link',
+        'spoiler': False,
+        'nsfw': False,
+        'resubmit': False,
+        'sendreplies': False,
+        'api_type': "json"
     }
 
-    response2 = requests.post(OAUTH_ENDPOINT + '/api/submit', headers=headers_get, data=data)
+    response2 = requests.post('https://oauth.reddit.com/api/submit', headers=headers_post, data=data)
     print(response2.json())
 
-# lambda_handler(event, "")
 
-
-print(os.getenv('CLIENT_ID'))
+lambda_handler(event, "")
