@@ -20,7 +20,7 @@ event = {
 TOKEN_ACCESS_ENDPOINT = 'https://www.reddit.com/api/v1/access_token'
 
 
-def lambda_handler(event, context):
+def reddit_post(event, context):
     # Getting Authentication Info
     client_auth = requests.auth.HTTPBasicAuth(CLIENT_ID, CLIENT_SECRET)
     post_data = {'grant_type': 'password', 'username': USERNAME, 'password': PASSWORD}
@@ -57,4 +57,4 @@ def lambda_handler(event, context):
     print(response2.json())
 
 
-lambda_handler(event, "")
+reddit_post(event, "")
