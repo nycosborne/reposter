@@ -1,3 +1,4 @@
+import json
 import requests.auth
 import os
 from dotenv import load_dotenv
@@ -19,8 +20,12 @@ event = {
 
 TOKEN_ACCESS_ENDPOINT = 'https://www.reddit.com/api/v1/access_token'
 
-
 def reddit_post(event, context):
+    print(event['body'])
+
+    if isinstance(event['body'], str):
+        event_body = json.loads(event['body'])
+
     # Getting Authentication Info
     client_auth = requests.auth.HTTPBasicAuth(CLIENT_ID, CLIENT_SECRET)
     post_data = {'grant_type': 'password', 'username': USERNAME, 'password': PASSWORD}
@@ -28,22 +33,21 @@ def reddit_post(event, context):
         'User-Agent': 'Bot by nycosborne',
     }
 
-    # Step 2. Getting Token Access id
+    # Getting Token Access id
     response = requests.post(TOKEN_ACCESS_ENDPOINT, data=post_data, headers=headers, auth=client_auth)
 
     if response.status_code == 200:
         token_id = response.json()['access_token']
 
     headers_post = {
-        # 'Content-type': 'application/json',
         'User-Agent': 'reposter by nycosborne',
         'Authorization': 'Bearer ' + token_id
     }
 
     data = {
-        'title': event['title'],
-        'text': event['body'],
-        'url': event['link'],
+        'title': event_body['title'],
+        'text': event_body['body'],
+        'url': event_body['link'],
         'sr': 'nycosborne',
         'kind': 'link',
         'spoiler': False,
@@ -54,7 +58,9 @@ def reddit_post(event, context):
     }
 
     response2 = requests.post('https://oauth.reddit.com/api/submit', headers=headers_post, data=data)
-    print(response2.json())
+    print(response2.json()['json']['data']['url'])
 
-
-reddit_post(event, "")
+    return {
+        'statusCode': 200,
+        'body': json.dumps(response2.json()['json']['data']['url'])
+    }
