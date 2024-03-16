@@ -1,6 +1,8 @@
 import json
 import requests.auth
 import os
+
+from markdownify import markdownify as md
 from dotenv import load_dotenv
 
 load_dotenv()
@@ -11,12 +13,12 @@ CLIENT_SECRET = os.getenv('CLIENT_SECRET')
 USERNAME = os.getenv('USERNAME')
 PASSWORD = os.getenv('PASSWORD')
 
-event = {
-    'title': 'Link Test Post',
-    'body': 'This is a test post',
-    'link': 'https://nycosborne.com/post/un-severed',
-}
-# Todo: I think body need to me in markdown format
+# This is a test post
+# event['body'] = {
+#     'title': 'Link Test Post',
+#     'body': 'This is a test post',
+#     'link': 'https://nycosborne.com/post/un-severed',
+# }
 
 TOKEN_ACCESS_ENDPOINT = 'https://www.reddit.com/api/v1/access_token'
 
@@ -46,7 +48,7 @@ def reddit_post(event, context):
 
     data = {
         'title': event_body['title'],
-        'text': event_body['body'],
+        'text': md(event_body['body']),
         'url': event_body['link'],
         'sr': 'nycosborne',
         'kind': 'link',
@@ -60,6 +62,7 @@ def reddit_post(event, context):
     response2 = requests.post('https://oauth.reddit.com/api/submit', headers=headers_post, data=data)
     print(response2.json()['json']['data']['url'])
 
+    # return url for new post
     return {
         'statusCode': 200,
         'body': json.dumps(response2.json()['json']['data']['url'])
