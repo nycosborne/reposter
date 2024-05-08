@@ -112,3 +112,6 @@ node_modules/
 
 # VS Code
 .vscode
+
+# Local PostgreSQL data
+data/
