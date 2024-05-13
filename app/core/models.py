@@ -1,3 +1,4 @@
-from django.db import models  # noqa: F401
-
-# Create your models here.
+"""Database models."""
+from django.db import models
+from django.contrib.auth.models import AbstractBaseUser, BaseUserManager, \
+    PermissionsMixin
