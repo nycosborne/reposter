@@ -10,7 +10,7 @@ from django.db.utils import OperationalError
 from django.test import SimpleTestCase
 
 
-@patch('django.db.utils.ConnectionHandler.__getitem__')
+@patch('core.management.commands.wait_for_db.Command.check')
 class CommandTests(SimpleTestCase):
     """Test commands."""
 
@@ -21,14 +21,15 @@ class CommandTests(SimpleTestCase):
         call_command('wait_for_db')
 
         self.assertEqual(patched_getitem.call_count, 1)
-    # self.assertEqual(1, 1)
 
-    # @patch('time.sleep')
-    # def test_wait_for_db_delay(self, patched_sleep, patched_getitem):
-    #     """Test waiting for database when getting OperationalError."""
-    #     patched_getitem.side_effect = [Psycopg2OpError] + \
-    #         [OperationalError] * 5 + [True]
-    #
-    #     call_command('wait_for_db')
-    #
-    #     self.assertEqual(patched_getitem.call_count, 6)
+        @patch('time.sleep')
+        def test_wait_for_db_delay(self, patched_sleep, patched_getitem):
+            """Test waiting for database when getting OperationalError."""
+
+        patched_getitem.side_effect = [Psycopg2OpError] + \
+                                      [OperationalError] * 5 + [True]
+
+        call_command('wait_for_db')
+
+        self.assertEqual(patched_getitem.call_count, 8)
+        # patch_check.assert_called_with(databases=['default'])
