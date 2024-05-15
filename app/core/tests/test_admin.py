@@ -14,12 +14,12 @@ class AdminSiteTests(TestCase):
         """Setup function for the admin test case."""
         self.client = Client()
         self.admin_user = get_user_model().objects.create_superuser(
-            email='admin_user@example.com',
+            email='admin_user_test@example.com',
             password='password123'
         )
         self.client.force_login(self.admin_user)
         self.user = get_user_model().objects.create_user(
-            email='user@example.com',
+            email='user_test@example.com',
             password='password123',
             name='Jim Django'
         )
@@ -31,3 +31,10 @@ class AdminSiteTests(TestCase):
 
         self.assertContains(response, self.user.name)
         self.assertContains(response, self.user.email)
+
+    def test_edit_user_page(self):
+        """Test that the edit user page works."""
+        url = reverse('admin:core_user_change', args=[self.user.id])
+        response = self.client.get(url)
+
+        self.assertEqual(response.status_code, 200)
