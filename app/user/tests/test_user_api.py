@@ -19,6 +19,7 @@ class PublicUserApiTests(TestCase):
 
     def setUp(self):
         """Setup function for the user API test case."""
+        # Create a client
         self.client = APIClient()
 
     def test_create_valid_user_success(self):
@@ -31,7 +32,7 @@ class PublicUserApiTests(TestCase):
 
         response = self.client.post(CREATE_USER_URL, payload)
         self.assertEqual(response.status_code, status.HTTP_201_CREATED)
-        # Get the user object from the database from email
+        # Get the user object from the database by email
         user = get_user_model().objects.get(email=payload['email'])
         # Check that the password is correct
         self.assertTrue(user.check_password(payload['password']))
