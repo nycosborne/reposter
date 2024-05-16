@@ -7,6 +7,7 @@ from rest_framework.test import APIClient
 from rest_framework import status
 
 CREATE_USER_URL = reverse('user:create')
+TOKEN_URL = reverse('user:token')
 
 
 def create_user(**params):
@@ -67,3 +68,43 @@ class PublicUserApiTests(TestCase):
             email=payload['email']
         ).exists()
         self.assertFalse(user_exists)
+
+    # todo: JWT update required
+    def test_create_token_for_user(self):
+        """Test that a token is created for the user."""
+        user_details = {
+            'name': 'Test Name',
+            'email': 'test@example.com',
+            'password': 'testUserpass1234'
+        }
+        # create a user
+        create_user(**user_details)
+
+        payload = {
+            'email': user_details['email'],
+            'password': user_details['password']
+        }
+        # login the user and get the token
+        response = self.client.post(TOKEN_URL, payload)
+        self.assertIn('token', response.data)
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+
+    # todo: JWT update required
+    def test_create_token_invalid_credentials(self):
+        """Test that token is not created if invalid credentials are given."""
+        """Test that a token is created for the user."""
+        user_details = {
+            'name': 'Test Name',
+            'email': 'test@example.com',
+            'password': 'good_pass1234'
+        }
+        # create a user
+        create_user(**user_details)
+        payload = {
+            'email': 'test@example.com',
+            'password': 'bad_pass1234'
+        }
+
+        response = self.client.post(TOKEN_URL, payload)
+        self.assertNotIn('token', response.data)
+        self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
