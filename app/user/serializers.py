@@ -1,8 +1,12 @@
 """
-Serializers for the user app
+Serializers for the api end points of the user
 """
 
-from django.contrib.auth import get_user_model
+from django.contrib.auth import (
+    get_user_model,
+    authenticate,
+)
+
 from rest_framework import serializers
 
 
@@ -28,3 +32,30 @@ class UserSerializers(serializers.ModelSerializer):
             user.save()
 
         return user
+
+
+class AuthTokenSerializer(serializers.Serializer):  # todo: JWT Update this
+    """Serializer for the user authentication object."""
+    email = serializers.CharField()
+    password = serializers.CharField(
+        style={'input_type': 'password'},
+        trim_whitespace=False
+    )
+
+    def validate(self, attrs):
+        """Validate and authenticate the user."""
+        email = attrs.get('email')
+        password = attrs.get('password')
+
+        user = authenticate(
+            request=self.context.get('request'),
+            username=email,
+            password=password
+        )
+
+        if not user:
+            msg = 'Unable to authenticate with provided credentials.'
+            raise serializers.ValidationError(msg, code='authentication')
+
+        attrs['user'] = user
+        return attrs

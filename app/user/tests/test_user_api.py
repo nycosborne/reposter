@@ -69,8 +69,7 @@ class PublicUserApiTests(TestCase):
         ).exists()
         self.assertFalse(user_exists)
 
-    # todo: JWT update required
-    def test_create_token_for_user(self):
+    def test_create_token_for_user(self):  # todo: JWT update required
         """Test that a token is created for the user."""
         user_details = {
             'name': 'Test Name',
@@ -89,8 +88,7 @@ class PublicUserApiTests(TestCase):
         self.assertIn('token', response.data)
         self.assertEqual(response.status_code, status.HTTP_200_OK)
 
-    # todo: JWT update required
-    def test_create_token_invalid_credentials(self):
+    def test_create_token_invalid_credentials(self):  # todo: JWT update required
         """Test that token is not created if invalid credentials are given."""
         """Test that a token is created for the user."""
         user_details = {
