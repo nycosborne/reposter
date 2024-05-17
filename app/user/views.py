@@ -35,4 +35,5 @@ class ManageUserView(generics.RetrieveUpdateAPIView):
 
     def get_object(self):
         """Retrieve and return authenticated user."""
+        """Testing branch protection rule"""
         return self.request.user
