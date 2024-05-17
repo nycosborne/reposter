@@ -38,3 +38,17 @@ class User(AbstractBaseUser, PermissionsMixin):
     objects = UserManager()
 
     USERNAME_FIELD = 'email'
+
+
+class Post(models.Model):
+    """Post model."""
+    user = models.ForeignKey(
+        'User',
+        on_delete=models.CASCADE
+    )
+    title = models.CharField(max_length=255)
+    content = models.TextField()
+    description = models.TextField()
+
+    def __str__(self):
+        return self.title

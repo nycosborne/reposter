@@ -2,6 +2,8 @@
 from django.test import TestCase
 from django.contrib.auth import get_user_model
 
+from core import models
+
 
 class ModelTests(TestCase):
     """Test models"""
@@ -46,3 +48,20 @@ class ModelTests(TestCase):
 
         self.assertTrue(user.is_superuser)
         self.assertTrue(user.is_staff)
+
+    def test_create_post(self):
+        """Test creating a new post"""
+        user = get_user_model().objects.create_user(
+            'testuser@example.com',
+            'test123'
+        )
+
+        post = models.Post.objects.create(
+            user=user,
+            title='Test Post',
+            content='Test Content',
+            description='Test Post Description',
+        )
+
+        self.assertEqual(post.title, 'Test Post')
+        self.assertEqual(post.content, 'Test Content')
