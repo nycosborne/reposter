@@ -7,9 +7,17 @@ from rest_framework.test import APIClient
 
 from django.contrib.auth import get_user_model
 from core.models import Post
-from post.serializers import PostSerializer
+from post.serializers import (
+    PostSerializer,
+    PostDetailSerializer,
+)
 
 POST_URL = reverse('post:post-list')
+
+
+def detail_url(post_id):
+    """Return post detail URL"""
+    return reverse('post:post-detail', args=[post_id])
 
 
 def create_post(user, **params):
@@ -77,4 +85,12 @@ class PrivatePostApiTests(TestCase):
         serializer = PostSerializer(posts, many=True)
         self.assertEqual(response.status_code, status.HTTP_200_OK)
         self.assertEqual(len(response.data), 1)
+        self.assertEqual(response.data, serializer.data)
+
+    def test_get_post_detail(self):
+        """Test retrieving post detail"""
+        post = create_post(user=self.user)
+        url = detail_url(post.id)
+        response = self.client.get(url)
+        serializer = PostDetailSerializer(post)
         self.assertEqual(response.data, serializer.data)
