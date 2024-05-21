@@ -5,6 +5,7 @@ from django.test import TestCase
 from rest_framework import status
 from rest_framework.test import APIClient
 
+from django.contrib.auth import get_user_model
 from core.models import Post
 from post.serializers import PostSerializer
 
@@ -27,6 +28,7 @@ def create_post(user, **params):
 
 class PublicPostApiTests(TestCase):
     """Test the publicly available Post API"""
+
     def setUp(self):
         self.client = APIClient()
 
@@ -35,3 +37,44 @@ class PublicPostApiTests(TestCase):
         res = self.client.get(POST_URL)
 
         self.assertEqual(res.status_code, status.HTTP_401_UNAUTHORIZED)
+
+
+class PrivatePostApiTests(TestCase):
+    """Test the authorized user Post API"""
+
+    def setUp(self):
+        self.client = APIClient()
+        self.user = get_user_model().objects.create_user(
+            'testUser@example.com',
+            'password123',
+        )
+        self.client.force_authenticate(self.user)
+
+    def test_retrieve_posts(self):
+        """Test retrieving posts"""
+        create_post(user=self.user)
+        create_post(user=self.user)
+
+        response = self.client.get(POST_URL)
+
+        posts = Post.objects.all().order_by('-id')
+        serializer = PostSerializer(posts, many=True)
+
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        self.assertEqual(response.data, serializer.data)
+
+    def test_posts_limited_to_user(self):
+        """Test that posts returned are for the authenticated user"""
+        user2 = get_user_model().objects.create_user(
+            'testUser2@example.com',
+            'password123',
+        )
+        create_post(user=user2)
+        create_post(user=self.user)
+
+        response = self.client.get(POST_URL)
+        posts = Post.objects.filter(user=self.user)
+        serializer = PostSerializer(posts, many=True)
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        self.assertEqual(len(response.data), 1)
+        self.assertEqual(response.data, serializer.data)
