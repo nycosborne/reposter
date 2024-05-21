@@ -58,10 +58,10 @@ class ModelTests(TestCase):
 
         post = models.Post.objects.create(
             user=user,
-            title='Test Post',
-            content='Test Content',
+            title='Test Post Title',
+            content='Test Post Content',
             description='Test Post Description',
         )
 
-        self.assertEqual(post.title, 'Test Post')
-        self.assertEqual(post.content, 'Test Content')
+        self.assertEqual(post.title, 'Test Post Title')
+        self.assertEqual(post.content, 'Test Post Content')
