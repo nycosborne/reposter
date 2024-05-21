@@ -15,9 +15,10 @@ class PostSerializer(serializers.Serializer):
         fields = ['id', 'title', 'content', 'description', 'link']
         read_only_fields = ['id']
 
-    # def create(self, validated_data):
-    #     """Create a new post and return it."""
-    #     return Post.objects.create(**validated_data)
+    def create(self, validated_data):
+        """Create a new post and return it."""
+        return Post.objects.create(**validated_data)
+
     #
     # def update(self, instance, validated_data):
     #     """Update a post and return it."""
@@ -28,3 +29,10 @@ class PostSerializer(serializers.Serializer):
     #     instance.link = validated_data.get('link', instance.link)
     #     instance.save()
     #     return instance
+
+
+class PostDetailSerializer(PostSerializer):
+    """Serializer for post detail"""
+
+    class Meta(PostSerializer.Meta):
+        fields = PostSerializer.Meta.fields + ['description']

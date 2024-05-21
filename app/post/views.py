@@ -10,7 +10,7 @@ from post import serializers
 
 class PostViewSet(viewsets.ModelViewSet):
     """manage posts API."""
-    serializer_class = serializers.PostSerializer
+    serializer_class = serializers.PostDetailSerializer
     queryset = Post.objects.all()  # Limits the queryset
     authentication_classes = [TokenAuthentication]
     permission_classes = [IsAuthenticated]
@@ -19,9 +19,14 @@ class PostViewSet(viewsets.ModelViewSet):
         """Return objects for the current authenticated user only."""
         return self.queryset.filter(user=self.request.user).order_by('-id')
 
-    # def perform_create(self, serializer):
-    #     """Create a new post."""
-    #     serializer.save(user=self.request.user)
-    #
-    # def get_serializer_class(self):
-    #     """Return appropriate serializer class."""
+    def get_serializer_class(self):
+        """Return the serializer class for request."""
+        if self.action == 'retrieve':
+            return serializers.PostDetailSerializer
+
+        return self.serializer_class
+
+    def perform_create(self, serializer):
+        """Create a new post."""
+        serializer.save(user=self.request.user)
+
