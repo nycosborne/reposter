@@ -21,8 +21,10 @@ class PostViewSet(viewsets.ModelViewSet):
 
     def get_serializer_class(self):
         """Return the serializer class for request."""
-        if self.action == 'retrieve':
-            return serializers.PostDetailSerializer
+        if self.action == 'list':
+            return serializers.PostSerializer
+        # elif self.action == 'upload_image':
+        #     return serializers.RecipeImageSerializer
 
         return self.serializer_class
 
