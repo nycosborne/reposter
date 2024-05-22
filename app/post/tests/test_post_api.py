@@ -71,7 +71,6 @@ class PrivatePostApiTests(TestCase):
         # assert that this is not empty
         self.assertTrue(len(response.data) > 0)
 
-
     def test_posts_limited_to_user(self):
         """Test that posts returned are for the authenticated user"""
         user2 = get_user_model().objects.create_user(
@@ -93,7 +92,6 @@ class PrivatePostApiTests(TestCase):
         post = create_post(user=self.user)
         url = detail_url(post.id)
         response = self.client.get(url)
-        # print("response.data", response.data)
         serializer = PostDetailSerializer(post)
         self.assertEqual(response.data, serializer.data)
 
@@ -107,13 +105,9 @@ class PrivatePostApiTests(TestCase):
         }
 
         response = self.client.post(POST_URL, payload)
-        print("response.data", response.data)
         self.assertEqual(response.status_code, status.HTTP_201_CREATED)
-        all_posts = Post.objects.all()
-        # Looper over all post and print the title
-        for post in all_posts:
-            print("FERERER!@#!@#!", post.id)
         post = Post.objects.get(id=response.data['id'])
+        # Looper over all post and print the title
         for key in payload.keys():
             self.assertEqual(payload[key], getattr(post, key))
         self.assertEqual(post.user, self.user)

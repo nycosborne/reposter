@@ -45,11 +45,10 @@ class User(AbstractBaseUser, PermissionsMixin):
 
 class Post(models.Model):
     """Post model."""
-    # user = models.ForeignKey(
-    #     settings.AUTH_USER_MODEL,
-    #     on_delete=models.CASCADE
-    # )
-    user = models.ForeignKey(User, on_delete=models.CASCADE)
+    user = models.ForeignKey(
+        settings.AUTH_USER_MODEL,
+        on_delete=models.CASCADE
+    )
     title = models.CharField(max_length=255)
     content = models.TextField(blank=True)
     description = models.TextField(blank=True)
