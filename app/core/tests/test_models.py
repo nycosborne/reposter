@@ -74,11 +74,12 @@ class ModelTests(TestCase):
         self.assertEqual(post.title, 'Test Post Title')
         self.assertEqual(post.content, 'Test Post Content')
 
-    # def test_create_tag(self):
-    #     """Test creating a new tag"""
-    #     user = sample_user()
-    #     tag = models.Tag.objects.create(
-    #         name='Test Tag'
-    #     )
-    #
-    #     self.assertEqual(tag.name, 'Test Tag')
+    def test_create_tag(self):
+        """Test creating a new tag"""
+        user = sample_user()
+        tag = models.Tag.objects.create(
+            user=user,
+            name='Test Tag'
+        )
+
+        self.assertEqual(tag.name, 'Test Tag')
