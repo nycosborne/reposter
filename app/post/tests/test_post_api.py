@@ -32,6 +32,10 @@ def create_post(user, **params):
     return post
 
 
+def create_user(**params):
+    return get_user_model().objects.create_user(**params)
+
+
 class PublicPostApiTests(TestCase):
     """Test the publicly available Post API"""
 
@@ -49,10 +53,7 @@ class PrivatePostApiTests(TestCase):
 
     def setUp(self):
         self.client = APIClient()
-        self.user = get_user_model().objects.create_user(
-            'testUser@example.com',
-            'password123',
-        )
+        self.user = create_user(email="testUser@example.com", password="password123")
 
         self.client.force_authenticate(self.user)
 
@@ -73,10 +74,8 @@ class PrivatePostApiTests(TestCase):
 
     def test_posts_limited_to_user(self):
         """Test that posts returned are for the authenticated user"""
-        user2 = get_user_model().objects.create_user(
-            'testUser2@example.com',
-            'password123',
-        )
+        user2 = create_user(email="testUser2@example.com", password="password123")
+
         create_post(user=user2)
         create_post(user=self.user)
 
