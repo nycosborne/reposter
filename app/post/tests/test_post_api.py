@@ -53,7 +53,10 @@ class PrivatePostApiTests(TestCase):
 
     def setUp(self):
         self.client = APIClient()
-        self.user = create_user(email="testUser@example.com", password="password123")
+        self.user = create_user(
+            email="testUser@example.com",
+            password="password123"
+        )
 
         self.client.force_authenticate(self.user)
 
@@ -74,7 +77,10 @@ class PrivatePostApiTests(TestCase):
 
     def test_posts_limited_to_user(self):
         """Test that posts returned are for the authenticated user"""
-        user2 = create_user(email="testUser2@example.com", password="password123")
+        user2 = create_user(
+            email="testUser2@example.com",
+            password="password123"
+        )
 
         create_post(user=user2)
         create_post(user=self.user)
