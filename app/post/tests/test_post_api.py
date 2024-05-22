@@ -7,10 +7,7 @@ from rest_framework.test import APIClient
 
 from django.contrib.auth import get_user_model
 from core.models import Post
-from post.serializers import (
-    PostSerializer,
-    PostDetailSerializer,
-)
+from post.serializers import PostSerializer, PostDetailSerializer
 
 POST_URL = reverse('post:post-list')
 
@@ -31,7 +28,8 @@ def create_post(user, **params):
 
     defaults.update(params)
 
-    return Post.objects.create(user=user, **params)
+    post = Post.objects.create(user=user, **defaults)
+    return post
 
 
 class PublicPostApiTests(TestCase):
@@ -43,7 +41,6 @@ class PublicPostApiTests(TestCase):
     def test_login_required(self):
         """Test that login is required for retrieving posts"""
         res = self.client.get(POST_URL)
-
         self.assertEqual(res.status_code, status.HTTP_401_UNAUTHORIZED)
 
 
@@ -56,6 +53,7 @@ class PrivatePostApiTests(TestCase):
             'testUser@example.com',
             'password123',
         )
+
         self.client.force_authenticate(self.user)
 
     def test_retrieve_posts(self):
@@ -70,6 +68,9 @@ class PrivatePostApiTests(TestCase):
 
         self.assertEqual(response.status_code, status.HTTP_200_OK)
         self.assertEqual(response.data, serializer.data)
+        # assert that this is not empty
+        self.assertTrue(len(response.data) > 0)
+
 
     def test_posts_limited_to_user(self):
         """Test that posts returned are for the authenticated user"""
@@ -92,32 +93,27 @@ class PrivatePostApiTests(TestCase):
         post = create_post(user=self.user)
         url = detail_url(post.id)
         response = self.client.get(url)
-        print("response.data", response.data)
+        # print("response.data", response.data)
         serializer = PostDetailSerializer(post)
         self.assertEqual(response.data, serializer.data)
 
-    # def test_create_basic_post(self):
-    #     """Test creating a post"""
-    #     payload = {
-    #         'title': 'Test Post Title',
-    #         'content': 'Test Post Content',
-    #         'description': 'Test Description',
-    #         'link': 'https://testlink.com',
-    #     }
-    #
-    #     user2 = get_user_model().objects.create_user(
-    #         'testUser2@example.com',
-    #         'password123',
-    #     )
-    #     create_post(user=user2)
-    #
-    #     response = self.client.post(POST_URL, payload)
-    #     self.assertEqual(response.status_code, status.HTTP_201_CREATED)
-    #     all_posts = Post.objects.all()
-    #     # Looper over all post and print the title
-    #     for post in all_posts:
-    #         print("FERERER!@#!@#!", post.id)
-    #     # post = Post.objects.get(id=response.data['id'])
-    #     # for key in payload.keys():
-    #     #     self.assertEqual(payload[key], getattr(post, key))
-    #     # self.assertEqual(post.user, self.user)
+    def test_create_basic_post(self):
+        """Test creating a post"""
+        payload = {
+            'title': 'Test Post Title',
+            'content': 'Test Post Content',
+            'description': 'Test Description',
+            'link': 'https://testlink.com',
+        }
+
+        response = self.client.post(POST_URL, payload)
+        print("response.data", response.data)
+        self.assertEqual(response.status_code, status.HTTP_201_CREATED)
+        all_posts = Post.objects.all()
+        # Looper over all post and print the title
+        for post in all_posts:
+            print("FERERER!@#!@#!", post.id)
+        post = Post.objects.get(id=response.data['id'])
+        for key in payload.keys():
+            self.assertEqual(payload[key], getattr(post, key))
+        self.assertEqual(post.user, self.user)

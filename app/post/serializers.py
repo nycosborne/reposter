@@ -7,7 +7,7 @@ from rest_framework import serializers
 from core.models import Post
 
 
-class PostSerializer(serializers.Serializer):
+class PostSerializer(serializers.ModelSerializer):
     """Serializers for the post object."""
 
     class Meta:
