@@ -41,6 +41,7 @@ INSTALLED_APPS = [
     'drf_spectacular',
     'user',
     'rest_framework.authtoken',  # todo: JWT Update required
+    'post',
 ]
 
 MIDDLEWARE = [
