@@ -6,7 +6,7 @@ from rest_framework import status
 from rest_framework.test import APIClient
 
 from django.contrib.auth import get_user_model
-from core.models import Post
+from core.models import Post, Tag
 from post.serializers import PostSerializer, PostDetailSerializer
 
 POST_URL = reverse('post:post-list')
@@ -168,3 +168,49 @@ class PrivatePostApiTests(TestCase):
             response_using_setup_client.status_code,
             status.HTTP_404_NOT_FOUND
         )
+
+    def test_create_post_with_new_tags(self):
+        """Test creating a post with new tags"""
+        payload = {
+            'title': 'Test Post Title with tags',
+            'content': 'Test Post Content with tags',
+            'description': 'Test Description with tags',
+            'link': 'https://testlinkwithtags.com',
+            'tags': [{'name': 'tag1'}, {'name': 'tag2'}]
+        }
+        response = self.client.post(POST_URL, payload, format='json')
+        self.assertEqual(response.status_code, status.HTTP_201_CREATED)
+        post = Post.objects.get(id=response.data['id'])
+        tags = post.tags.all()
+        self.assertEqual(tags.count(), 2)
+        self.assertIn('tag1', tags.values_list('name', flat=True))
+        self.assertIn('tag2', tags.values_list('name', flat=True))
+        for tag in tags:
+            self.assertEqual(tag.user, self.user)
+
+    def test_create_post_with_existing_tags(self):
+        """Test creating a post with existing tags"""
+        existing_tag = Tag.objects.create(user=self.user, name='existing_tag')
+
+        payload = {
+            'title': 'Test Post Title with one old tag and one new tag',
+            'content': 'Test Post Content with tags',
+            'description': 'Test Description with tags',
+            'link': 'https://testlinkwithtags.com',
+            'tags': [{'name': 'existing_tag'}, {'name': 'tag2'}]
+        }
+
+        response = self.client.post(POST_URL, payload, format='json')
+        self.assertEqual(response.status_code, status.HTTP_201_CREATED)
+        posts = Post.objects.filter(user=self.user)
+        self.assertEqual(posts.count(), 1)
+        post = posts[0]
+        # tags = post.tags.all()
+        self.assertEqual(post.tags.count(), 2)
+        self.assertIn(existing_tag, post.tags.all())
+        for tag in payload['tags']:
+            exists = post.tags.filter(
+                name=tag['name'],
+                user=self.user,
+            ).exists()
+            self.assertTrue(exists)
