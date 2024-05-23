@@ -4,7 +4,7 @@ Serializers for the api end points of the post
 
 from rest_framework import serializers
 
-from core.models import Post
+from core.models import Post, Tag
 
 
 class PostSerializer(serializers.ModelSerializer):
@@ -36,3 +36,12 @@ class PostDetailSerializer(PostSerializer):
 
     class Meta(PostSerializer.Meta):
         fields = PostSerializer.Meta.fields + ['description']
+
+
+class TagSerializer(serializers.ModelSerializer):
+    """Serializer for tag objects"""
+
+    class Meta:
+        model = Tag
+        fields = ['id', 'name']
+        read_only_fields = ['id']
