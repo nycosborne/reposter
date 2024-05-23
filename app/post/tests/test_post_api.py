@@ -214,3 +214,44 @@ class PrivatePostApiTests(TestCase):
                 user=self.user,
             ).exists()
             self.assertTrue(exists)
+
+    def test_create_tag_on_post_update(self):
+        """Test creating a tag on update"""
+        post = create_post(user=self.user)
+        payload = {
+            'tags': [{'name': 'new_tag_on_update'}]
+        }
+        url = detail_url(post.id)
+        response = self.client.patch(url, payload, format='json')
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        new_tag = Tag.objects.get(user=self.user, name='new_tag_on_update')
+        self.assertIn(new_tag, post.tags.all())
+
+    def test_update_post_assign_tag(self):
+        """Test updating a post with existing tags"""
+        tag1 = Tag.objects.create(user=self.user, name='tag1')
+        post = create_post(user=self.user)
+        post.tags.add(tag1)
+
+        tag2 = Tag.objects.create(user=self.user, name='tag2')
+        payload = {
+            'tags': [{'name': 'tag2'}]
+        }
+        url = detail_url(post.id)
+        response = self.client.patch(url, payload, format='json')
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        self.assertIn(tag2, post.tags.all())
+        self.assertNotIn(tag1, post.tags.all())
+
+    def test_clear_post_tags(self):
+        """Test clearing all tags from a post"""
+        tag1 = Tag.objects.create(user=self.user, name='tag1')
+        post = create_post(user=self.user)
+        post.tags.add(tag1)
+
+        payload = {'tags': []}
+        url = detail_url(post.id)
+        response = self.client.patch(url, payload, format='json')
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        self.assertEqual(post.tags.count(), 0)
+        self.assertNotIn(tag1, post.tags.all())

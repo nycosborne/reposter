@@ -25,6 +25,13 @@ class PostSerializer(serializers.ModelSerializer):
         fields = ['id', 'title', 'content', 'description', 'link', 'tags']
         read_only_fields = ['id']
 
+    def _get_or_create_tag(self, tags, post):
+        """Get or create a tag."""
+        auth_user = self.context['request'].user
+        for tag in tags:
+            tag, _ = Tag.objects.get_or_create(user=auth_user, **tag)
+            post.tags.add(tag)
+
     # This is overriding there create method to create a new post object
     def create(self, validated_data):
         """Create a new post and return it."""
@@ -33,11 +40,22 @@ class PostSerializer(serializers.ModelSerializer):
         """Create a new post and return it."""
         tags = validated_data.pop('tags', [])
         post = Post.objects.create(**validated_data)
-        auth_user = self.context['request'].user
-        for tag in tags:
-            tag, _ = Tag.objects.get_or_create(user=auth_user, **tag)
-            post.tags.add(tag)
+        self._get_or_create_tag(tags, post)
+
         return post
+
+    def update(self, instance, validated_data):
+        """Update a post and return it."""
+        tags = validated_data.pop('tags', None)
+        if tags is not None:
+            instance.tags.clear()
+            self._get_or_create_tag(tags, instance)
+
+        for key, value in validated_data.items():
+            setattr(instance, key, value)
+
+        instance.save()
+        return instance
 
 
 class PostDetailSerializer(PostSerializer):
