@@ -4,31 +4,58 @@ Serializers for the api end points of the post
 
 from rest_framework import serializers
 
-from core.models import Post
+from core.models import Post, Tag
+
+
+class TagSerializer(serializers.ModelSerializer):
+    """Serializer for tag objects"""
+
+    class Meta:
+        model = Tag
+        fields = ['id', 'name']
+        read_only_fields = ['id']
 
 
 class PostSerializer(serializers.ModelSerializer):
     """Serializers for the post object."""
+    tags = TagSerializer(many=True, required=False)
 
     class Meta:
         model = Post
-        fields = ['id', 'title', 'content', 'description', 'link']
+        fields = ['id', 'title', 'content', 'description', 'link', 'tags']
         read_only_fields = ['id']
 
+    def _get_or_create_tag(self, tags, post):
+        """Get or create a tag."""
+        auth_user = self.context['request'].user
+        for tag in tags:
+            tag, _ = Tag.objects.get_or_create(user=auth_user, **tag)
+            post.tags.add(tag)
+
+    # This is overriding there create method to create a new post object
     def create(self, validated_data):
         """Create a new post and return it."""
-        return Post.objects.create(**validated_data)
+        # NOTE: this is the default implementation
+        # return Post.objects.create(**validated_data)
+        """Create a new post and return it."""
+        tags = validated_data.pop('tags', [])
+        post = Post.objects.create(**validated_data)
+        self._get_or_create_tag(tags, post)
 
-    #
-    # def update(self, instance, validated_data):
-    #     """Update a post and return it."""
-    #     instance.title = validated_data.get('title', instance.title)
-    #     instance.content = validated_data.get('content', instance.content)
-    #     instance.description = validated_data.get('description',
-    #     instance.description)
-    #     instance.link = validated_data.get('link', instance.link)
-    #     instance.save()
-    #     return instance
+        return post
+
+    def update(self, instance, validated_data):
+        """Update a post and return it."""
+        tags = validated_data.pop('tags', None)
+        if tags is not None:
+            instance.tags.clear()
+            self._get_or_create_tag(tags, instance)
+
+        for key, value in validated_data.items():
+            setattr(instance, key, value)
+
+        instance.save()
+        return instance
 
 
 class PostDetailSerializer(PostSerializer):

@@ -24,13 +24,14 @@ services:
 
   db:
     image: postgres:16.2-alpine
+    volumes:
+      - db_data:/var/lib/postgresql/data
     ports:
       - "5432:5432"
     environment:
       - POSTGRES_DB=app_db
       - POSTGRES_USER=app_db_user
       - POSTGRES_PASSWORD=app_db_password
-#
-#  volumes:
-#    dev-db-data:
 
+volumes:
+  db_data:
