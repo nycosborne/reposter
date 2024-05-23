@@ -13,6 +13,11 @@ from post.serializers import TagSerializer
 TAGS_URL = reverse('post:tag-list')
 
 
+def detail_url(tag_id):
+    """ Return tag detail URL """
+    return reverse('post:tag-detail', args=[tag_id])
+
+
 def create_user(email='create_user_tag_tests', password='password123'):
     """ Helper function to create a user"""
     return get_user_model().objects.create_user(email=email, password=password)
@@ -45,7 +50,7 @@ class PrivateTagsApiTests(TestCase):
 
         response = self.client.get(TAGS_URL)
 
-        tags = Tag.objects.all().order_by('name')
+        tags = Tag.objects.all().order_by('-name')
         serializer = TagSerializer(tags, many=True)
 
         self.assertEqual(response.status_code, status.HTTP_200_OK)
@@ -61,3 +66,15 @@ class PrivateTagsApiTests(TestCase):
         self.assertEqual(response.status_code, status.HTTP_200_OK)
         self.assertEqual(len(response.data), 1)
         self.assertEqual(response.data[0]['name'], tag.name)
+
+    def test_update_tag(self):
+        """ Test updating a tag """
+        tag = Tag.objects.create(user=self.user, name='Vegan')
+        url = detail_url(tag.id)
+        payload = {'name': 'Candy'}
+
+        response = self.client.patch(url, payload)
+
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        tag.refresh_from_db()
+        self.assertEqual(tag.name, payload['name'])
