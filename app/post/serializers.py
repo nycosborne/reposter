@@ -62,7 +62,7 @@ class PostDetailSerializer(PostSerializer):
     """Serializer for post detail"""
 
     class Meta(PostSerializer.Meta):
-        fields = PostSerializer.Meta.fields + ['description']
+        fields = PostSerializer.Meta.fields + ['description', 'link', 'image']
 
 
 class PostImageSerializer(serializers.ModelSerializer):
