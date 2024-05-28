@@ -63,3 +63,15 @@ class PostDetailSerializer(PostSerializer):
 
     class Meta(PostSerializer.Meta):
         fields = PostSerializer.Meta.fields + ['description']
+
+
+class PostImageSerializer(serializers.ModelSerializer):
+    """Serializer for uploading images to post"""
+
+    class Meta:
+        model = Post
+        fields = ['id', 'image']
+        read_only_fields = ['id']
+        extra_kwargs = {
+            'image': {'write_only': True}
+        }

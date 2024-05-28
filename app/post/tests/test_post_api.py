@@ -1,4 +1,9 @@
 """ Tests for Post API """
+import tempfile
+import os
+
+from PIL import Image
+
 from django.urls import reverse
 from django.test import TestCase
 
@@ -15,6 +20,11 @@ POST_URL = reverse('post:post-list')
 def detail_url(post_id):
     """Return post detail URL"""
     return reverse('post:post-detail', args=[post_id])
+
+
+def image_upload_url(post_id):
+    """Return URL for post image upload"""
+    return reverse('post:post-upload-image', args=[post_id])
 
 
 def create_post(user, **params):
@@ -255,3 +265,41 @@ class PrivatePostApiTests(TestCase):
         self.assertEqual(response.status_code, status.HTTP_200_OK)
         self.assertEqual(post.tags.count(), 0)
         self.assertNotIn(tag1, post.tags.all())
+
+
+class PostImageUploadTests(TestCase):
+    """Test uploading images to posts"""
+
+    def setUp(self):
+        self.client = APIClient()
+        self.user = create_user(
+            email="user@example.com",
+            password="password123",
+        )
+        self.client.force_authenticate(self.user)
+        self.post = create_post(user=self.user)
+
+    def tearDown(self):
+        self.post.image.delete()
+
+    def test_upload_image_to_post(self):
+        """Test uploading an image to a post"""
+        url = image_upload_url(self.post.id)
+        with tempfile.NamedTemporaryFile(suffix='.jpg') as ntf:
+            img = Image.new('RGB', (10, 10))
+            img.save(ntf, format='JPEG')
+            ntf.seek(0)
+            payload = {'image': ntf}
+            response = self.client.post(url, payload, format='multipart')
+
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        self.assertIn('image', response.data)
+        self.post.refresh_from_db()
+        self.assertTrue(os.path.exists(self.post.image.path))
+
+    def test_upload_image_bad_request(self):
+        """Test uploading an invalid image"""
+        url = image_upload_url(self.post.id)
+        payload = {'image': 'notimage'}
+        response = self.client.post(url, payload, format='multipart')
+        self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
