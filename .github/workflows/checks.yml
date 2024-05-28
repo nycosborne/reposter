@@ -13,10 +13,6 @@ jobs:
         with:
           username: ${{ secrets.DOCKERHUB_USER }}
           password: ${{ secrets.DOCKERHUB_TOKEN }}
-#      - name: Create media directory and set permissions
-#        run: |
-#          mkdir -p /vol/web/media/uploads
-#          sudo chmod -R 777 /vol/web/media
       - name: Checkout
         uses: actions/checkout@v2
       - name: Test
