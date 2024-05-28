@@ -2,6 +2,7 @@ FROM python:3.12-alpine
 LABEL maintainer="nycosborne.com"
 
 ENV PYTHONUNBUFFERED 1
+ENV PATH="/py/bin:$PATH"
 
 COPY ./requirements.txt /tmp/requirements.txt
 COPY ./requirements.dev.txt /tmp/requirements.dev.txt
@@ -28,9 +29,7 @@ RUN python -m venv /py && \
     mkdir -p /vol/web/media && \
     mkdir -p /vol/web/static && \
     chown -R django-user:django-user /vol && \
-    chown -R 777 /vol
-
-ENV PATH="/py/bin:$PATH"
+    chmod -R 777 /vol
 
 USER django-user
 
