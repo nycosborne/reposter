@@ -293,6 +293,7 @@ class PostImageUploadTests(TestCase):
             response = self.client.post(url, payload, format='multipart')
 
         self.assertEqual(response.status_code, status.HTTP_200_OK)
+        print('response.data', response.data)
         self.assertIn('image', response.data)
         self.post.refresh_from_db()
         self.assertTrue(os.path.exists(self.post.image.path))

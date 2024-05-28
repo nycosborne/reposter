@@ -1,7 +1,7 @@
 from rest_framework import (
     viewsets,
     mixins,
-    status
+    status,
 )
 from rest_framework.decorators import action
 from rest_framework.response import Response
@@ -29,6 +29,7 @@ class PostViewSet(viewsets.ModelViewSet):
         if self.action == 'list':
             return serializers.PostSerializer
         elif self.action == 'upload_image':
+            print('upload_image action called')
             return serializers.PostImageSerializer
         return self.serializer_class
 
