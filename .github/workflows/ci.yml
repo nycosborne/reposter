@@ -1,0 +1,32 @@
+name: Django CI
+
+on: [push, pull_request]
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Check out repository
+      uses: actions/checkout@v2
+
+    - name: Set up Python
+      uses: actions/setup-python@v2
+      with:
+        python-version: 3.12
+
+    - name: Install dependencies
+      run: |
+        python -m pip install --upgrade pip
+        pip install -r requirements.txt
+
+    - name: Create directories and set permissions
+      run: |
+        sudo mkdir -p /vol/web/media/uploads
+        sudo chmod -R 775 /vol/web/media/uploads
+
+    - name: Run Django tests
+      env:
+        DJANGO_SETTINGS_MODULE: myproject.settings
+      run: |
+        python manage.py test
