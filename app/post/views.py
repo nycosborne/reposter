@@ -1,3 +1,11 @@
+""" Views for the post app. """
+
+from drf_spectacular.utils import (
+    extend_schema,
+    extend_schema_view,
+    OpenApiParameter,
+    OpenApiTypes,
+)
 from rest_framework import viewsets, mixins, status
 from rest_framework.decorators import action
 from rest_framework.response import Response
@@ -8,6 +16,17 @@ from core.models import Post, Tag
 from post import serializers
 
 
+@extend_schema_view(
+    list=extend_schema(
+        parameters=[
+            OpenApiParameter(
+                'tags',
+                OpenApiTypes.STR,
+                description='Filter posts by tags',
+            ),
+        ]
+    )
+)
 class PostViewSet(viewsets.ModelViewSet):
     """Manage posts API."""
     serializer_class = serializers.PostDetailSerializer
@@ -15,10 +34,25 @@ class PostViewSet(viewsets.ModelViewSet):
     authentication_classes = [TokenAuthentication]
     permission_classes = [IsAuthenticated]
 
+    def _params_to_ints(self, qs):
+        """Convert a list of string IDs to a list of integers."""
+        # Make sure that filter parameters are integers
+        return [int(str_id) for str_id in qs.split(',')]
+
     def get_queryset(self):
         """Return objects for the current authenticated user only."""
+        tags = self.request.query_params.get('tags')
+        queryset = self.queryset
+        if tags:
+            tag_ids = self._params_to_ints(tags)
+            queryset = queryset.filter(tags__id__in=tag_ids)
+
+        return queryset.filter(
+            user=self.request.user
+        ).order_by('-id').distinct()
         # Ensure that the 'user' field exists in the Post model
-        return self.queryset.filter(user=self.request.user).order_by('-id')
+        # this was the original code before adding the tags filter
+        # return self.queryset.filter(user=self.request.user).order_by('-id')
 
     def get_serializer_class(self):
         """Return the serializer class for request."""
