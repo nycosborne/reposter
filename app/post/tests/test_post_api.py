@@ -266,6 +266,31 @@ class PrivatePostApiTests(TestCase):
         self.assertEqual(post.tags.count(), 0)
         self.assertNotIn(tag1, post.tags.all())
 
+    def test_filter_posts_by_tags(self):
+        """Test filtering posts by tags"""
+        post1 = create_post(user=self.user, title='Post 1')
+        post2 = create_post(user=self.user, title='Post 2')
+        post3 = create_post(user=self.user, title='Post 3 no tags')
+
+        tag1 = Tag.objects.create(user=self.user, name='tag1')
+        tag2 = Tag.objects.create(user=self.user, name='tag2')
+
+        post1.tags.add(tag1)
+        post2.tags.add(tag2)
+
+        response = self.client.get(
+            POST_URL,
+            {'tags': f'{tag1.id},{tag2.id}'}
+        )
+
+        serializer1 = PostSerializer(post1)
+        serializer2 = PostSerializer(post2)
+        serializer3 = PostSerializer(post3)
+
+        self.assertIn(serializer1.data, response.data)
+        self.assertIn(serializer2.data, response.data)
+        self.assertNotIn(serializer3.data, response.data)
+
 
 class ImageUploadTests(TestCase):
     """Tests for the image upload API."""
