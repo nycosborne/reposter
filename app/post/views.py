@@ -22,7 +22,8 @@ from post import serializers
             OpenApiParameter(
                 'tags',
                 OpenApiTypes.STR,
-                description='Filter posts by tags',
+                description='Comma separated list of '
+                            'tags ID\'s to filter posts by.',
             ),
         ]
     )
@@ -36,13 +37,13 @@ class PostViewSet(viewsets.ModelViewSet):
 
     def _params_to_ints(self, qs):
         """Convert a list of string IDs to a list of integers."""
-        # Make sure that filter parameters are integers
         return [int(str_id) for str_id in qs.split(',')]
 
     def get_queryset(self):
         """Return objects for the current authenticated user only."""
         tags = self.request.query_params.get('tags')
         queryset = self.queryset
+        # If tags are provided, filter the queryset by tags
         if tags:
             tag_ids = self._params_to_ints(tags)
             queryset = queryset.filter(tags__id__in=tag_ids)
@@ -90,6 +91,17 @@ class PostViewSet(viewsets.ModelViewSet):
         )
 
 
+@extend_schema_view(
+    list=extend_schema(
+        parameters=[
+            OpenApiParameter(
+                'assigned_only',
+                OpenApiTypes.INT, enum=[0, 1],
+                description='Filter tags by assigned posts',
+            ),
+        ]
+    )
+)
 class TagViewSet(mixins.DestroyModelMixin,
                  mixins.UpdateModelMixin,
                  mixins.ListModelMixin,
@@ -102,7 +114,17 @@ class TagViewSet(mixins.DestroyModelMixin,
 
     def get_queryset(self):
         """Return objects for the current authenticated user only."""
-        return self.queryset.filter(user=self.request.user).order_by('-name')
+
+        # assigned_only is an optional query parameter
+        assigned_only = bool(
+            int(self.request.query_params.get('assigned_only', 0))
+        )
+        queryset = self.queryset
+        if assigned_only:
+            queryset = queryset.filter(post__isnull=False)
+        return queryset.filter(
+            user=self.request.user
+        ).order_by('-name').distinct()
 
     def perform_create(self, serializer):
         """Create a new tag."""

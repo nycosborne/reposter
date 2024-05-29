@@ -91,8 +91,8 @@ class PrivateTagsApiTests(TestCase):
 
     def test_filter_tags_assigned_posts(self):
         """ Test filtering tags by those assigned to posts """
-        tag1 = Tag.objects.create(user=self.user, name='Breakfast')
-        tag2 = Tag.objects.create(user=self.user, name='Lunch')
+        tag1 = Tag.objects.create(user=self.user, name='red')
+        tag2 = Tag.objects.create(user=self.user, name='blue')
         post = Post.objects.create(
             user=self.user,
             title='Test Post Title',
@@ -112,8 +112,9 @@ class PrivateTagsApiTests(TestCase):
         self.assertIn(serializer1.data, response.data)
         self.assertNotIn(serializer2.data, response.data)
 
-    def test_filter_tags_assigned_unique(self):
-        """ Test filtering tags by assigned returns unique items """
+    # Test that only one tag is returned when filtering by assigned tags
+    def test_filter_tags_unique(self):
+        """ Test filtering tags by returns unique items """
         tag = Tag.objects.create(user=self.user, name='Breakfast')
         Tag.objects.create(user=self.user, name='Lunch')
         post1 = Post.objects.create(
@@ -137,4 +138,3 @@ class PrivateTagsApiTests(TestCase):
         )
 
         self.assertEqual(len(response.data), 1)
-
