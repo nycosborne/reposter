@@ -3,7 +3,8 @@ version: "3.9"
 services:
   app:
     build:
-      context: .
+      context: Dockerfiles/backend
+      dockerfile: Dockerfile
       args:
         - DEV=true
     ports:
