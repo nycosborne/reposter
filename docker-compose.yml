@@ -2,8 +2,10 @@ version: "3.9"
 
 services:
   app:
+    container_name: app
     build:
       context: .
+      dockerfile: Dockerfiles/backend/Dockerfile
       args:
         - DEV=true
     ports:
@@ -23,6 +25,31 @@ services:
     depends_on:
       - db
 
+  node-frontend:
+    container_name: node-frontend
+    build:
+      context: .
+      dockerfile: Dockerfiles/frontend/Dockerfile
+    ports:
+      - "3000:3000"
+    volumes:
+      - ./reposter-react/src:/apps/reposter-react/src
+      - node_modules:/reposter-react/node_modules
+
+
+  nginx:
+    container_name: nginx
+    build:
+      context: .
+      dockerfile: Dockerfiles/nginx/Dockerfile
+    ports:
+      - "80:80"
+    volumes:
+      - ./frontend/build:/vol/static
+    depends_on:
+      - app
+      - node-frontend
+
   db:
     image: postgres:16.2-alpine
     volumes:
@@ -37,3 +64,4 @@ services:
 volumes:
   db_data:
   dev-static-data:
+  node_modules:
