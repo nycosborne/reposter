@@ -46,6 +46,9 @@ services:
       - "80:80"
     volumes:
       - ./frontend/build:/vol/static
+    depends_on:
+      - backend
+      - frontend
 
   db:
     image: postgres:16.2-alpine
