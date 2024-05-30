@@ -2,6 +2,7 @@ version: "3.9"
 
 services:
   app:
+    container_name: app
     build:
       context: .
       dockerfile: Dockerfiles/backend/Dockerfile
@@ -23,18 +24,27 @@ services:
       - DB_PASSWORD=app_db_password
     depends_on:
       - db
-  node:
+
+  node-frontend:
+    container_name: node-frontend
     build:
       context: .
       dockerfile: Dockerfiles/frontend/Dockerfile
-      args:
-        - DEV=true
     ports:
       - "3000:3000"
     volumes:
-      - ./reposter-react/src:/app/src
-#    command: >
-#        sh -c "npm start"
+      - node_modules:/reposter-react/node_modules
+
+
+  #  nginx.conf:
+  #    container_name: nginx.conf
+  #    build:
+  #        context: .
+  #        dockerfile: Dockerfiles/nginx.conf/Dockerfile
+  #    ports:
+  #      - "80:80"
+  #    volumes:
+  #      - dev-static-data:backend/static
 
   db:
     image: postgres:16.2-alpine
@@ -50,3 +60,4 @@ services:
 volumes:
   db_data:
   dev-static-data:
+  node_modules:
