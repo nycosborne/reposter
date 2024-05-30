@@ -3,8 +3,8 @@ version: "3.9"
 services:
   app:
     build:
-      context: Dockerfiles/backend
-      dockerfile: Dockerfile
+      context: .
+      dockerfile: Dockerfiles/backend/Dockerfile
       args:
         - DEV=true
     ports:
@@ -23,6 +23,18 @@ services:
       - DB_PASSWORD=app_db_password
     depends_on:
       - db
+  node:
+    build:
+      context: .
+      dockerfile: Dockerfiles/frontend/Dockerfile
+      args:
+        - DEV=true
+    ports:
+      - "3000:3000"
+    volumes:
+      - ./reposter-react/src:/app/src
+#    command: >
+#        sh -c "npm start"
 
   db:
     image: postgres:16.2-alpine
