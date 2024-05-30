@@ -36,15 +36,15 @@ services:
       - node_modules:/reposter-react/node_modules
 
 
-  #  nginx.conf:
-  #    container_name: nginx.conf
-  #    build:
-  #        context: .
-  #        dockerfile: Dockerfiles/nginx.conf/Dockerfile
-  #    ports:
-  #      - "80:80"
-  #    volumes:
-  #      - dev-static-data:backend/static
+  nginx:
+    container_name: nginx
+    build:
+      context: .
+      dockerfile: Dockerfiles/nginx/Dockerfile
+    ports:
+      - "80:80"
+    volumes:
+      - ./frontend/build:/vol/static
 
   db:
     image: postgres:16.2-alpine
