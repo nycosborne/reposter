@@ -33,6 +33,7 @@ services:
     ports:
       - "3000:3000"
     volumes:
+      - ./reposter-react/src:/apps/reposter-react/src
       - node_modules:/reposter-react/node_modules
 
 
