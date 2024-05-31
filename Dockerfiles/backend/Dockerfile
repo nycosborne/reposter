@@ -35,4 +35,4 @@ RUN python -m venv /py && \
 
 USER django-user
 
-CMD ["/scripts/start.sh"]
+CMD ["run.sh"]

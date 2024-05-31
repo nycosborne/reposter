@@ -22,6 +22,7 @@ services:
       - DB_NAME=app_db
       - DB_USER=app_db_user
       - DB_PASSWORD=app_db_password
+      - DEBUG=1
     depends_on:
       - db
 
