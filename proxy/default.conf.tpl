@@ -1,10 +1,8 @@
-upstream frontend_server {
-    server ${NODE_HOST}:3000;
-}
-
-
 server {
     listen ${LISTEN_PORT};
+    server_name ${SERVER_NAME};
+
+
 
     location /static {
         alias /vol/static;
