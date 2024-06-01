@@ -18,6 +18,16 @@ services:
     depends_on:
       - db
 
+  node-frontend:
+    container_name: node-frontend
+    build:
+      context: .
+      dockerfile: Dockerfiles/frontend/Dockerfile.deploy
+    ports:
+      - "3000:3000"
+    volumes:
+      - ./reposter-react/src:/apps/reposter-react/src
+
   db:
     image: postgres:16.2-alpine
     restart: always
@@ -35,7 +45,8 @@ services:
     depends_on:
       - app
     ports:
-      - "80:8000"
+#      TODO change back to 80
+      - "8000:8000"
     volumes:
       - static-data:/vol/static
 

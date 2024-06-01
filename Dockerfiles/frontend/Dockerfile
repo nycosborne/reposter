@@ -16,4 +16,4 @@ RUN npm install
 #EXPOSE 3000
 
 # Define the command that should be executed when the Docker image is run
-CMD [ "npm", "run", "dev" ]
+CMD [ "npm", "run", "build" ]
