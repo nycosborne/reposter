@@ -1,5 +1,5 @@
 upstream frontend_server {
-    server node-frontend:3000;
+    server ${NODE_HOST}:3000;
 }
 
 

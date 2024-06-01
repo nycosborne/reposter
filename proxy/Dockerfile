@@ -9,6 +9,7 @@ ENV LISTEN_PORT=8000
 # TODO: Change this to frontend
 ENV APP_HOST=app
 ENV APP_PORT=9000
+ENV NODE_HOST=node-frontend
 
 USER root
 
