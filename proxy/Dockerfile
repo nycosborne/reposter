@@ -1,5 +1,27 @@
+# Use an official Node.js runtime as the base image
+FROM node:alpine as build
+
+# Set the working directory in the Docker image to /app
+WORKDIR /app
+
+# Copy package.json and package-lock.json into the image
+COPY ./reposter-react/package*.json ./
+
+# Install the application's dependencies inside the Docker image
+RUN npm install
+
+# Copy the rest of the application code into the image
+COPY ../reposter-react .
+
+# Build the React application
+RUN npm run build
+
+
 FROM nginxinc/nginx-unprivileged:1-alpine
 LABEL maintainer="nycosborne.com"
+
+# Copy the build output to the Nginx HTML directory
+COPY --from=build /app/dist /usr/share/nginx/html
 
 COPY ./default.conf.tpl /etc/nginx/default.conf.tpl
 COPY ./uwsgi_params /etc/nginx/uwsgi_params
