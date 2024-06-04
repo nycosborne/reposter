@@ -28,18 +28,17 @@ services:
       - POSTGRES_USER=${DB_USER}
       - POSTGRES_PASSWORD=${DB_PASSWORD}
 
-  node-frontend:
-    container_name: node-frontend
-    build:
-      context: .
-      dockerfile: Dockerfiles/frontend/Dockerfile
-    restart: always
-    volumes:
-      - static-data:/reposter-react/dist
+#  node-frontend:
+#    container_name: node-frontend
+#    build:
+#      context: .
+#      dockerfile: Dockerfiles/frontend/Dockerfile
+#    restart: always
 
   proxy:
     build:
-      context: ./proxy
+      context: .
+      dockerfile: proxy/Dockerfile
     restart: always
     depends_on:
       - app

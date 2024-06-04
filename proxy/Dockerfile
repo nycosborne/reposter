@@ -5,13 +5,16 @@ FROM node:alpine as build
 WORKDIR /app
 
 # Copy package.json and package-lock.json into the image
-COPY ./reposter-react/package*.json ./
+#COPY ./reposter-backend/package.json .
+#COPY ./reposter-backend/package-lock.json .
+
 
 # Install the application's dependencies inside the Docker image
-RUN npm install
 
 # Copy the rest of the application code into the image
-COPY ../reposter-react .
+COPY ./reposter-react .
+
+RUN npm install
 
 # Build the React application
 RUN npm run build
@@ -23,14 +26,15 @@ LABEL maintainer="nycosborne.com"
 # Copy the build output to the Nginx HTML directory
 COPY --from=build /app/dist /usr/share/nginx/html
 
-COPY ./default.conf.tpl /etc/nginx/default.conf.tpl
-COPY ./uwsgi_params /etc/nginx/uwsgi_params
-COPY ./run.sh /run.sh
+COPY ./proxy/default.conf.tpl /etc/nginx/default.conf.tpl
+COPY ./proxy/uwsgi_params /etc/nginx/uwsgi_params
+COPY ./proxy/run.sh /run.sh
 
 ENV LISTEN_PORT=8000
 # TODO: Change this to frontend
 ENV APP_HOST=app
 ENV APP_PORT=9000
+
 
 USER root
 
