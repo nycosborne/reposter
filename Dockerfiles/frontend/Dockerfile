@@ -5,7 +5,7 @@ FROM node:alpine
 WORKDIR /apps/reposter-react
 
 # Copy package.json and package-lock.json into the image
-COPY ./reposter-react .
+COPY ../../reposter-react .
 
 # Install the application's dependencies inside the Docker image
 RUN npm install
