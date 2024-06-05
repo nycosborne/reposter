@@ -30,7 +30,7 @@ services:
     container_name: node-frontend
     build:
       context: .
-      dockerfile: Dockerfile
+      dockerfile: Dockerfiles/frontend/Dockerfile
     ports:
       - "3000:3000"
     volumes:
