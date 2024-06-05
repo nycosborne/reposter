@@ -1,17 +1,17 @@
-#FROM node:17-alpine as build
-#WORKDIR /app
-#COPY ./reposter-react/package.json .
-#RUN npm i
-#COPY ./reposter-react .
-#RUN npm run build
-
+FROM node:17-alpine as build
+WORKDIR /app
+COPY ./reposter-react/package.json .
+RUN npm i
+COPY ./reposter-react .
+RUN npm run build
 
 
 
 FROM nginxinc/nginx-unprivileged:1-alpine
 LABEL maintainer="nycosborne.com"
 #COPY --from=build ./reposter-react/dist /usr/share/nginx/html
-COPY ./reposter-react/dist /usr/share/nginx/html
+#COPY ./reposter-react/dist /usr/share/nginx/html
+COPY --from=build /app/dist /usr/share/nginx/html
 
 COPY ./proxy/default.conf.tpl /etc/nginx/default.conf.tpl
 COPY ./proxy/uwsgi_params /etc/nginx/uwsgi_params
