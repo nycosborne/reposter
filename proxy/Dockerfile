@@ -1,26 +1,16 @@
-## Use an official Node.js runtime as the base image
-#FROM node:16-alpine AS build
-#
-## Set the working directory in the Docker image to /app
-#WORKDIR /apps/reposter-react
-#
-## Copy package.json and package-lock.json into the image
+#FROM node:17-alpine as build
+#WORKDIR /app
+#COPY ./reposter-react/package.json .
+#RUN npm i
 #COPY ./reposter-react .
-#
-## Install the application's dependencies inside the Docker image
-#RUN npm install
-#
-## Copy the rest of the application code into the image
-## Expose port 3000 in the Docker image
-##EXPOSE 3000
 #RUN npm run build
-## Define the command that should be executed when the Docker image is run
-##CMD [ "npm", "run", "build" ]
+
+
 
 
 FROM nginxinc/nginx-unprivileged:1-alpine
 LABEL maintainer="nycosborne.com"
-
+#COPY --from=build ./reposter-react/dist /usr/share/nginx/html
 COPY ./reposter-react/dist /usr/share/nginx/html
 
 COPY ./proxy/default.conf.tpl /etc/nginx/default.conf.tpl
