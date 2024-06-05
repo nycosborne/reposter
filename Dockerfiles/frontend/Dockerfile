@@ -12,8 +12,7 @@ RUN npm install
 
 # Copy the rest of the application code into the image
 #COPY reposter-react/ .
-# Expose port 3000 in the Docker image
-#EXPOSE 3000
+EXPOSE 3000
 
 # Define the command that should be executed when the Docker image is run
 CMD [ "npm", "run", "dev" ]
