@@ -32,24 +32,10 @@ services:
       context: .
       dockerfile: Dockerfiles/frontend/Dockerfile
     ports:
-      - "3000:3000"
+      - "80:3000"
     volumes:
       - ./reposter-react/src:/apps/reposter-react/src
       - node_modules:/reposter-react/node_modules
-
-
-  nginx:
-    container_name: nginx
-    build:
-      context: .
-      dockerfile: Dockerfiles/nginx/Dockerfile
-    ports:
-      - "80:80"
-    volumes:
-      - ./frontend/build:/vol/static
-    depends_on:
-      - app
-      - node-frontend
 
   db:
     image: postgres:16.2-alpine

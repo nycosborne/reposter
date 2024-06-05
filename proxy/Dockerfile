@@ -9,8 +9,7 @@ RUN npm run build
 
 FROM nginxinc/nginx-unprivileged:1-alpine
 LABEL maintainer="nycosborne.com"
-#COPY --from=build ./reposter-react/dist /usr/share/nginx/html
-#COPY ./reposter-react/dist /usr/share/nginx/html
+
 COPY --from=build /app/dist /usr/share/nginx/html
 
 COPY ./proxy/default.conf.tpl /etc/nginx/default.conf.tpl
@@ -18,7 +17,7 @@ COPY ./proxy/uwsgi_params /etc/nginx/uwsgi_params
 COPY ./proxy/run.sh /run.sh
 
 ENV LISTEN_PORT=8000
-# TODO: Change this to frontend
+
 ENV APP_HOST=app
 ENV APP_PORT=9000
 
