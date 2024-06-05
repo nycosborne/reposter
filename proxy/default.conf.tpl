@@ -8,9 +8,17 @@ server {
             try_files $uri /index.html =404;
    }
 
-
     location /static {
         alias /vol/static;
+        # Serve JavaScript files with the correct MIME type within /static
+        location ~* \.js$ {
+            add_header Content-Type application/javascript;
+        }
+
+        # Serve CSS files with the correct MIME type within /static
+        location ~* \.css$ {
+            add_header Content-Type text/css;
+        }
     }
 
     location /api {
@@ -47,5 +55,3 @@ server {
     gzip_min_length 1000;
 
 }
-
-
