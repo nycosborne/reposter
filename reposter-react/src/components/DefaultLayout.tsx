@@ -1,10 +1,10 @@
 import React from 'react';
 import {Navigate, Outlet} from "react-router-dom";
-import {useAppContext} from "../context/ContextProvider.tsx";
+import useAppContext from "../context/UseAppContext.tsx"
 
 const DefaultLayout = (): React.JSX.Element => {
 
-    const {token}: any = useAppContext();
+    const {token} = useAppContext();
 
     if (!token) {
         return <Navigate to="/login"/>
