@@ -1,42 +1,43 @@
-import React, {createContext, useContext} from 'react';
+import React, { createContext, useContext, ReactNode, Dispatch, SetStateAction } from 'react';
 
+interface StateContextProps {
+    user: any;
+    setUser: Dispatch<SetStateAction<any>>;
+    token: string | null;
+    setToken: (token: string | null) => void;
+}
 
-const StateContext = createContext({
+const defaultState: StateContextProps = {
     user: null,
-    setUser: () => {
-    },
+    setUser: () => {},
     token: null,
-    setToken: () => {
-    },
-    // postId: null,
-    // setPostId: () => {},
-});
+    setToken: () => {},
+};
 
+const StateContext = createContext<StateContextProps>(defaultState);
 
-export const ContextProvider = ({children}: { children: React.ReactNode }) => {
+interface ContextProviderProps {
+    children: ReactNode;
+}
 
-    const [user, setUser] = React.useState(null)
-    const [token, _setToken] = React.useState(localStorage.getItem('ACCESS_TOKEN'))
+export const ContextProvider: React.FC<ContextProviderProps> = ({ children }) => {
+    const [user, setUser] = React.useState<any>(null);
+    const [token, _setToken] = React.useState<string | null>(localStorage.getItem('ACCESS_TOKEN'));
 
-    const setToken = (token: string) => {
-        _setToken(token)
+    const setToken = (token: string | null) => {
+        _setToken(token);
         if (token) {
-            localStorage.setItem('ACCESS_TOKEN', token)
+            localStorage.setItem('ACCESS_TOKEN', token);
         } else {
-            localStorage.removeItem('ACCESS_TOKEN')
+            localStorage.removeItem('ACCESS_TOKEN');
         }
-    }
+    };
 
-return (
-        <StateContext.Provider value={{
-            user,
-            setUser,
-            token,
-            setToken,
-        }}>
+    return (
+        <StateContext.Provider value={{ user, setUser, token, setToken }}>
             {children}
         </StateContext.Provider>
-    )
-}
+    );
+};
 
 export const useAppContext = () => useContext(StateContext);
