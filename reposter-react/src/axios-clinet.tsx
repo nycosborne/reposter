@@ -5,8 +5,7 @@ const axiosClient = axios.create({
     // headers: {'Content-Type': 'multipart/form-data'}
 });
 
-// Request interceptor
-// @ts-ignore
+// @ts-expect-error Request interceptor
 axiosClient.interceptors.request.use((config: AxiosRequestConfig) => {
     const token = localStorage.getItem('ACCESS_TOKEN');
     if (token) {

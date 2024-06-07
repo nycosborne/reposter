@@ -1,27 +1,13 @@
-import React, { createContext, useContext, ReactNode, Dispatch, SetStateAction } from 'react';
-
-interface StateContextProps {
-    user: any;
-    setUser: Dispatch<SetStateAction<any>>;
-    token: string | null;
-    setToken: (token: string | null) => void;
-}
-
-const defaultState: StateContextProps = {
-    user: null,
-    setUser: () => {},
-    token: null,
-    setToken: () => {},
-};
-
-const StateContext = createContext<StateContextProps>(defaultState);
+import React, {ReactNode} from 'react';
+import StateContext from "./StateContext";
 
 interface ContextProviderProps {
     children: ReactNode;
 }
 
-export const ContextProvider: React.FC<ContextProviderProps> = ({ children }) => {
-    const [user, setUser] = React.useState<any>(null);
+export const ContextProvider: React.FC<ContextProviderProps> = ({children}) => {
+    const [user, _setUser] = React.useState<number | null>(null);
+    // const [token, _setToken] = React.useState<string | null>('ACCESS_TOKEN');
     const [token, _setToken] = React.useState<string | null>(localStorage.getItem('ACCESS_TOKEN'));
 
     const setToken = (token: string | null) => {
@@ -33,11 +19,20 @@ export const ContextProvider: React.FC<ContextProviderProps> = ({ children }) =>
         }
     };
 
+    const setUser = (user: number | null) => {
+        _setUser(user)
+        // if (user.is_admin === 0) {
+        //     setIsAdmin(false);
+        // } else {
+        //     setIsAdmin(true);
+        // }
+    }
+
     return (
-        <StateContext.Provider value={{ user, setUser, token, setToken }}>
+        <StateContext.Provider value={{user, setUser, token, setToken}}>
             {children}
         </StateContext.Provider>
     );
 };
 
-export const useAppContext = () => useContext(StateContext);
+// export const useAppContext = () => useContext(StateContext);
