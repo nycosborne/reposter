@@ -16,8 +16,7 @@ const StateContext = createContext({
 export const ContextProvider = ({children}: { children: React.ReactNode }) => {
 
     const [user, setUser] = React.useState(null)
-    const [token, _setToken] = React.useState('ACCESS_TOKEN')
-    // const [token, _setToken] = React.useState(localStorage.getItem('ACCESS_TOKEN'))
+    const [token, _setToken] = React.useState(localStorage.getItem('ACCESS_TOKEN'))
 
     const setToken = (token: string) => {
         _setToken(token)
@@ -27,7 +26,7 @@ export const ContextProvider = ({children}: { children: React.ReactNode }) => {
             localStorage.removeItem('ACCESS_TOKEN')
         }
     }
-// console.log("token", token)
+
 return (
         <StateContext.Provider value={{
             user,
