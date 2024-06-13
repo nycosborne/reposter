@@ -1,12 +1,12 @@
 import React from 'react';
-import { Outlet } from "react-router-dom";
+import {Outlet} from "react-router-dom";
+import {Container} from "react-bootstrap";
 
 const GuestLayout = (): React.JSX.Element => {
     return (
-        <div>
-            <h1>GuestLayOut</h1>
+        <Container>
             <Outlet/>
-        </div>
+        </Container>
     )
 }
 

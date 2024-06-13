@@ -1,10 +1,13 @@
 import React from 'react';
+import {Container, Form} from "react-bootstrap";
 
 const Login = (): React.JSX.Element => {
     return (
-        <div>
+        <Container>
+            <Form>
+            </Form>
             <h1>Login</h1>
-        </div>
+        </Container>
     )
 }
 

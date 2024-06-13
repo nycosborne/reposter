@@ -4,6 +4,7 @@ import Signup from "./views/Signup.tsx";
 import Users from "./views/Users.tsx";
 import DefaultLayout from "./components/DefaultLayout.tsx";
 import Dashboard from "./views/Dashboard.tsx";
+import GuestLayout from "./components/GuestLayout.tsx";
 
 
 const routerConfig: RouteObject[] = [
@@ -26,12 +27,18 @@ const routerConfig: RouteObject[] = [
         ],
     },
     {
-        path: "/signup",
-        element: <Signup/>,
-    },
-    {
-        path: "/login",
-        element: <Login/>,
+        path: "/",
+        element: <GuestLayout/>,
+        children: [
+            {
+                path: "/signup",
+                element: <Signup/>,
+            },
+            {
+                path: "/login",
+                element: <Login/>,
+            },
+        ],
     },
     {
         path: "*",
