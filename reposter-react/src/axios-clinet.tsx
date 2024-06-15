@@ -1,8 +1,11 @@
-import axios, { AxiosRequestConfig, AxiosResponse, AxiosError } from "axios";
+import axios, {AxiosRequestConfig, AxiosResponse, AxiosError} from "axios";
 
 const axiosClient = axios.create({
     baseURL: `${import.meta.env.VITE_API_BASE_URL}/api`,
-    // headers: {'Content-Type': 'multipart/form-data'}
+    headers: {
+        'Content-Type': 'multipart/form-data',
+        'Accept': 'application/json'
+    }
 });
 
 // @ts-expect-error Request interceptor
@@ -23,7 +26,7 @@ axiosClient.interceptors.request.use((config: AxiosRequestConfig) => {
 axiosClient.interceptors.response.use((response: AxiosResponse) => {
     return response;
 }, (error: AxiosError) => {
-    const { response } = error;
+    const {response} = error;
     if (response) {
         if (response.status === 401) {
             localStorage.removeItem('ACCESS_TOKEN');

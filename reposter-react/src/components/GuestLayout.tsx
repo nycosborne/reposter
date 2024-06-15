@@ -1,12 +1,17 @@
 import React from 'react';
 import {Outlet} from "react-router-dom";
-import {Container} from "react-bootstrap";
+import {Col, Container, Row} from "react-bootstrap";
 
 const GuestLayout = (): React.JSX.Element => {
     return (
         <Container>
-            <Outlet/>
+            <Row className="justify-content-md-center">
+                <Col xs={"auto"}>
+                    <Outlet/>
+                </Col>
+            </Row>
         </Container>
+
     )
 }
 

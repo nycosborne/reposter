@@ -1,5 +1,5 @@
 import React from 'react';
-import {Navigate, Outlet} from "react-router-dom";
+import {Outlet} from "react-router-dom";
 import useAppContext from "../context/UseAppContext.tsx"
 import {Col, Container, Row} from "react-bootstrap";
 
@@ -13,7 +13,7 @@ const DefaultLayout = (): React.JSX.Element => {
 
     return (
         <Container>
-            <Row className="justify-content-md-center">
+            <Row>
                 <Col xs={"auto"}>
                     <h1>DefaultLayout</h1>
                     <Outlet/>

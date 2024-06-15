@@ -14,7 +14,7 @@ const routerConfig: RouteObject[] = [
         children: [
             {
                 path: "/",
-                element: <Navigate to="/users"/>,
+                element: <Navigate to="/dashboard"/>,
             },
             {
                 path: "/users",
