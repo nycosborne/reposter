@@ -22,7 +22,7 @@ const Login = (): React.JSX.Element => {
         ev.preventDefault();
 
 
-        let payload: { email: string, password: string } = {
+        const payload: { email: string, password: string } = {
             email: emailRef.current ? emailRef.current.value : "",
             password: passwordRef.current ? passwordRef.current.value : ""
         };
