@@ -1,11 +1,12 @@
 import React from 'react';
 import {Outlet} from "react-router-dom";
+import Navbar from "../components/NavBar.tsx";
 import useAppContext from "../context/UseAppContext.tsx"
 import {Button, Col, Container, Row} from "react-bootstrap";
 
 const DefaultLayout = (): React.JSX.Element => {
 
-    const {user, token} = useAppContext();
+    const {token} = useAppContext();
 
     if (!token) {
         // return <Navigate to="/login"/>
@@ -17,12 +18,11 @@ const DefaultLayout = (): React.JSX.Element => {
         // setToken(null);
     }
 
-    // @ts-ignore
     return (
         <Container>
+            <Navbar/>
             <Row>
                 <Col xs={"auto"}>
-                    {user.name}
                     <Button onClick={logout}>LogOut</Button>
                     <h1>DefaultLayout</h1>
                     <Outlet/>
