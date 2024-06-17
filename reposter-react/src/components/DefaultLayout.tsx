@@ -19,16 +19,17 @@ const DefaultLayout = (): React.JSX.Element => {
     }
 
     return (
-        <Container>
+        <>
             <Navbar/>
-            <Row>
-                <Col xs={"auto"}>
-                    <Button onClick={logout}>LogOut</Button>
-                    <h1>DefaultLayout</h1>
-                    <Outlet/>
-                </Col>
-            </Row>
-        </Container>
+            <Container fluid={true}>
+                <Row>
+                    <Col xs={"auto"}>
+                        <h1>DefaultLayout</h1>
+                        <Outlet/>
+                    </Col>
+                </Row>
+            </Container>
+        </>
     )
 }
 
