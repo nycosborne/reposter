@@ -10,10 +10,12 @@ export const ContextProvider: React.FC<ContextProviderProps> = ({children}) => {
     // const [token, _setToken] = React.useState<string | null>('ACCESS_TOKEN');
     const [token, _setToken] = React.useState<string | null>(localStorage.getItem('ACCESS_TOKEN'));
 
-    const setToken = (token: string) => {
+    const setToken = (token: string | null) => {
         _setToken(token);
-        if (!token) {
-            localStorage.setItem('ACCESS_TOKEN', token);
+        if (token) {
+            if (typeof token === "string") {
+                localStorage.setItem('ACCESS_TOKEN', token);
+            }
         } else {
             localStorage.removeItem('ACCESS_TOKEN');
         }

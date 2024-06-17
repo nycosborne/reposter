@@ -13,7 +13,7 @@ const Login = (): React.JSX.Element => {
     const {setToken} = useAppContext();
 
     interface LoginResponse {
-        token: string | null;
+        token: string;
     }
 
 

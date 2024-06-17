@@ -1,8 +1,17 @@
 import React from 'react';
-import {Outlet} from "react-router-dom";
+import {Navigate, Outlet} from "react-router-dom";
 import {Col, Container, Row} from "react-bootstrap";
+import useAppContext from "../context/UseAppContext.tsx";
 
 const GuestLayout = (): React.JSX.Element => {
+
+    const {token} = useAppContext();
+
+    if (token) {
+        return <Navigate to='/'/>
+    }
+
+
     return (
         <Container>
             <Row className="justify-content-md-center">
