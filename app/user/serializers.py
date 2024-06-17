@@ -58,4 +58,6 @@ class AuthTokenSerializer(serializers.Serializer):  # todo: JWT Update this
             raise serializers.ValidationError(msg, code='authentication')
 
         attrs['user'] = user
+        # Add this line to get the user id in the response
+        # attrs['id'] = user.id
         return attrs
