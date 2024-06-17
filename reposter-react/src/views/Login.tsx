@@ -1,5 +1,5 @@
 import React, {createRef, RefObject} from 'react';
-import { Form, Button} from "react-bootstrap";
+import {Form, Button} from "react-bootstrap";
 import useAppContext from "../context/UseAppContext.tsx";
 import axiosClient from "../axios-clinet.tsx";
 import {AxiosResponse} from "axios";
@@ -10,10 +10,9 @@ const Login = (): React.JSX.Element => {
     const passwordRef: RefObject<HTMLInputElement> = createRef()
 
     // const [errors, setErrors: ] = useState([])
-    const {setUser, setToken} = useAppContext();
+    const {setToken} = useAppContext();
 
     interface LoginResponse {
-        user: number | null;
         token: string | null;
     }
 
@@ -30,21 +29,21 @@ const Login = (): React.JSX.Element => {
         axiosClient.post<LoginResponse>('/user/token/', payload)
             .then((response: AxiosResponse<LoginResponse>) => {
                 const data = response.data;
-                setUser(data.user);
                 setToken(data.token)
             })
-        // .catch((error) => {
-        //     const response = error.response
-        //     if (response && response.status === 422) {
-        //         if(response.data.error) {
-        //             setErrors(response.data.errors)
-        //         }else {
-        //             setErrors({
-        //                 error: [response.data.message]
-        //             })
-        //         }
-        //     }
-        // })
+            .catch((error) => {
+                const response = error.response
+                console.log('response', response)
+                // if (response && response.status === 422) {
+                //     if(response.data.error) {
+                //         setErrors(response.data.errors)
+                //     }else {
+                //         setErrors({
+                //             error: [response.data.message]
+                //         })
+                //     }
+                // }
+            })
 
     }
 
