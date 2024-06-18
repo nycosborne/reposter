@@ -73,12 +73,6 @@ class PublicUserApiTests(TestCase):
 
     def test_create_token_for_user(self):  # todo: JWT update required
         """Test that a token is created for the user."""
-        user_details = {
-            'first_name': 'Jim',
-            'last_name': 'Django',
-            'email': 'test@example.com',
-            'password': 'testUserpass1234'
-        }
         # create a user
         create_user(**self.payload)
 
