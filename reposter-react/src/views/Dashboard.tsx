@@ -1,11 +1,12 @@
 import React from "react";
+import {Container} from "react-bootstrap";
 
 const Dashboard: () => React.JSX.Element = () => {
 
     return (
-        <div>
-            <h1>Dashboard</h1>
-        </div>
+        <Container className="d-flex justify-content-center align-items-center" style={{minHeight: "90vh"}}>
+            <h1>Posts</h1>
+        </Container>
     );
 }
 

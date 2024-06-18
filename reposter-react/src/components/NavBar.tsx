@@ -3,22 +3,31 @@ import Nav from 'react-bootstrap/Nav';
 import Navbar from 'react-bootstrap/Navbar';
 // import NavDropdown from 'react-bootstrap/NavDropdown';
 import {Button} from "react-bootstrap";
-import React from "react";
+import React, {useEffect} from "react";
 import useAppContext from "../context/UseAppContext.tsx";
+import axiosClient from "../axios-clinet.tsx";
 
 function NavBar() {
 
-    const {setUser, setToken, token} = useAppContext();
+    const {setUser, setToken} = useAppContext();
     const logout = (ev: React.FormEvent) => {
         ev.preventDefault()
-        setUser(null);
-        setToken(null);
+        // setUser(null);
+        // setToken(null);
     }
 
 
-    if (!token) {
-        // return <Navigate to="/login"/>
-    }
+    //useEffect to all the user/me endpoint to get the user details
+    useEffect(() => {
+        axiosClient.get('/user/me/')
+            .then((response) => {
+                console.log('response', response)
+                // setUser(response.data)
+            })
+            .catch((error) => {
+                console.log('error', error)
+            })
+    }, [])
 
     return (
         <Navbar expand="lg" bg="dark" className="bg-body-tertiary">
@@ -29,17 +38,6 @@ function NavBar() {
                     <Nav className="me-auto">
                         <Nav.Link href="#home">Home</Nav.Link>
                         <Nav.Link href="#link">Link</Nav.Link>
-                        {/*<NavDropdown title="Dropdown" id="basic-nav-dropdown">*/}
-                        {/*  <NavDropdown.Item href="#action/3.1">Action</NavDropdown.Item>*/}
-                        {/*  <NavDropdown.Item href="#action/3.2">*/}
-                        {/*    Another action*/}
-                        {/*  </NavDropdown.Item>*/}
-                        {/*  <NavDropdown.Item href="#action/3.3">Something</NavDropdown.Item>*/}
-                        {/*  <NavDropdown.Divider />*/}
-                        {/*  <NavDropdown.Item href="#action/3.4">*/}
-                        {/*    Separated link*/}
-                        {/*  </NavDropdown.Item>*/}
-                        {/*</NavDropdown>*/}
                     </Nav>
                     <Nav className="ml-auto">
                         <Button variant="outline-success" onClick={logout}>Logout</Button>
