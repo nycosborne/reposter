@@ -3,6 +3,7 @@ import {Form, Button} from "react-bootstrap";
 import useAppContext from "../context/UseAppContext.tsx";
 import axiosClient from "../axios-clinet.tsx";
 import {AxiosResponse} from "axios";
+import {Link} from "react-router-dom";
 
 const Login = (): React.JSX.Element => {
 
@@ -34,7 +35,7 @@ const Login = (): React.JSX.Element => {
             .catch((error) => {
                 const errorMessage = error.response
                 if (errorMessage && errorMessage.status === 403) {
-                    if(errorMessage.data.detail) {
+                    if (errorMessage.data.detail) {
                         setErrors(errorMessage.data.detail)
                     }
                 }
@@ -44,28 +45,21 @@ const Login = (): React.JSX.Element => {
     return (
         <Form onSubmit={logIn} className={'animated fadeInDown'}>
             <h1>Log In</h1>
-            {error && <div style={{background: "lightgray"}}>
+            {error && <div style={{background: "lightpink"}}>
                 {error}
             </div>}
             <Form.Group className="mb-3" controlId="formBasicEmail">
-
-                <Form.Label>Email address</Form.Label>
                 <Form.Control ref={emailRef} type="email" placeholder="Enter email"/>
-                <Form.Text className="text-muted">
-                    We'll never share your email with anyone else.
-                </Form.Text>
             </Form.Group>
 
             <Form.Group className="mb-3" controlId="formBasicPassword">
-                <Form.Label>Password</Form.Label>
                 <Form.Control ref={passwordRef} type="password" placeholder="Password"/>
             </Form.Group>
             <Button variant="primary" type="submit">
                 Submit
             </Button>
-            {/*Will uncomment when I have multiple uses support*/}
+            <p className="message"><Link to="/signup">Create an account</Link></p>
             {/*<p className="message">Not registered? <Link to="/signup">Create an account</Link></p>*/}
-            {/*<p className="message">Forgot Password<Link to="/signup">Create an account</Link></p>*/}
         </Form>
     )
 }

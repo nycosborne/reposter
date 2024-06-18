@@ -1,7 +1,7 @@
 import React, {createRef, RefObject} from 'react'
 import {Button, Form} from "react-bootstrap";
 import axiosClient from "../axios-clinet.tsx";
-import {AxiosResponse} from "axios";
+import {Navigate} from 'react-router-dom';
 
 
 const Signup: () => React.JSX.Element = () => {
@@ -20,12 +20,16 @@ const Signup: () => React.JSX.Element = () => {
         lastName: string;
     }
 
+    interface Errors {
+        [key: string]: string[];
+    }
 
-    const [error, setErrors] = React.useState<string | null>(null);
+    const [shouldRedirect, setShouldRedirect] = React.useState(false);
+    const [error, setErrors] = React.useState<Errors>({});
 
     const checkPasswordIdentical = (password: string, passwordConfirm: string) => {
         if (password !== passwordConfirm) {
-            setErrors("Passwords do not match")
+            setErrors({password: ['Passwords do not match']});
         }
     }
     const signUp = (ev: React.FormEvent) => {
@@ -34,50 +38,54 @@ const Signup: () => React.JSX.Element = () => {
         checkPasswordIdentical(passwordRef.current ? passwordRef.current.value : "",
             passwordConfirRef.current ? passwordConfirRef.current.value : "")
 
-        const payload: { firstName: string, lastName: string, email: string, password: string } = {
-            firstName: firstNameRef.current ? firstNameRef.current.value : "",
-            lastName: lastNameRef.current ? lastNameRef.current.value : "",
+        const payload: { first_name: string, last_name: string, email: string, password: string } = {
+            first_name: firstNameRef.current ? firstNameRef.current.value : "",
+            last_name: lastNameRef.current ? lastNameRef.current.value : "",
             email: emailRef.current ? emailRef.current.value : "",
             password: passwordRef.current ? passwordRef.current.value : ""
         };
 
         axiosClient.post<CreateAccountResponse>('/user/create/', payload)
-            .then((response: AxiosResponse<CreateAccountResponse>) => {
-                const data = response.data;
-                console.log('response', data)
+            .then(() => {
+                setShouldRedirect(true)
             })
             .catch((error) => {
-                const errorMessage = error.response
-                if (errorMessage && errorMessage.status === 403) {
-                    if (errorMessage.data.detail) {
-                        setErrors(errorMessage.data.detail)
+                const errorResponse = error.response
+                if (errorResponse && errorResponse.status === 400) {
+                    if (errorResponse.data) {
+                        setErrors(errorResponse.data)
                     }
-                    // if "user with this email already exists."
-                    // Setting missing fields error
                 }
             })
     }
 
+    console.log('error', error)
+    if (shouldRedirect) {
+        return <Navigate to="/login"/>
+    }
 
     return (
         <Form onSubmit={signUp} className={'animated fadeInDown'}>
             <h1>Sign Up</h1>
-            {error && <div style={{background: "lightgray"}}>
-                {error}
-            </div>}
+            {Object.keys(error).length > 0 && (
+                <div style={{background: "lightpink"}}>
+                    <ul>
+                        {Object.keys(error).map((key) => (
+                            <li key={key}>{key}: {error[key][0]}</li>
+                        ))}
+                    </ul>
+                </div>
+            )}
 
             <Form.Group className="mb-3" controlId="formBasicName">
-                <Form.Label>First Name</Form.Label>
                 <Form.Control ref={firstNameRef} type="text" placeholder="First Name"/>
             </Form.Group>
 
             <Form.Group className="mb-3" controlId="formBasicName">
-                <Form.Label>Last Name</Form.Label>
                 <Form.Control ref={lastNameRef} type="text" placeholder="Last Name"/>
             </Form.Group>
 
             <Form.Group className="mb-3" controlId="formBasicEmail">
-                <Form.Label>Email address</Form.Label>
                 <Form.Control ref={emailRef} type="email" placeholder="Enter email"/>
                 <Form.Text className="text-muted">
                     We'll never share your email with anyone else.
@@ -85,11 +93,9 @@ const Signup: () => React.JSX.Element = () => {
             </Form.Group>
 
             <Form.Group className="mb-3" controlId="formBasicPassword">
-                <Form.Label>Password</Form.Label>
                 <Form.Control ref={passwordRef} type="password" placeholder="Password"/>
             </Form.Group>
             <Form.Group className="mb-3" controlId="formBasicPassword">
-                <Form.Label>Confirm Password</Form.Label>
                 <Form.Control ref={passwordConfirRef} type="password" placeholder="Password"/>
             </Form.Group>
             <Button variant="primary" type="submit">
@@ -99,31 +105,7 @@ const Signup: () => React.JSX.Element = () => {
             {/*<p className="message">Not registered? <Link to="/signup">Create an account</Link></p>*/}
             {/*<p className="message">Forgot Password<Link to="/signup">Create an account</Link></p>*/}
         </Form>
-        //         <Form  className={'animated fadeInDown'}>
-        //     <h1>Log In</h1>
-        //     {error && <div style={{background: "lightgray"}}>
-        //         {error}
-        //     </div>}
-        //     <Form.Group className="mb-3" controlId="formBasicEmail">
-        //
-        //         <Form.Label>Email address</Form.Label>
-        //         <Form.Control ref={emailRef} type="email" placeholder="Enter email"/>
-        //         <Form.Text className="text-muted">
-        //             We'll never share your email with anyone else.
-        //         </Form.Text>
-        //     </Form.Group>
-        //
-        //     <Form.Group className="mb-3" controlId="formBasicPassword">
-        //         <Form.Label>Password</Form.Label>
-        //         <Form.Control ref={passwordRef} type="password" placeholder="Password"/>
-        //     </Form.Group>
-        //     <Button variant="primary" type="submit">
-        //         Submit
-        //     </Button>
-        //     {/*Will uncomment when I have multiple uses support*/}
-        //     {/*<p className="message">Not registered? <Link to="/signup">Create an account</Link></p>*/}
-        //     {/*<p className="message">Forgot Password<Link to="/signup">Create an account</Link></p>*/}
-        // </Form>
+
     )
 }
 
