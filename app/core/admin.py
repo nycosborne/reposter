@@ -11,7 +11,7 @@ from core import models
 class UserAdmin(BaseUserAdmin):
     """User admin configuration."""
     ordering = ['id']
-    list_display = ['email', 'name']
+    list_display = ['email', 'first_name', 'last_name']
     # Add a new field to the list display for users
     fieldsets = (
         (None, {'fields': ('email', 'password')}),

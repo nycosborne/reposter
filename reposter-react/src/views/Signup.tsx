@@ -52,6 +52,8 @@ const Signup: () => React.JSX.Element = () => {
                     if (errorMessage.data.detail) {
                         setErrors(errorMessage.data.detail)
                     }
+                    // if "user with this email already exists."
+                    // Setting missing fields error
                 }
             })
     }
@@ -97,6 +99,31 @@ const Signup: () => React.JSX.Element = () => {
             {/*<p className="message">Not registered? <Link to="/signup">Create an account</Link></p>*/}
             {/*<p className="message">Forgot Password<Link to="/signup">Create an account</Link></p>*/}
         </Form>
+        //         <Form  className={'animated fadeInDown'}>
+        //     <h1>Log In</h1>
+        //     {error && <div style={{background: "lightgray"}}>
+        //         {error}
+        //     </div>}
+        //     <Form.Group className="mb-3" controlId="formBasicEmail">
+        //
+        //         <Form.Label>Email address</Form.Label>
+        //         <Form.Control ref={emailRef} type="email" placeholder="Enter email"/>
+        //         <Form.Text className="text-muted">
+        //             We'll never share your email with anyone else.
+        //         </Form.Text>
+        //     </Form.Group>
+        //
+        //     <Form.Group className="mb-3" controlId="formBasicPassword">
+        //         <Form.Label>Password</Form.Label>
+        //         <Form.Control ref={passwordRef} type="password" placeholder="Password"/>
+        //     </Form.Group>
+        //     <Button variant="primary" type="submit">
+        //         Submit
+        //     </Button>
+        //     {/*Will uncomment when I have multiple uses support*/}
+        //     {/*<p className="message">Not registered? <Link to="/signup">Create an account</Link></p>*/}
+        //     {/*<p className="message">Forgot Password<Link to="/signup">Create an account</Link></p>*/}
+        // </Form>
     )
 }
 
