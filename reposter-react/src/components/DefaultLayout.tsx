@@ -2,7 +2,7 @@ import React from 'react';
 import {Navigate, Outlet} from "react-router-dom";
 import Navbar from "../components/NavBar.tsx";
 import useAppContext from "../context/UseAppContext.tsx"
-import { Col, Container, Row} from "react-bootstrap";
+import {Container} from "react-bootstrap";
 
 const DefaultLayout = (): React.JSX.Element => {
 
@@ -12,22 +12,12 @@ const DefaultLayout = (): React.JSX.Element => {
         return <Navigate to="/login"/>
     }
 
-    // const logout = (ev: React.FormEvent) => {
-    //     ev.preventDefault()
-    //     // setUser(null);
-    //     // setToken(null);
-    // }
-
     return (
         <>
             <Navbar/>
-            <Container fluid={true}>
-                <Row>
-                    <Col xs={"auto"}>
-                        <h1>DefaultLayout</h1>
-                        <Outlet/>
-                    </Col>
-                </Row>
+            <h1>DefaultLayout</h1>
+            <Container fluid className="d-flex justify-content-center align-items-center" style={{minHeight: "90vh"}}>
+                <Outlet/>
             </Container>
         </>
     )
