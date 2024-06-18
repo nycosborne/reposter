@@ -8,22 +8,13 @@ A service for posting content across multiple platforms
 - [@nycosborne](https://www.github.com/nycosborne)
 
 
-## Tests
+## Tests Status
 
 ![example workflow](https://github.com/nycosborne/reposter/actions/workflows/checks.yml/badge.svg)
 
-To run tests from the docker container, use the following commands:
-```shell
-docker-compose run --rm app sh -c "python manage.py test"
-```
-```shell
-docker-compose run --rm app sh -c "flake8"
-```
-```shell
-docker-compose run --rm node-frontend sh -c "npm run lint"
-```
 
-# React + Vite
+
+## React + Vite
 
 This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
 
@@ -152,3 +143,19 @@ docker-compose -f docker-compose-deploy.yml up --no-deps -d app
 ```
 
 The `--no-deps -d` ensures that the dependant services (such as `proxy`) do not restart.
+
+
+## Tests
+
+![example workflow](https://github.com/nycosborne/reposter/actions/workflows/checks.yml/badge.svg)
+
+To run tests from the docker container, use the following commands:
+```shell
+docker-compose run --rm app sh -c "python manage.py test"
+```
+```shell
+docker-compose run --rm app sh -c "flake8"
+```
+```shell
+docker-compose run --rm node-frontend sh -c "npm run lint"
+```

@@ -10,6 +10,7 @@ from rest_framework.settings import api_settings
 # from rest_framework.response import Response
 
 from user.serializers import (
+    # todo: Need to figure out why these 2 line are failing the linter
     UserSerializers,
     AuthTokenSerializer,  # todo: JWT update required
 )

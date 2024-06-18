@@ -13,7 +13,7 @@ const GuestLayout = (): React.JSX.Element => {
 
 
     return (
-        <Container fluid className="d-flex justify-content-center align-items-center" style={{ minHeight: "50vh" }}>
+        <Container fluid className="d-flex justify-content-center align-items-center" style={{ minHeight: "90vh" }}>
             <Row>
                 <Col xs={"auto"}>
                     <Outlet/>

@@ -11,11 +11,11 @@ from core import models
 class UserAdmin(BaseUserAdmin):
     """User admin configuration."""
     ordering = ['id']
-    list_display = ['email', 'name']
+    list_display = ['email', 'first_name', 'last_name']
     # Add a new field to the list display for users
     fieldsets = (
         (None, {'fields': ('email', 'password')}),
-        ('Personal Info', {'fields': ('name',)}),
+        ('Personal Info', {'fields': ('first_name', 'last_name')}),
         (
             'Permissions',
             {'fields': ('is_active', 'is_staff', 'is_superuser')}
@@ -32,7 +32,8 @@ class UserAdmin(BaseUserAdmin):
                 'fields': ('email',
                            'password1',
                            'password2',
-                           'name',
+                           'first_name',
+                           'last_name',
                            'is_staff',
                            'is_superuser')
             }
