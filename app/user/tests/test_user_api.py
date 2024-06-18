@@ -29,7 +29,8 @@ class PublicUserApiTests(TestCase):
         payload = {
             'email': 'test@example.com',
             'password': 'password123',
-            'name': 'Test Name'
+            'first_name': 'Jim',
+            'last_name': 'Django',
         }
 
         response = self.client.post(CREATE_USER_URL, payload)
@@ -46,7 +47,8 @@ class PublicUserApiTests(TestCase):
         payload = {
             'email': 'test@example.com',
             'password': 'password123',
-            'name': 'Test Name'
+            'first_name': 'Jim',
+            'last_name': 'Django',
         }
 
         create_user(**payload)
@@ -59,7 +61,8 @@ class PublicUserApiTests(TestCase):
         payload = {
             'email': 'test@example.com',
             'password': 'pw',
-            'name': 'Test Name'
+            'first_name': 'Jim',
+            'last_name': 'Django',
         }
 
         response = self.client.post(CREATE_USER_URL, payload)
@@ -73,7 +76,8 @@ class PublicUserApiTests(TestCase):
     def test_create_token_for_user(self):  # todo: JWT update required
         """Test that a token is created for the user."""
         user_details = {
-            'name': 'Test Name',
+            'first_name': 'Jim',
+            'last_name': 'Django',
             'email': 'test@example.com',
             'password': 'testUserpass1234'
         }
@@ -94,7 +98,8 @@ class PublicUserApiTests(TestCase):
         """Test that token is not created if invalid credentials are given."""
         """Test that a token is created for the user."""
         user_details = {
-            'name': 'Test Name',
+            'first_name': 'Jim',
+            'last_name': 'Django',
             'email': 'test@example.com',
             'password': 'good_pass1234'
         }
@@ -125,7 +130,8 @@ class PrivateUserApiTests(TestCase):
         self.user = create_user(
             email='test@example.com',
             password='password123',
-            name='Test Name',
+            first_name='Jim',
+            last_name='Django',
         )
 
         self.client = APIClient()
@@ -138,7 +144,8 @@ class PrivateUserApiTests(TestCase):
 
         self.assertEqual(response.status_code, status.HTTP_200_OK)
         self.assertEqual(response.data, {
-            'name': self.user.name,
+            'first_name': self.user.first_name,
+            'last_name': self.user.last_name,
             'email': self.user.email
         })
 
@@ -152,13 +159,15 @@ class PrivateUserApiTests(TestCase):
     def test_update_user_profile(self):
         """Test updating the user profile for authenticated user."""
         payload = {
-            'name': 'New Name',
+            'first_name': 'New',
+            'last_name': 'Name',
             'password': 'newpassword123'
         }
 
         response = self.client.patch(ME_URL, payload)
 
         self.user.refresh_from_db()
-        self.assertEqual(self.user.name, payload['name'])
+        self.assertEqual(self.user.first_name, payload['first_name'])
+        self.assertEqual(self.user.last_name, payload['last_name'])
         self.assertTrue(self.user.check_password(payload['password']))
         self.assertEqual(response.status_code, status.HTTP_200_OK)

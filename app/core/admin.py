@@ -15,7 +15,7 @@ class UserAdmin(BaseUserAdmin):
     # Add a new field to the list display for users
     fieldsets = (
         (None, {'fields': ('email', 'password')}),
-        ('Personal Info', {'fields': ('name',)}),
+        ('Personal Info', {'fields': ('first_name', 'last_name')}),
         (
             'Permissions',
             {'fields': ('is_active', 'is_staff', 'is_superuser')}
@@ -32,7 +32,8 @@ class UserAdmin(BaseUserAdmin):
                 'fields': ('email',
                            'password1',
                            'password2',
-                           'name',
+                           'first_name',
+                           'last_name',
                            'is_staff',
                            'is_superuser')
             }
