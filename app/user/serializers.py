@@ -8,6 +8,7 @@ from django.contrib.auth import (
 )
 
 from rest_framework import serializers
+from rest_framework.exceptions import AuthenticationFailed
 
 
 class UserSerializers(serializers.ModelSerializer):
@@ -54,8 +55,10 @@ class AuthTokenSerializer(serializers.Serializer):  # todo: JWT Update this
         )
 
         if not user:
-            msg = 'Unable to authenticate with provided credentials.'
-            raise serializers.ValidationError(msg, code='authentication')
+            raise AuthenticationFailed(
+                'Sorry, I can\'t find a account with that email and pass.',
+                code='authentication'
+            )
 
         attrs['user'] = user
         # Add this line to get the user id in the response
