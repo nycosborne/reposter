@@ -16,7 +16,7 @@ const DefaultLayout = (): React.JSX.Element => {
         <>
             <Navbar/>
             <h1>DefaultLayout</h1>
-            <Container fluid className="d-flex justify-content-center align-items-center" style={{minHeight: "90vh"}}>
+            <Container>
                 <Outlet/>
             </Container>
         </>

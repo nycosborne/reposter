@@ -2,7 +2,7 @@ import React, { useEffect } from 'react';
 import { Card, ListGroup, Container } from 'react-bootstrap';
 import axiosClient from "../axios-clinet.tsx";
 
-const Posts = (): React.JSX.Element => {
+const PostCard = (): React.JSX.Element => {
 
     interface Tag {
         id: number;
@@ -51,4 +51,4 @@ const Posts = (): React.JSX.Element => {
     );
 };
 
-export default Posts;
+export default PostCard;

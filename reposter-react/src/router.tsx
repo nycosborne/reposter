@@ -4,7 +4,7 @@ import Signup from "./views/Signup.tsx";
 import DefaultLayout from "./components/DefaultLayout.tsx";
 import Dashboard from "./views/Dashboard.tsx";
 import GuestLayout from "./components/GuestLayout.tsx";
-import Posts from "./views/Posts.tsx";
+import PostCard from "./components/PostCard.tsx";
 
 
 const routerConfig: RouteObject[] = [
@@ -18,7 +18,7 @@ const routerConfig: RouteObject[] = [
             },
             {
                 path: "/posts",
-                element: <Posts/>,
+                element: <PostCard/>,
             },
             {
                 path: "/dashboard",
