@@ -1,7 +1,14 @@
 import React, {createContext} from "react";
 
+
+interface User {
+    first_name: string;
+    last_name: string;
+    email: string;
+}
+
 interface StateContextProps {
-    user: number | null
+    user: User | null,
     setUser: (user: number | null) => void;
     token: string | null;
     setToken: (token: string | null) => void;
