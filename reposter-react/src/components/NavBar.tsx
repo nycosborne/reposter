@@ -26,7 +26,7 @@ function NavBar() {
             .catch((error) => {
                 console.log('error', error)
             })
-    }, [])
+    },)
 
     if(user) {
        console.log('user', typeof user)
