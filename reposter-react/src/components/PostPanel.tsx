@@ -38,17 +38,12 @@ useEffect(() => {
                 <Card>
                     <Card.Body>
                         <Card.Title as="h4" className="header">
-                            <i className="fa fa-calendar"></i> Posts
+                            Posts
                         </Card.Title>
                         <ListGroup>
-                            <ListGroup.Item>
-                                <i className="fa fa-plus-square">wqw</i>
-                                <a data-turbo="false" className="calendar-name" href="/calendars/new">Add New
-                                    Calendar</a>
-                            </ListGroup.Item>
                             {posts.map(item => (
-                                <ListGroup.Item key={item.id} className="calendar-item">
-                                    <a className="calendar-name" href={item.link}>{item.title}</a>
+                                <ListGroup.Item key={item.id}>
+                                    <a href={item.link}>{item.title}</a>
                                 </ListGroup.Item>
                             ))}
                         </ListGroup>
