@@ -4,33 +4,31 @@ import Navbar from 'react-bootstrap/Navbar';
 // import NavDropdown from 'react-bootstrap/NavDropdown';
 import {Button} from "react-bootstrap";
 import React, {useEffect} from "react";
-import useAppContext from "../context/UseAppContext.tsx";
-import axiosClient from "../axios-clinet.tsx";
+import useAppContext from "../../context/UseAppContext.tsx";
+import axiosClient from "../../axios-clinet.tsx";
 
 function NavBar() {
 
     const {user, setUser, setToken} = useAppContext();
+
     const logout = (ev: React.FormEvent) => {
         ev.preventDefault()
         setUser(null);
         setToken(null);
     }
 
-
-    // //useEffect to all the user/me endpoint to get the user details
+    // useEffect to all the user/me endpoint to get the user details
     useEffect(() => {
         axiosClient.get('/user/me/')
             .then((response) => {
-                setUser(response.data)
+                setUser(response.data);
             })
             .catch((error) => {
-                console.log('error', error)
-            })
-    },)
+                console.log('error', error);
+            });
+    }, []); // eslint-disable-line react-hooks/exhaustive-deps
+    // todo fix the eslint warning
 
-    if(user) {
-       console.log('user', typeof user)
-    }
 
     return (
         <Navbar expand="lg" bg="dark" className="bg-body-tertiary">
