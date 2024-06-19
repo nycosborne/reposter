@@ -1,8 +1,11 @@
 import React, { useEffect } from 'react';
+import { useLocation } from 'react-router-dom';
 import { Card, ListGroup, Container } from 'react-bootstrap';
 import axiosClient from "../axios-clinet.tsx";
 
 const PostCard = (): React.JSX.Element => {
+
+    const location = useLocation();
 
     interface Tag {
         id: number;
@@ -41,8 +44,13 @@ const PostCard = (): React.JSX.Element => {
                     <ListGroup>
                             {posts.map(item => (
                                 <ListGroup.Item key={item.id}>
-                                    <a href={item.link}>{item.title}</a >
-                                </ListGroup.Item>
+                                <h6>{item.title}</h6>
+                                {location.pathname === '/dashboard' && <p>desc: {item.description}</p>}
+                                {location.pathname === '/posts' && <p>title: {item.content}</p>}
+                                {item.tags.map(tag => (
+                                    <span key={tag.id}>tags: {tag.name}</span>
+                                ))}
+                            </ListGroup.Item>
                             ))}
                         </ListGroup>
                 </Card.Body>
