@@ -9,7 +9,7 @@ interface User {
 
 interface StateContextProps {
     user: User | null,
-    setUser: (user: number | null) => void;
+    setUser: (user: User | null) => void;
     token: string | null;
     setToken: (token: string | null) => void;
 }

@@ -1,11 +1,24 @@
 import React from "react";
-import {Container} from "react-bootstrap";
+import {Col, Container, Row} from "react-bootstrap";
+import PostPanel from "../components/PostPanel.tsx";
 
 const Dashboard: () => React.JSX.Element = () => {
 
+
+
+
+
+
     return (
-        <Container className="d-flex justify-content-center align-items-center" style={{minHeight: "90vh"}}>
-            <h1>Posts</h1>
+        <Container>
+            <Row>
+                <Col>
+                    <PostPanel/>
+                </Col>
+                <Col>
+                    <h1>Services</h1>
+                </Col>
+            </Row>
         </Container>
     );
 }

@@ -1,6 +1,6 @@
 import React from 'react';
 import {Navigate, Outlet} from "react-router-dom";
-import Navbar from "../components/NavBar.tsx";
+import Navbar from "./ui/NavBar.tsx";
 import useAppContext from "../context/UseAppContext.tsx"
 import {Container} from "react-bootstrap";
 

@@ -5,8 +5,14 @@ interface ContextProviderProps {
     children: ReactNode;
 }
 
+interface User {
+    first_name: string;
+    last_name: string;
+    email: string;
+}
+
 export const ContextProvider: React.FC<ContextProviderProps> = ({children}) => {
-    const [user, _setUser] = React.useState<number | null>(null);
+    const [user, _setUser] = React.useState<User | null>(null);
     // const [token, _setToken] = React.useState<string | null>('ACCESS_TOKEN');
     const [token, _setToken] = React.useState<string | null>(localStorage.getItem('ACCESS_TOKEN'));
 
@@ -21,20 +27,13 @@ export const ContextProvider: React.FC<ContextProviderProps> = ({children}) => {
         }
     };
 
-    const setUser = (user: number | null) => {
+    const setUser = (user: User | null) => {
         _setUser(user)
-        // if (user.is_admin === 0) {
-        //     setIsAdmin(false);
-        // } else {
-        //     setIsAdmin(true);
-        // }
     }
 
     return (
-        <StateContext.Provider value={{user, setUser, token, setToken}}>
+        <StateContext.Provider value={{user: user, setUser, token, setToken}}>
             {children}
         </StateContext.Provider>
     );
 };
-
-// export const useAppContext = () => useContext(StateContext);
