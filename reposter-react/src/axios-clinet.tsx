@@ -11,10 +11,10 @@ const axiosClient = axios.create({
 // @ts-expect-error Request interceptor
 axiosClient.interceptors.request.use((config: AxiosRequestConfig) => {
     const token = localStorage.getItem('ACCESS_TOKEN');
-    if (!token) {
+    if (token) {
         config.headers = {
             ...config.headers,
-            Authorization: `Bearer ${token}`
+            Authorization: `Token ${token}`
         };
     }
     return config;
@@ -30,7 +30,6 @@ axiosClient.interceptors.response.use((response: AxiosResponse) => {
     if (response) {
         if (response.status === 401) {
             localStorage.removeItem('ACCESS_TOKEN');
-            // window.location.reload();
         } else if (response.status === 404) {
             // Show not found
         }

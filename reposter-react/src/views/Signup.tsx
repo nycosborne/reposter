@@ -59,7 +59,6 @@ const Signup: () => React.JSX.Element = () => {
             })
     }
 
-    console.log('error', error)
     if (shouldRedirect) {
         return <Navigate to="/login"/>
     }
