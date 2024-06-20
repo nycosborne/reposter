@@ -1,9 +1,10 @@
+import React, { useEffect } from 'react';
 import { Card, ListGroup, Container } from 'react-bootstrap';
 import useAppContext from "../context/UseAppContext.tsx";
 
 const SocialAccountsCard = (): React.JSX.Element => {
     const {user, setUser} = useAppContext();
-console.log('user', user);
+console.log('user', user)
     return (
         <Container>
             <Card>
