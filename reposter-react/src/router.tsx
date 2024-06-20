@@ -1,10 +1,10 @@
 import {createBrowserRouter, Navigate, RouteObject} from "react-router-dom";
 import Login from "./views/Login.tsx";
 import Signup from "./views/Signup.tsx";
-import Users from "./views/Users.tsx";
 import DefaultLayout from "./components/DefaultLayout.tsx";
 import Dashboard from "./views/Dashboard.tsx";
 import GuestLayout from "./components/GuestLayout.tsx";
+import PostCard from "./components/PostCard.tsx";
 
 
 const routerConfig: RouteObject[] = [
@@ -17,8 +17,8 @@ const routerConfig: RouteObject[] = [
                 element: <Navigate to="/dashboard"/>,
             },
             {
-                path: "/users",
-                element: <Users/>,
+                path: "/posts",
+                element: <PostCard/>,
             },
             {
                 path: "/dashboard",
