@@ -10,14 +10,20 @@ interface User {
 }
 
 interface StateContextProps {
-    user: User | null,
+    user: User,
     setUser: (user: User | null) => void;
     token: string | null;
     setToken: (token: string | null) => void;
 }
 
 const defaultState: StateContextProps = {
-    user: null,
+    user: {
+        first_name: 'Default',
+        last_name: 'User',
+        email: 'default@example.com',
+        linkedin: false,
+        reddit: false,
+    },
     setUser: () => {
     },
     token: null,
