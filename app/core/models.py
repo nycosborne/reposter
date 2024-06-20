@@ -69,6 +69,8 @@ class Post(models.Model):
     content = models.TextField(blank=True)
     description = models.TextField(blank=True)
     link = models.CharField(max_length=255, blank=True)
+    reddit = models.BooleanField(default=False)
+    linkedin = models.BooleanField(default=False)
     tags = models.ManyToManyField('Tag', blank=True)
     image = models.ImageField(null=True, upload_to=post_image_file_path)
 
