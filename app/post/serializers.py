@@ -7,6 +7,15 @@ from rest_framework import serializers
 from core.models import Post, Tag, SocialAccounts
 
 
+class SocialAccountsSerializer(serializers.ModelSerializer):
+    """Serializer for social accounts objects"""
+
+    class Meta:
+        model = SocialAccounts
+        fields = ['id', 'name']
+        read_only_fields = ['id']
+
+
 class TagSerializer(serializers.ModelSerializer):
     """Serializer for tag objects"""
 
@@ -16,13 +25,23 @@ class TagSerializer(serializers.ModelSerializer):
         read_only_fields = ['id']
 
 
+class SocialAccountsSerializer(serializers.ModelSerializer):
+    """Serializer for social accounts objects"""
+
+    class Meta:
+        model = SocialAccounts
+        fields = ['id', 'name']
+        read_only_fields = ['id']
+
+
 class PostSerializer(serializers.ModelSerializer):
     """Serializers for the post object."""
     tags = TagSerializer(many=True, required=False)
+    soc_accounts = SocialAccountsSerializer(many=True, required=False)
 
     class Meta:
         model = Post
-        fields = ['id', 'title', 'content', 'description', 'link', 'tags', 'reddit', 'linkedin']
+        fields = ['id', 'title', 'content', 'description', 'link', 'tags', 'soc_accounts']
         read_only_fields = ['id']
 
     def _get_or_create_tag(self, tags, post):

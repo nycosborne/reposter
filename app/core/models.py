@@ -48,9 +48,10 @@ class User(AbstractBaseUser, PermissionsMixin):
     email = models.EmailField(max_length=255, unique=True)
     first_name = models.CharField(max_length=255)
     last_name = models.CharField(max_length=255)
+    reddit = models.BooleanField(default=False)
+    linkedin = models.BooleanField(default=False)
     is_active = models.BooleanField(default=True)
     is_staff = models.BooleanField(default=False)
-    soc_accounts = models.ManyToManyField('SocialAccounts', blank=True)
     created_at = models.DateTimeField(default=timezone.now)
     timezone = models.CharField(max_length=255, default='UTC')
 
@@ -69,9 +70,8 @@ class Post(models.Model):
     content = models.TextField(blank=True)
     description = models.TextField(blank=True)
     link = models.CharField(max_length=255, blank=True)
-    reddit = models.BooleanField(default=False)
-    linkedin = models.BooleanField(default=False)
     tags = models.ManyToManyField('Tag', blank=True)
+    soc_accounts = models.ManyToManyField('SocialAccounts', blank=True)
     image = models.ImageField(null=True, upload_to=post_image_file_path)
 
     def __str__(self):

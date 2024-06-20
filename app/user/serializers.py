@@ -9,25 +9,14 @@ from django.contrib.auth import (
 
 from rest_framework import serializers
 from rest_framework.exceptions import AuthenticationFailed
-from core.models import SocialAccounts
-
-
-class SocialAccountsSerializer(serializers.ModelSerializer):
-    """Serializer for social accounts objects"""
-
-    class Meta:
-        model = SocialAccounts
-        fields = ['id', 'name']
-        read_only_fields = ['id']
 
 
 class UserSerializers(serializers.ModelSerializer):
     """Serializers for the user object."""
-    soc_accounts = SocialAccountsSerializer(many=True, required=False)
 
     class Meta:
         model = get_user_model()
-        fields = ('email', 'password', 'first_name', 'last_name', 'soc_accounts')
+        fields = ('email', 'password', 'first_name', 'last_name', 'reddit', 'linkedin')
         extra_kwargs = {'password': {'write_only': True, 'min_length': 5}}
 
     def create(self, validated_data):

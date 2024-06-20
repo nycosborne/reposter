@@ -5,6 +5,7 @@ interface User {
     first_name: string;
     last_name: string;
     email: string;
+    soc_accounts: string[];
 }
 
 interface StateContextProps {
