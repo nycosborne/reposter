@@ -50,6 +50,7 @@ class User(AbstractBaseUser, PermissionsMixin):
     last_name = models.CharField(max_length=255)
     is_active = models.BooleanField(default=True)
     is_staff = models.BooleanField(default=False)
+    soc_accounts = models.ManyToManyField('SocialAccounts', blank=True)
     created_at = models.DateTimeField(default=timezone.now)
     timezone = models.CharField(max_length=255, default='UTC')
 
@@ -82,6 +83,16 @@ class Tag(models.Model):
         on_delete=models.CASCADE
     )
     name = models.CharField(max_length=255)
+
+    def __str__(self):
+        return self.name
+
+
+class SocialAccounts(models.Model):
+    """SocialAccounts model."""
+    name = models.CharField(max_length=255)
+    status = models.BooleanField(default=False)
+    created_at = models.DateTimeField(default=timezone.now)
 
     def __str__(self):
         return self.name

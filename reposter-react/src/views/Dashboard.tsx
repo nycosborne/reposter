@@ -4,11 +4,6 @@ import PostPanel from "../components/PostPanel.tsx";
 
 const Dashboard: () => React.JSX.Element = () => {
 
-
-
-
-
-
     return (
         <Container>
             <Row>
@@ -16,7 +11,7 @@ const Dashboard: () => React.JSX.Element = () => {
                     <PostPanel/>
                 </Col>
                 <Col>
-                    <h1>Services</h1>
+                    <h1>Social Accounts</h1>
                 </Col>
             </Row>
         </Container>
