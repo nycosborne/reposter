@@ -11,6 +11,15 @@ from rest_framework import serializers
 from rest_framework.exceptions import AuthenticationFailed
 
 
+class SocialAccountsSerializer(serializers.ModelSerializer):
+    """Serializer for social accounts objects"""
+
+    class Meta:
+        model = SocialAccounts
+        fields = ['id', 'name']
+        read_only_fields = ['id']
+
+
 class UserSerializers(serializers.ModelSerializer):
     """Serializers for the user object."""
 
