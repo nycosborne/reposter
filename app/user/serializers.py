@@ -9,6 +9,7 @@ from django.contrib.auth import (
 
 from rest_framework import serializers
 from rest_framework.exceptions import AuthenticationFailed
+from core.models import SocialAccounts
 
 
 class SocialAccountsSerializer(serializers.ModelSerializer):
@@ -22,6 +23,7 @@ class SocialAccountsSerializer(serializers.ModelSerializer):
 
 class UserSerializers(serializers.ModelSerializer):
     """Serializers for the user object."""
+    soc_accounts = SocialAccountsSerializer(many=True, required=False)
 
     class Meta:
         model = get_user_model()
