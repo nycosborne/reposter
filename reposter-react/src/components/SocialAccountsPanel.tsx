@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react';
+import React from 'react';
 import { Card, ListGroup, Container } from 'react-bootstrap';
 import useAppContext from "../context/UseAppContext.tsx";
 
