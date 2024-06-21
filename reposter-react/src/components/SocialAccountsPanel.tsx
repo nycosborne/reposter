@@ -15,26 +15,28 @@ const SocialAccountsCard = (): React.JSX.Element => {
         return <div>Loading...</div>
     }
 
-
     const handleRedditLink = () => {
         navigate("/new-route");
     }
 
-    const renderSocialAccount = (isLinked: boolean, icon: IconProp, color: string, unlinkedText: string, handleLink: () => void) => (
-        isLinked ?
-            <ListGroup.Item>
-                <FontAwesomeIcon icon={icon} size="2x" color={color}/>
-            </ListGroup.Item>
-            :
-            <ListGroup.Item action onClick={handleLink}>
-                <Row>
-                    <FontAwesomeIcon icon={icon} size="2x" color="gray"/>
+    const renderSocialAccount = (
+        isLinked: boolean,
+        icon: IconProp,
+        color: string,
+        accountStatusText: string,
+        handleLink: () => void
+    ) => (
+        <ListGroup.Item action onClick={handleLink}>
+            <Row>
+                <FontAwesomeIcon icon={icon} size="2x" color={isLinked ? color : "gray"} />
+                {!isLinked && (
                     <div className="link-icon-container">
-                        <FontAwesomeIcon icon={faLinkSlash} size="sm" color="black"/>
+                        <FontAwesomeIcon icon={faLinkSlash} size="sm" color="black" />
                     </div>
-                    <p>{unlinkedText}</p>
-                </Row>
-            </ListGroup.Item>
+                )}
+                <p>{accountStatusText} is: {isLinked ? "Linked" : "Unlinked"}</p>
+            </Row>
+        </ListGroup.Item>
     );
 
     return (
@@ -45,8 +47,10 @@ const SocialAccountsCard = (): React.JSX.Element => {
                         Social Accounts Status
                     </Card.Title>
                     <ListGroup>
-                        {renderSocialAccount(user.reddit, faRedditAlien, "#FF5700", "Reddit Unlinked", handleRedditLink)}
-                        {renderSocialAccount(user.linkedin, faLinkedin, "#0072b1", "LinkedIn Unlinked", handleRedditLink)}
+                        {renderSocialAccount(user.reddit, faRedditAlien, "#FF5700",
+                            "Reddit", handleRedditLink)}
+                        {renderSocialAccount(user.linkedin, faLinkedin, "#0072b1",
+                            "LinkedIn", handleRedditLink)}
                     </ListGroup>
                 </Card.Body>
             </Card>
