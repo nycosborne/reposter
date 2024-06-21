@@ -142,17 +142,15 @@ class SocialAccountsViewSet(viewsets.ModelViewSet):
     """Manage social accounts in the database."""
     serializer_class = serializers.SocialAccountsSerializer
     queryset = SocialAccounts.objects.all()
+    authentication_classes = [TokenAuthentication]
+    permission_classes = [IsAuthenticated]
 
-    def perform_create(self, serializer):
-        """Create a new SocialAccounts."""
-        serializer.save()
-
-    # def get_permissions(self):
-    #     """
-    #     Instantiates and returns the list of permissions that this view requires.
-    #     """
-    #     if self.action in ['list', 'retrieve']:
-    #         permission_classes = [AllowAny]
-    #     else:
-    #         permission_classes = [IsAdminUser]
-    #     return [permission() for permission in permission_classes]
+    def get_permissions(self):
+        """
+        Instantiates and returns the list of permissions that this view requires.
+        """
+        if self.action in ['list', 'retrieve']:
+            permission_classes = [AllowAny]
+        else:
+            permission_classes = [IsAdminUser]
+        return [permission() for permission in permission_classes]
