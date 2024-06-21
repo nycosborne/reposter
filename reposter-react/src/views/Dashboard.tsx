@@ -1,13 +1,9 @@
 import React from "react";
 import {Col, Container, Row} from "react-bootstrap";
 import PostPanel from "../components/PostPanel.tsx";
+import SocialAccountsPanel from "../components/SocialAccountsPanel.tsx";
 
 const Dashboard: () => React.JSX.Element = () => {
-
-
-
-
-
 
     return (
         <Container>
@@ -16,7 +12,7 @@ const Dashboard: () => React.JSX.Element = () => {
                     <PostPanel/>
                 </Col>
                 <Col>
-                    <h1>Services</h1>
+                    <SocialAccountsPanel/>
                 </Col>
             </Row>
         </Container>

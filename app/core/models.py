@@ -48,6 +48,8 @@ class User(AbstractBaseUser, PermissionsMixin):
     email = models.EmailField(max_length=255, unique=True)
     first_name = models.CharField(max_length=255)
     last_name = models.CharField(max_length=255)
+    reddit = models.BooleanField(default=False)
+    linkedin = models.BooleanField(default=False)
     is_active = models.BooleanField(default=True)
     is_staff = models.BooleanField(default=False)
     created_at = models.DateTimeField(default=timezone.now)
@@ -69,6 +71,7 @@ class Post(models.Model):
     description = models.TextField(blank=True)
     link = models.CharField(max_length=255, blank=True)
     tags = models.ManyToManyField('Tag', blank=True)
+    soc_accounts = models.ManyToManyField('SocialAccounts', blank=True)
     image = models.ImageField(null=True, upload_to=post_image_file_path)
 
     def __str__(self):
@@ -82,6 +85,16 @@ class Tag(models.Model):
         on_delete=models.CASCADE
     )
     name = models.CharField(max_length=255)
+
+    def __str__(self):
+        return self.name
+
+
+class SocialAccounts(models.Model):
+    """SocialAccounts model."""
+    name = models.CharField(max_length=255)
+    status = models.BooleanField(default=False)
+    created_at = models.DateTimeField(default=timezone.now)
 
     def __str__(self):
         return self.name

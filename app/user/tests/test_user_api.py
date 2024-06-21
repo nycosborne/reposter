@@ -28,6 +28,8 @@ class PublicUserApiTests(TestCase):
             'password': 'password123',
             'first_name': 'Jim',
             'last_name': 'Django',
+            'reddit': 'True',
+            'linkedin': 'False',
         }
 
     def test_create_valid_user_success(self):
@@ -48,6 +50,8 @@ class PublicUserApiTests(TestCase):
             'password': 'password123',
             'first_name': 'Jim',
             'last_name': 'Django',
+            'reddit': 'True',
+            'linkedin': 'False',
         }
 
         create_user(**payload)
@@ -117,7 +121,8 @@ class PrivateUserApiTests(TestCase):
             email='test@example.com',
             password='password123',
             first_name='Jim',
-            last_name='Django',
+            last_name='Django'
+
         )
 
         self.client = APIClient()
@@ -132,7 +137,9 @@ class PrivateUserApiTests(TestCase):
         self.assertEqual(response.data, {
             'first_name': self.user.first_name,
             'last_name': self.user.last_name,
-            'email': self.user.email
+            'email': self.user.email,
+            'reddit': self.user.reddit,
+            'linkedin': self.user.linkedin,
         })
 
     def test_post_me_not_allowed(self):
