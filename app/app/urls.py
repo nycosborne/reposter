@@ -18,11 +18,17 @@ from django.urls import path, include
 
 from django.conf.urls.static import static
 from django.conf import settings
+# todo when SocialAccounts is set Up update this
+from post import views as post_views
+from rest_framework.routers import DefaultRouter
 
 from drf_spectacular.views import (
     SpectacularAPIView,
     # SpectacularRedocView, # noqa
     SpectacularSwaggerView)
+
+router = DefaultRouter()
+router.register('soc_account', post_views.SocialAccountsViewSet)
 
 urlpatterns = [
     path('admin/', admin.site.urls),

@@ -15,21 +15,16 @@ class SocialAccountsSerializer(serializers.ModelSerializer):
         fields = ['id', 'name']
         read_only_fields = ['id']
 
+    def create(self, validated_data):
+        """Create a new social account and return it."""
+        return SocialAccounts.objects.create(**validated_data)
+
 
 class TagSerializer(serializers.ModelSerializer):
     """Serializer for tag objects"""
 
     class Meta:
         model = Tag
-        fields = ['id', 'name']
-        read_only_fields = ['id']
-
-
-class SocialAccountsSerializer(serializers.ModelSerializer):
-    """Serializer for social accounts objects"""
-
-    class Meta:
-        model = SocialAccounts
         fields = ['id', 'name']
         read_only_fields = ['id']
 

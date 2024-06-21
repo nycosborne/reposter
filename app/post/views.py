@@ -11,8 +11,10 @@ from rest_framework.decorators import action
 from rest_framework.response import Response
 from rest_framework.authentication import TokenAuthentication
 from rest_framework.permissions import IsAuthenticated
+from rest_framework.permissions import IsAdminUser
+from rest_framework.permissions import AllowAny
 
-from core.models import Post, Tag
+from core.models import Post, Tag, SocialAccounts
 from post import serializers
 
 
@@ -129,3 +131,24 @@ class TagViewSet(mixins.DestroyModelMixin,
     def perform_create(self, serializer):
         """Create a new tag."""
         serializer.save(user=self.request.user)
+
+
+class SocialAccountsViewSet(viewsets.ModelViewSet):
+    """Manage social accounts in the database."""
+    serializer_class = serializers.SocialAccountsSerializer
+    queryset = SocialAccounts.objects.all()
+
+    def perform_create(self, serializer):
+        """Create a new SocialAccounts."""
+        serializer.save(user=self.request.user)
+
+    # def get_permissions(self):
+    #     """
+    #     Instantiates and returns the list of permissions that this view requires.
+    #     """
+    #     if self.action in ['list', 'retrieve']:
+    #         permission_classes = [AllowAny]
+    #     else:
+    #         permission_classes = [IsAdminUser]
+    #     return [permission() for permission in permission_classes]
+
