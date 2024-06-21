@@ -147,7 +147,8 @@ class SocialAccountsViewSet(viewsets.ModelViewSet):
 
     def get_permissions(self):
         """
-        Instantiates and returns the list of permissions that this view requires.
+        Instantiates and returns the list of permissions
+        that this view requires.
         """
         if self.action in ['list', 'retrieve']:
             permission_classes = [AllowAny]

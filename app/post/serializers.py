@@ -36,7 +36,8 @@ class PostSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Post
-        fields = ['id', 'title', 'content', 'description', 'link', 'tags', 'soc_accounts']
+        fields = ['id', 'title', 'content', 'description',
+                  'link', 'tags', 'soc_accounts']
         read_only_fields = ['id']
 
     def _get_or_create_tag(self, tags, post):
