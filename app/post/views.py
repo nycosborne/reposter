@@ -133,6 +133,11 @@ class TagViewSet(mixins.DestroyModelMixin,
         serializer.save(user=self.request.user)
 
 
+@extend_schema_view(
+    list=extend_schema(
+        parameters=[]
+    )
+)
 class SocialAccountsViewSet(viewsets.ModelViewSet):
     """Manage social accounts in the database."""
     serializer_class = serializers.SocialAccountsSerializer
@@ -140,7 +145,7 @@ class SocialAccountsViewSet(viewsets.ModelViewSet):
 
     def perform_create(self, serializer):
         """Create a new SocialAccounts."""
-        serializer.save(user=self.request.user)
+        serializer.save()
 
     # def get_permissions(self):
     #     """
@@ -151,4 +156,3 @@ class SocialAccountsViewSet(viewsets.ModelViewSet):
     #     else:
     #         permission_classes = [IsAdminUser]
     #     return [permission() for permission in permission_classes]
-
