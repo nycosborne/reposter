@@ -5,18 +5,22 @@ import {faLinkedin, faRedditAlien} from '@fortawesome/free-brands-svg-icons';
 import {FontAwesomeIcon} from '@fortawesome/react-fontawesome';
 import {faLinkSlash} from "@fortawesome/free-solid-svg-icons";
 import {IconProp} from '@fortawesome/fontawesome-svg-core';
-import {useNavigate} from "react-router-dom";
+import {useNavigate, useLocation} from "react-router-dom";
 
 const SocialAccountsCard = (): React.JSX.Element => {
     const {user} = useAppContext();
     const navigate = useNavigate();
+    const location = useLocation();
 
     if (!user) {
         return <div>Loading...</div>
     }
 
     const handleRedditLink = () => {
-        navigate("/new-route");
+        if(location.pathname != "/account")
+            navigate("/account");
+
+         console.log('location.pathname', location.pathname)
     }
 
     const renderSocialAccount = (
@@ -28,10 +32,10 @@ const SocialAccountsCard = (): React.JSX.Element => {
     ) => (
         <ListGroup.Item action onClick={handleLink}>
             <Row>
-                <FontAwesomeIcon icon={icon} size="2x" color={isLinked ? color : "gray"} />
+                <FontAwesomeIcon icon={icon} size="2x" color={isLinked ? color : "gray"}/>
                 {!isLinked && (
                     <div className="link-icon-container">
-                        <FontAwesomeIcon icon={faLinkSlash} size="sm" color="black" />
+                        <FontAwesomeIcon icon={faLinkSlash} size="sm" color="black"/>
                     </div>
                 )}
                 <p>{accountStatusText} is: {isLinked ? "Linked" : "Unlinked"}</p>
