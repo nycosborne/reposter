@@ -37,7 +37,8 @@ urlpatterns = [
          SpectacularSwaggerView.as_view(url_name='schema'), name='swagger-ui'),
     path('api/user/', include('user.urls')),
     path('api/post/', include('post.urls')),
-    path('api/', include(router.urls)),  # Include the router's URLs
+    path('services/', include('services.urls')),  # Include the router's URLs
+    # path('api/', include(router.urls)),  # Include the router's URLs
 ]
 
 if settings.DEBUG:

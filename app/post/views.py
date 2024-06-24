@@ -16,6 +16,7 @@ from rest_framework.permissions import AllowAny
 
 from core.models import Post, Tag, SocialAccounts
 from post import serializers
+from services import serializers as servicesSerializers
 
 
 @extend_schema_view(
@@ -140,7 +141,7 @@ class TagViewSet(mixins.DestroyModelMixin,
 )
 class SocialAccountsViewSet(viewsets.ModelViewSet):
     """Manage social accounts in the database."""
-    serializer_class = serializers.SocialAccountsSerializer
+    serializer_class = servicesSerializers.SocialAccountsSerializer
     queryset = SocialAccounts.objects.all()
     authentication_classes = [TokenAuthentication]
     permission_classes = [IsAuthenticated]
