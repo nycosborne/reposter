@@ -8,7 +8,7 @@ from services import views
 # Generates the URL patterns for the viewset
 router = DefaultRouter()
 # Register the viewset with the router
-router.register('services', views.SocialAccountsViewSet)
+router.register('services', views.SocialAccountsViewSet, basename='services')
 
 app_name = 'services'
 

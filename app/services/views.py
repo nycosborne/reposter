@@ -1,9 +1,11 @@
 """ Views for the post app. """
 
-from drf_spectacular.utils import (
-    extend_schema,
-    extend_schema_view,
-)
+# from drf_spectacular.utils import (
+#     extend_schema,
+#     extend_schema_view,
+#     OpenApiParameter,
+#     OpenApiTypes,
+# )
 from rest_framework import viewsets
 from rest_framework.authentication import TokenAuthentication
 from rest_framework.permissions import IsAuthenticated
@@ -17,11 +19,6 @@ from services import serializers as servicesSerializers
 # Create your views here.
 
 
-@extend_schema_view(
-    list=extend_schema(
-        parameters=[]
-    )
-)
 class SocialAccountsViewSet(viewsets.ModelViewSet):
     """Manage social accounts in the database."""
     serializer_class = servicesSerializers.SocialAccountsSerializer
