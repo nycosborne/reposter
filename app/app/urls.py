@@ -18,7 +18,6 @@ from django.urls import path, include
 
 from django.conf.urls.static import static
 from django.conf import settings
-from rest_framework.routers import DefaultRouter
 
 from drf_spectacular.views import (
     SpectacularAPIView,
@@ -32,7 +31,7 @@ urlpatterns = [
          SpectacularSwaggerView.as_view(url_name='schema'), name='swagger-ui'),
     path('api/user/', include('user.urls')),
     path('api/post/', include('post.urls')),
-    path('api/services/', include('services.urls')),  # Include the router's URLs
+    path('api/services/', include('services.urls')),
 ]
 
 if settings.DEBUG:

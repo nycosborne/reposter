@@ -4,7 +4,7 @@ Serializers for the api end points of the post
 
 from rest_framework import serializers
 
-from core.models import Post, Tag, SocialAccounts
+from core.models import Post, Tag
 from services import serializers as servicesSerializers
 
 
@@ -20,7 +20,10 @@ class TagSerializer(serializers.ModelSerializer):
 class PostSerializer(serializers.ModelSerializer):
     """Serializers for the post object."""
     tags = TagSerializer(many=True, required=False)
-    soc_accounts = servicesSerializers.SocialAccountsSerializer(many=True, required=False)
+    soc_accounts = servicesSerializers.SocialAccountsSerializer(
+        many=True,
+        required=False
+    )
 
     class Meta:
         model = Post
