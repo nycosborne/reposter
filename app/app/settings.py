@@ -48,6 +48,7 @@ INSTALLED_APPS = [
     'user',
     'rest_framework.authtoken',  # todo: JWT Update required
     'post',
+    'services',
     'corsheaders',
 ]
 
