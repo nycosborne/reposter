@@ -5,8 +5,6 @@ from django.test import TestCase
 from rest_framework import status
 from rest_framework.test import APIClient
 
-import tempfile
-import os
 from django.contrib.auth import get_user_model
 from core.models import SocialAccounts
 
@@ -69,6 +67,5 @@ class PrivateServiceApiTests(TestCase):
 
         res = self.client.get(SERVICE_URL)
 
-        services = SocialAccounts.objects.all().order_by('-name')
         self.assertEqual(res.status_code, status.HTTP_200_OK)
         self.assertEqual(len(res.data), 2)
