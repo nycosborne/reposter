@@ -78,6 +78,25 @@ class Post(models.Model):
         return self.title
 
 
+# User Social Accounts setting
+class UserSocialAccountsSettings(models.Model):
+    """UserSocialAccounts model."""
+    user = models.ForeignKey(
+        settings.AUTH_USER_MODEL,
+        on_delete=models.CASCADE
+    )
+    name = models.CharField(max_length=255)
+    status = models.BooleanField(default=False)
+    code = models.CharField(max_length=255, blank=True)
+    access_token = models.CharField(max_length=255, blank=True)
+    refresh_token = models.CharField(max_length=255, blank=True)
+    created_at = models.DateTimeField(default=timezone.now)
+    # updated_at = models.DateTimeField(default=timezone.now)
+
+    def __str__(self):
+        return self.user.name
+
+
 class Tag(models.Model):
     """Tag model."""
     user = models.ForeignKey(

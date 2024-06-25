@@ -1,14 +1,16 @@
 from datetime import datetime, timezone
 import os
 
-from django.contrib.sites import requests
+import requests
+from core.models import UserSocialAccountsSettings
 
 
 class LinkedInAPI:
-    def __init__(self):
-        self.client_id = os.getenv('CLIENT_ID')
-        self.client_secret = os.getenv('CLIENT_SECRET')
-        self.access_token = os.getenv('ACCESS_TOKEN')
+    def __init__(self, access_token=None):
+        self.client_id = os.getenv('LINKEDIN_CLIENT_ID')
+        self.client_secret = os.getenv('LINKEDIN_CLIENT_SECRET')
+        self.client_secret = os.getenv('LINKEDIN_CLIENT_SECRET')
+        self.redirect_uri = os.getenv('LINKEDIN_REDIRECT_URI')
 
     def post_linkedin(self, message):
         headers = {
@@ -93,10 +95,10 @@ class LinkedInAPI:
         if response.status_code == 200:
             print("Authorization code requested successfully.")
         else:
-            print(f"Failed to request authorization code. Status code: {response.status_code}, Response: {response.text}")
-
+            print(
+                f"Failed to request authorization code. Status code: {response.status_code}, Response: {response.text}")
 
 # Example usage
-linkedin_api = LinkedInAPI()
-linkedin_api.check_access_token()
-linkedin_api.post_linkedin('Test API')
+# linkedin_api = LinkedInAPI()
+# linkedin_api.check_access_token()
+# linkedin_api.post_linkedin('Test API')
