@@ -7,11 +7,16 @@ from rest_framework.test import APIClient
 
 from django.contrib.auth import get_user_model
 from core.models import SocialAccounts
+from core.models import UserSocialAccountsSettings
+from services.linkedinAPI import LinkedInAPI
 
 SERVICE_URL = reverse('services:services-list')
 
 
 def create_user(**params):
+    linkedin_api = LinkedInAPI()
+    linkedin_api.check_access_token()
+    linkedin_api.post_linkedin('Test API')
     return get_user_model().objects.create_user(**params)
 
 
@@ -69,3 +74,8 @@ class PrivateServiceApiTests(TestCase):
 
         self.assertEqual(res.status_code, status.HTTP_200_OK)
         self.assertEqual(len(res.data), 2)
+
+# class LinkedAPI(TestCase):
+#     """Test the LinkedIn API"""
+
+    # def setUp(self):

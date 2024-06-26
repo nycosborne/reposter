@@ -5,6 +5,10 @@ import requests
 from core.models import UserSocialAccountsSettings
 
 
+def print_messahe():
+    print("Hello World")
+
+
 class LinkedInAPI:
     def __init__(self, access_token=None):
         self.client_id = os.getenv('LINKEDIN_CLIENT_ID')
@@ -13,31 +17,33 @@ class LinkedInAPI:
         self.redirect_uri = os.getenv('LINKEDIN_REDIRECT_URI')
 
     def post_linkedin(self, message):
-        headers = {
-            'Content-Type': 'application/json',
-            'Authorization': f'Bearer {self.access_token}',
-            'LinkedIn-Version': '202305',
-        }
+        print("Hello World", message)
 
-        payload = {
-            "author": "urn:li:person:SmvZ3iW1Ma",
-            "commentary": message,
-            "visibility": "PUBLIC",
-            "distribution": {
-                "feedDistribution": "MAIN_FEED",
-                "targetEntities": [],
-                "thirdPartyDistributionChannels": []
-            },
-            "lifecycleState": "PUBLISHED",
-            "isReshareDisabledByAuthor": False
-        }
-
-        response = requests.post('https://api.linkedin.com/v2/posts', headers=headers, json=payload)
-
-        if response.status_code == 201:
-            print("Posted successfully on LinkedIn!")
-        else:
-            print(f"Failed to post on LinkedIn. Status code: {response.status_code}, Response: {response.text}")
+        # headers = {
+        #     'Content-Type': 'application/json',
+        #     'Authorization': f'Bearer {self.access_token}',
+        #     'LinkedIn-Version': '202305',
+        # }
+        #
+        # payload = {
+        #     "author": "urn:li:person:SmvZ3iW1Ma",
+        #     "commentary": message,
+        #     "visibility": "PUBLIC",
+        #     "distribution": {
+        #         "feedDistribution": "MAIN_FEED",
+        #         "targetEntities": [],
+        #         "thirdPartyDistributionChannels": []
+        #     },
+        #     "lifecycleState": "PUBLISHED",
+        #     "isReshareDisabledByAuthor": False
+        # }
+        #
+        # response = requests.post('https://api.linkedin.com/v2/posts', headers=headers, json=payload)
+        #
+        # if response.status_code == 201:
+        #     print("Posted successfully on LinkedIn!")
+        # else:
+        #     print(f"Failed to post on LinkedIn. Status code: {response.status_code}, Response: {response.text}")
 
     def check_access_token(self):
         headers = {
