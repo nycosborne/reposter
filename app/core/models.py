@@ -86,11 +86,12 @@ class UserSocialAccountsSettings(models.Model):
         on_delete=models.CASCADE
     )
     name = models.CharField(max_length=255)
+    # todo need to rethink about the status field
+    # They should probably be an Enom field
+    # with values like 'active', 'inactive', 'pending'
     status = models.BooleanField(default=False)
-    code = models.CharField(max_length=255, blank=True)
-    access_token = models.CharField(max_length=255, blank=True)
-    refresh_token = models.CharField(max_length=255, blank=True)
-    created_at = models.DateTimeField(default=timezone.now)
+    access_token_status = models.CharField(max_length=255, blank=True)
+    access_token_create = models.DateTimeField(default=timezone.now)
     # updated_at = models.DateTimeField(default=timezone.now)
 
     def __str__(self):
@@ -114,6 +115,7 @@ class SocialAccounts(models.Model):
     name = models.CharField(max_length=255)
     status = models.BooleanField(default=False)
     created_at = models.DateTimeField(default=timezone.now)
+    # updated_at = models.DateTimeField(default=timezone.now)
 
     def __str__(self):
         return self.name

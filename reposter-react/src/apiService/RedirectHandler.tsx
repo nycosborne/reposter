@@ -1,21 +1,22 @@
-import React, {useEffect} from 'react';
+import React, {useEffect, useState} from 'react';
 import {useNavigate, useLocation} from 'react-router-dom';
 
 const RedirectHandler: React.FC = () => {
     const location = useLocation();
     const navigate = useNavigate();
-    let authorizationCode: string | null = '';
+    const [authorizationCode, setAuthorizationCode] = useState<string | null>('');
 
     useEffect(() => {
         const searchParams = new URLSearchParams(location.search);
-        authorizationCode = searchParams.get('code');
+        const code = searchParams.get('code');
+        setAuthorizationCode(code);
 
-        if (authorizationCode) {
+        if (code) {
             // Handle the authorization code (e.g., send it to your backend for further processing)
-            console.log('Authorization Code:', authorizationCode);
+            console.log('Authorization Code:', code);
 
             // Optionally, navigate to a different page or perform some other action
-            // navigate('/some-other-page');9
+            // navigate('/some-other-page');
         } else {
             console.error('Authorization code not found');
         }
@@ -24,7 +25,6 @@ const RedirectHandler: React.FC = () => {
     return (
         <div>
             <h2>auth/callbacking</h2>
-            {/*todo this need to be state*/}
             {authorizationCode ? <h2>CODE!!!: {authorizationCode}</h2> : <h2>Processing...</h2>}
         </div>
     );
