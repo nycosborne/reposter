@@ -11,13 +11,21 @@ import axiosClient from "../axios-clinet.tsx";
 
 // Define the parameters for the LinkedIn OAuth 2.0 request
 const clientId = import.meta.env.VITE_CLIENT_ID;
-const redirectUri = encodeURIComponent(import.meta.env.VITE_REDIRECT_URI);
+const redirectUri = import.meta.env.VITE_REDIRECT_URI;
 const state = import.meta.env.VITE_STATE;
-const scope = encodeURIComponent(import.meta.env.VITE_SCOPE);
+const scope = import.meta.env.VITE_SCOPE;
 
-console.log('clientId', import.meta.env.VITE_CLIENT_ID);
 // Construct the LinkedIn OAuth 2.0 authorization URL
-const linkedinAuthUrl = `https://www.linkedin.com/oauth/v2/authorization?response_type=code&client_id=${clientId}&redirect_uri=${redirectUri}&state=${state}&scope=${scope}`;
+const linkedinAuthUrl = new URL('https://www.linkedin.com/oauth/v2/authorization');
+linkedinAuthUrl.search = new URLSearchParams({
+  response_type: 'code',
+  client_id: clientId,
+  redirect_uri: redirectUri,
+  state: state,
+  scope: scope
+}).toString();
+
+console.log('linkedinAuthUrl', linkedinAuthUrl.toString());
 
 const SocialAccountsCard = (): React.JSX.Element => {
     const {user} = useAppContext();
