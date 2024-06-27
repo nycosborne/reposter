@@ -6,7 +6,7 @@ import {FontAwesomeIcon} from '@fortawesome/react-fontawesome';
 import {faLinkSlash} from "@fortawesome/free-solid-svg-icons";
 import {IconProp} from '@fortawesome/fontawesome-svg-core';
 import {useNavigate, useLocation} from "react-router-dom";
-import axiosClient from "../axios-clinet.tsx";
+import axiosClient from "../axios-client.tsx";
 
 
 // Define the parameters for the LinkedIn OAuth 2.0 request
@@ -24,7 +24,9 @@ linkedinAuthUrl.search = new URLSearchParams({
   state: state,
   scope: scope
 }).toString();
+
 const linkedinAuthUrlString = linkedinAuthUrl.toString();
+
 console.log('linkedinAuthUrl', linkedinAuthUrlString);
 
 const SocialAccountsCard = (): React.JSX.Element => {

@@ -1,7 +1,7 @@
 import React, { useEffect } from 'react';
 import { useLocation } from 'react-router-dom';
 import { Card, ListGroup, Container } from 'react-bootstrap';
-import axiosClient from "../axios-clinet.tsx";
+import axiosClient from "../axios-client.tsx";
 
 const PostCard = (): React.JSX.Element => {
 

@@ -5,7 +5,7 @@ import Navbar from 'react-bootstrap/Navbar';
 import {Button} from "react-bootstrap";
 import React, {useEffect} from "react";
 import useAppContext from "../../context/UseAppContext.tsx";
-import axiosClient from "../../axios-clinet.tsx";
+import axiosClient from "../../axios-client.tsx";
 
 function NavBar() {
 
