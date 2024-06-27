@@ -6,6 +6,26 @@ import {FontAwesomeIcon} from '@fortawesome/react-fontawesome';
 import {faLinkSlash} from "@fortawesome/free-solid-svg-icons";
 import {IconProp} from '@fortawesome/fontawesome-svg-core';
 import {useNavigate, useLocation} from "react-router-dom";
+import axiosClient from "../axios-clinet.tsx";
+
+
+// Define the parameters for the LinkedIn OAuth 2.0 request
+const clientId = import.meta.env.VITE_CLIENT_ID;
+const redirectUri = import.meta.env.VITE_REDIRECT_URI;
+const state = import.meta.env.VITE_STATE;
+const scope = import.meta.env.VITE_SCOPE;
+
+// Construct the LinkedIn OAuth 2.0 authorization URL
+const linkedinAuthUrl = new URL('https://www.linkedin.com/oauth/v2/authorization');
+linkedinAuthUrl.search = new URLSearchParams({
+  response_type: 'code',
+  client_id: clientId,
+  redirect_uri: redirectUri,
+  state: state,
+  scope: scope
+}).toString();
+const linkedinAuthUrlString = linkedinAuthUrl.toString();
+console.log('linkedinAuthUrl', linkedinAuthUrlString);
 
 const SocialAccountsCard = (): React.JSX.Element => {
     const {user} = useAppContext();
@@ -20,7 +40,18 @@ const SocialAccountsCard = (): React.JSX.Element => {
         if(location.pathname != "/account")
             navigate("/account");
 
-         console.log('location.pathname', location.pathname)
+         // console.log('location.pathname', location.pathname)
+    }
+
+    const linkedinLink = () => {
+        axiosClient.get('/services/request_code/')
+            .then((response) => {
+                // setUser(response.data);
+                console.log('response', response);
+            })
+            .catch((error) => {
+                console.log('error', error);
+            });
     }
 
     const renderSocialAccount = (
@@ -35,7 +66,8 @@ const SocialAccountsCard = (): React.JSX.Element => {
                 <FontAwesomeIcon icon={icon} size="2x" color={isLinked ? color : "gray"}/>
                 {!isLinked && (
                     <div className="link-icon-container">
-                        <FontAwesomeIcon icon={faLinkSlash} size="sm" color="black"/>
+                        <FontAwesomeIcon icon={faLinkSlash} size="sm" color="black" onClick={linkedinLink}/>
+                        <a href={linkedinAuthUrlString}>Link Account</a>
                     </div>
                 )}
                 <p>{accountStatusText} is: {isLinked ? "Linked" : "Unlinked"}</p>

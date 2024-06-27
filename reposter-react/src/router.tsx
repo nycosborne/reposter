@@ -6,6 +6,7 @@ import Dashboard from "./views/Dashboard.tsx";
 import GuestLayout from "./components/GuestLayout.tsx";
 import PostCard from "./components/PostCard.tsx";
 import AccountSettings from "./views/AccountSettings.tsx";
+import RedirectHandler from "./apiService/RedirectHandler.tsx";
 
 
 const routerConfig: RouteObject[] = [
@@ -44,6 +45,11 @@ const routerConfig: RouteObject[] = [
                 element: <Login/>,
             },
         ],
+    },
+    {
+        // todo: refactoter
+        path: "/auth/callback/linkedin",
+        element: <RedirectHandler/>,
     },
     {
         path: "*",
