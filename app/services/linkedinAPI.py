@@ -16,93 +16,99 @@ class LinkedInAPI:
         self.client_secret = os.getenv('LINKEDIN_CLIENT_SECRET')
         self.redirect_uri = os.getenv('LINKEDIN_REDIRECT_URI')
 
-    def post_linkedin(self, message):
-        print("Hello World", message)
-
-        # headers = {
-        #     'Content-Type': 'application/json',
-        #     'Authorization': f'Bearer {self.access_token}',
-        #     'LinkedIn-Version': '202305',
-        # }
-        #
-        # payload = {
-        #     "author": "urn:li:person:SmvZ3iW1Ma",
-        #     "commentary": message,
-        #     "visibility": "PUBLIC",
-        #     "distribution": {
-        #         "feedDistribution": "MAIN_FEED",
-        #         "targetEntities": [],
-        #         "thirdPartyDistributionChannels": []
-        #     },
-        #     "lifecycleState": "PUBLISHED",
-        #     "isReshareDisabledByAuthor": False
-        # }
-        #
-        # response = requests.post('https://api.linkedin.com/v2/posts', headers=headers, json=payload)
-        #
-        # if response.status_code == 201:
-        #     print("Posted successfully on LinkedIn!")
-        # else:
-        #     print(f"Failed to post on LinkedIn. Status code: {response.status_code}, Response: {response.text}")
-
-    def check_access_token(self):
-        headers = {
-            'Content-Type': 'application/x-www-form-urlencoded'
-        }
-
-        data = {
-            'client_id': self.client_id,
-            'client_secret': self.client_secret,
-            'token': self.access_token
-        }
-
-        response = requests.post('https://www.linkedin.com/oauth/v2/introspectToken', headers=headers, data=data)
-        expires_at_utc_in_seconds = response.json()['expires_at']
-        now_utc_in_seconds = int(datetime.now(timezone.utc).timestamp())
-
-        # If the token is about to expire in 5 days, get a new access token
-        if expires_at_utc_in_seconds - now_utc_in_seconds < 432000:
-            self.get_access_token()
-
-    def get_access_token(self):
-        headers = {
-            'Content-Type': 'application/x-www-form-urlencoded',
-        }
-
-        data = {
-            'grant_type': 'authorization_code',
-            'code': 'YOUR_CODE',
-            'client_id': self.client_id,
-            'client_secret': self.client_secret,
-            'redirect_uri': 'YOUR_REDIRECT'
-        }
-
-        response = requests.post('https://www.linkedin.com/oauth/v2/accessToken', headers=headers, data=data)
-        if response.status_code == 200:
-            self.access_token = response.json()['access_token']
-            print("Access token obtained successfully.")
-        else:
-            print(f"Failed to obtain access token. Status code: {response.status_code}, Response: {response.text}")
+    # def post_linkedin(self, message):
+    #
+    #     headers = {
+    #         'Content-Type': 'application/json',
+    #         'Authorization': f'Bearer {self.access_token}',
+    #         'LinkedIn-Version': '202305',
+    #     }
+    #
+    #     payload = {
+    #         "author": "urn:li:person:SmvZ3iW1Ma",
+    #         "commentary": message,
+    #         "visibility": "PUBLIC",
+    #         "distribution": {
+    #             "feedDistribution": "MAIN_FEED",
+    #             "targetEntities": [],
+    #             "thirdPartyDistributionChannels": []
+    #         },
+    #         "lifecycleState": "PUBLISHED",
+    #         "isReshareDisabledByAuthor": False
+    #     }
+    #
+    #     response = requests.post('https://api.linkedin.com/v2/posts', headers=headers, json=payload)
+    #
+    #     if response.status_code == 201:
+    #         print("Posted successfully on LinkedIn!")
+    #     else:
+    #         print(f"Failed to post on LinkedIn. Status code: {response.status_code}, Response: {response.text}")
+    #
+    # def check_access_token(self):
+    #     headers = {
+    #         'Content-Type': 'application/x-www-form-urlencoded'
+    #     }
+    #
+    #     data = {
+    #         'client_id': self.client_id,
+    #         'client_secret': self.client_secret,
+    #         'token': self.access_token
+    #     }
+    #
+    #     response = requests.post('https://www.linkedin.com/oauth/v2/introspectToken', headers=headers, data=data)
+    #     expires_at_utc_in_seconds = response.json()['expires_at']
+    #     now_utc_in_seconds = int(datetime.now(timezone.utc).timestamp())
+    #
+    #     # If the token is about to expire in 5 days, get a new access token
+    #     if expires_at_utc_in_seconds - now_utc_in_seconds < 432000:
+    #         self.get_access_token()
+    #
+    # def get_access_token(self):
+    #     headers = {
+    #         'Content-Type': 'application/x-www-form-urlencoded',
+    #     }
+    #
+    #     data = {
+    #         'grant_type': 'authorization_code',
+    #         'code': 'YOUR_CODE',
+    #         'client_id': self.client_id,
+    #         'client_secret': self.client_secret,
+    #         'redirect_uri': 'YOUR_REDIRECT'
+    #     }
+    #
+    #     response = requests.post('https://www.linkedin.com/oauth/v2/accessToken', headers=headers, data=data)
+    #     if response.status_code == 200:
+    #         self.access_token = response.json()['access_token']
+    #         print("Access token obtained successfully.")
+    #     else:
+    #         print(f"Failed to obtain access token. Status code: {response.status_code}, Response: {response.text}")
 
     def request_code(self):
         headers = {
             'Content-Type': 'application/x-www-form-urlencoded',
         }
 
+
+
         data = {
             'response_type': 'code',
-            'client_id': self.client_id,
-            'redirect_uri': 'YOUR_REDIRECT',
-            'state': 'YOUR_STATE',
-            'scope': 'YOUR_SCOPE'
+            'client_id': '78rjltjnrm86ny',
+            'redirect_uri': 'https://45wvito15a.execute-api.us-east-1.amazonaws.com/',
+            'state': 'foobar',
+            'scope': 'openid%20profile%20w_member_social%20email'
         }
 
-        response = requests.get('https://www.linkedin.com/oauth/v2/authorization', headers=headers, data=data)
-        if response.status_code == 200:
+        response = requests.get('https://www.linkedin.com/oauth/v2/authorization?response_type=code&client_id=78rjltjnrm86ny&redirect_uri=https%3A%2F%2F45wvito15a.execute-api.us-east-1.amazonaws.com%2F&state=foobar&scope=openid%20profile%20w_member_social%20email', headers=headers)
+        if response.status_code == 303:
             print("Authorization code requested successfully.")
+            print("response.text", response)
         else:
             print(
                 f"Failed to request authorization code. Status code: {response.status_code}, Response: {response.text}")
+
+        # return 'https://www.linkedin.com/oauth/v2/authorization?response_type=code&client_id=78rjltjnrm86ny&redirect_uri=https%3A%2F%2F45wvito15a.execute-api.us-east-1.amazonaws.com%2F&state=foobar&scope=openid%20profile%20w_member_social%20email'
+        return 'https://www.linkedin.com/oauth/v2/authorization?response_type=code&client_id=78rjltjnrm86ny&redirect_uri=https%3A%2F%2F45wvito15a.execute-api.us-east-1.amazonaws.com%2F&state=foobar&scope=openid%20profile%20w_member_social%20email'
+
 
 # Example usage
 # linkedin_api = LinkedInAPI()

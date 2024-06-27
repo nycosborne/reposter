@@ -6,6 +6,7 @@ import {FontAwesomeIcon} from '@fortawesome/react-fontawesome';
 import {faLinkSlash} from "@fortawesome/free-solid-svg-icons";
 import {IconProp} from '@fortawesome/fontawesome-svg-core';
 import {useNavigate, useLocation} from "react-router-dom";
+import axiosClient from "../axios-clinet.tsx";
 
 const SocialAccountsCard = (): React.JSX.Element => {
     const {user} = useAppContext();
@@ -20,7 +21,18 @@ const SocialAccountsCard = (): React.JSX.Element => {
         if(location.pathname != "/account")
             navigate("/account");
 
-         console.log('location.pathname', location.pathname)
+         // console.log('location.pathname', location.pathname)
+    }
+
+    const linkedinLink = () => {
+        axiosClient.get('/services/request_code/')
+            .then((response) => {
+                // setUser(response.data);
+                console.log('response', response);
+            })
+            .catch((error) => {
+                console.log('error', error);
+            });
     }
 
     const renderSocialAccount = (
@@ -35,7 +47,8 @@ const SocialAccountsCard = (): React.JSX.Element => {
                 <FontAwesomeIcon icon={icon} size="2x" color={isLinked ? color : "gray"}/>
                 {!isLinked && (
                     <div className="link-icon-container">
-                        <FontAwesomeIcon icon={faLinkSlash} size="sm" color="black"/>
+                        <FontAwesomeIcon icon={faLinkSlash} size="sm" color="black" onClick={linkedinLink}/>
+                        <a href={'https://www.linkedin.com/oauth/v2/authorization?response_type=code&client_id=78rjltjnrm86ny&redirect_uri=https%3A%2F%2F45wvito15a.execute-api.us-east-1.amazonaws.com%2F&state=foobar&scope=openid%20profile%20w_member_social%20email'}>Link Account</a>
                     </div>
                 )}
                 <p>{accountStatusText} is: {isLinked ? "Linked" : "Unlinked"}</p>
