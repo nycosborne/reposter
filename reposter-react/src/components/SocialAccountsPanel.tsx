@@ -24,8 +24,8 @@ linkedinAuthUrl.search = new URLSearchParams({
   state: state,
   scope: scope
 }).toString();
-
-console.log('linkedinAuthUrl', linkedinAuthUrl.toString());
+const linkedinAuthUrlString = linkedinAuthUrl.toString();
+console.log('linkedinAuthUrl', linkedinAuthUrlString);
 
 const SocialAccountsCard = (): React.JSX.Element => {
     const {user} = useAppContext();
@@ -67,7 +67,7 @@ const SocialAccountsCard = (): React.JSX.Element => {
                 {!isLinked && (
                     <div className="link-icon-container">
                         <FontAwesomeIcon icon={faLinkSlash} size="sm" color="black" onClick={linkedinLink}/>
-                        <a href={linkedinAuthUrl}>Link Account</a>
+                        <a href={linkedinAuthUrlString}>Link Account</a>
                     </div>
                 )}
                 <p>{accountStatusText} is: {isLinked ? "Linked" : "Unlinked"}</p>

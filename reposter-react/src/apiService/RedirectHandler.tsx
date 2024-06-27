@@ -4,10 +4,11 @@ import {useNavigate, useLocation} from 'react-router-dom';
 const RedirectHandler: React.FC = () => {
     const location = useLocation();
     const navigate = useNavigate();
+    let authorizationCode: string | null = '';
 
     useEffect(() => {
         const searchParams = new URLSearchParams(location.search);
-        const authorizationCode = searchParams.get('code');
+        authorizationCode = searchParams.get('code');
 
         if (authorizationCode) {
             // Handle the authorization code (e.g., send it to your backend for further processing)
@@ -23,7 +24,7 @@ const RedirectHandler: React.FC = () => {
     return (
         <div>
             <h2>auth/callbacking</h2>
-            <h2>Processing...</h2>
+            {authorizationCode ? <h2>CODE!!!: {authorizationCode}</h2> : <h2>Processing...</h2>}
         </div>
     );
 };
