@@ -4,7 +4,6 @@ import {User, ContextProviderProps } from "../components/types/types.tsx"
 
 export const ContextProvider: React.FC<ContextProviderProps> = ({children}) => {
     const [user, _setUser] = React.useState<User | null>(null);
-    // const [token, _setToken] = React.useState<string | null>('ACCESS_TOKEN');
     const [token, _setToken] = React.useState<string | null>(localStorage.getItem('ACCESS_TOKEN'));
 
     const setToken = (token: string | null) => {
