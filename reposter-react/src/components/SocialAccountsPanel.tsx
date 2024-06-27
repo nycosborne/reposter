@@ -8,6 +8,17 @@ import {IconProp} from '@fortawesome/fontawesome-svg-core';
 import {useNavigate, useLocation} from "react-router-dom";
 import axiosClient from "../axios-clinet.tsx";
 
+
+// Define the parameters for the LinkedIn OAuth 2.0 request
+const clientId = import.meta.env.VITE_CLIENT_ID;
+const redirectUri = encodeURIComponent(import.meta.env.VITE_REDIRECT_URI);
+const state = import.meta.env.VITE_STATE;
+const scope = encodeURIComponent(import.meta.env.VITE_SCOPE);
+
+console.log('clientId', import.meta.env.VITE_CLIENT_ID);
+// Construct the LinkedIn OAuth 2.0 authorization URL
+const linkedinAuthUrl = `https://www.linkedin.com/oauth/v2/authorization?response_type=code&client_id=${clientId}&redirect_uri=${redirectUri}&state=${state}&scope=${scope}`;
+
 const SocialAccountsCard = (): React.JSX.Element => {
     const {user} = useAppContext();
     const navigate = useNavigate();
@@ -48,7 +59,7 @@ const SocialAccountsCard = (): React.JSX.Element => {
                 {!isLinked && (
                     <div className="link-icon-container">
                         <FontAwesomeIcon icon={faLinkSlash} size="sm" color="black" onClick={linkedinLink}/>
-                        <a href={'https://www.linkedin.com/oauth/v2/authorization?response_type=code&client_id=78rjltjnrm86ny&redirect_uri=https%3A%2F%2F45wvito15a.execute-api.us-east-1.amazonaws.com%2F&state=foobar&scope=openid%20profile%20w_member_social%20email'}>Link Account</a>
+                        <a href={linkedinAuthUrl}>Link Account</a>
                     </div>
                 )}
                 <p>{accountStatusText} is: {isLinked ? "Linked" : "Unlinked"}</p>
