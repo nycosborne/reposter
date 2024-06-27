@@ -24,6 +24,7 @@ const RedirectHandler: React.FC = () => {
     return (
         <div>
             <h2>auth/callbacking</h2>
+            {/*todo this need to be state*/}
             {authorizationCode ? <h2>CODE!!!: {authorizationCode}</h2> : <h2>Processing...</h2>}
         </div>
     );
