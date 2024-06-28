@@ -3,8 +3,10 @@ import axios, {AxiosRequestConfig, AxiosResponse, AxiosError} from "axios";
 const axiosClient = axios.create({
     baseURL: `${import.meta.env.VITE_API_BASE_URL}/api`,
     headers: {
-        'Content-Type': 'multipart/form-data',
-        'Accept': 'application/json'
+        // 'Content-Type': 'multipart/form-data',
+        'Content-Type': 'application/x-www-form-urlencoded',
+        'Accept': 'application/json',
+
     }
 });
 

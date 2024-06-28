@@ -17,12 +17,13 @@ const scope = import.meta.env.VITE_SCOPE;
 
 // Construct the LinkedIn OAuth 2.0 authorization URL
 const linkedinAuthUrl = new URL('https://www.linkedin.com/oauth/v2/authorization');
+
 linkedinAuthUrl.search = new URLSearchParams({
-  response_type: 'code',
-  client_id: clientId,
-  redirect_uri: redirectUri,
-  state: state,
-  scope: scope
+    response_type: 'code',
+    client_id: clientId,
+    redirect_uri: redirectUri,
+    state: state,
+    scope: scope
 }).toString();
 
 const linkedinAuthUrlString = linkedinAuthUrl.toString();
@@ -39,10 +40,10 @@ const SocialAccountsCard = (): React.JSX.Element => {
     }
 
     const handleRedditLink = () => {
-        if(location.pathname != "/account")
+        if (location.pathname != "/account")
             navigate("/account");
 
-         // console.log('location.pathname', location.pathname)
+        // console.log('location.pathname', location.pathname)
     }
 
     const linkedinLink = () => {

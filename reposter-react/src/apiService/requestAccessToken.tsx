@@ -5,10 +5,10 @@ interface AccessTokenResponse {
     expires_in: number;
 }
 
-const getAccessToken = async (code: string): Promise<AccessTokenResponse> => {
-    const headers = {
-        'Content-Type': 'application/x-www-form-urlencoded',
-    };
+const getAndSetAccessToken = async (code: string): Promise<AccessTokenResponse> => {
+    // const headers = {
+    //     'Content-Type': 'application/x-www-form-urlencoded',
+    // };
 
     const params = new URLSearchParams();
     params.append('grant_type', 'authorization_code');
@@ -20,10 +20,13 @@ const getAccessToken = async (code: string): Promise<AccessTokenResponse> => {
     try {
         const response = await axiosClient.post<AccessTokenResponse>(
             'https://www.linkedin.com/oauth/v2/accessToken',
-            params,
-            { headers, baseURL: '' }  // Override baseURL for this request
+            params
+            // ,
+            // {headers, baseURL: 'http://localhost:3000'}  // Override baseURL for this request
         );
-        console.log('Access Token Response:', response.data);
+        console.log('Access Token Response LINKEDIN_ACCESS_TOKE!!!!!:', response.data);
+        // todo: must encrypt the code before sending it to the backend
+        localStorage.setItem('LINKEDIN_ACCESS_TOKE', response.data.access_token);
         return response.data;
     } catch (error) {
         console.error('Error requesting access token:', error);
@@ -31,4 +34,4 @@ const getAccessToken = async (code: string): Promise<AccessTokenResponse> => {
     }
 };
 
-export default getAccessToken;
+export default getAndSetAccessToken;
