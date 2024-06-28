@@ -16,9 +16,6 @@ from rest_framework.permissions import AllowAny
 
 from core.models import SocialAccounts
 from services import serializers as servicesSerializers
-from services import linkedinAPI
-# Create your views here.
-
 
 class SocialAccountsViewSet(viewsets.ModelViewSet):
     """Manage social accounts in the database."""
@@ -40,12 +37,16 @@ class SocialAccountsViewSet(viewsets.ModelViewSet):
 
 
 class ReceivingCode(APIView):
-    def get(self, request, format=None):
-        # linkedin_api = LinkedInAPI()
-        # request_code = linkedin_api.request_code()
-        print(f"Request method: {request.method}")
-        print(f"Request data: {request.data}")
-        print(f"GET parameters: {request.GET}")
-        print(f"POST data: {request.POST}")
+    serializer_class = servicesSerializers.CodeSerializer
+    # TODO: commented for deving
+    # authentication_classes = [TokenAuthentication]
+    # permission_classes = [IsAuthenticated]
 
-        return Response({"message": 'request_code'})
+    def post(self, request, format=None):
+        serializer = servicesSerializers.CodeSerializer(data=request.data)
+        if serializer.is_valid():
+            serializer.save()
+            print(f"POST data: {request.data}")
+            return Response({"message": "request_code"})
+        else:
+            return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)

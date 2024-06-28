@@ -7,7 +7,7 @@ class LinkedInAPI:
     def __init__(self):
         self.client_id = os.environ.get('CLIENT_ID')
         self.client_secret = os.environ.get('CLIENT_SECRET')
-        self.access_token = os.environ.get('ACCESS_TOKEN')
+        self.linkedin_redirect_uri = os.environ.get('LINKEDIN_REDIRECT_URI')
 
     def post_linkedin(self, message):
         headers = {
@@ -58,6 +58,7 @@ class LinkedInAPI:
     #         print("Token is still valid.")
 
     def get_access_token(self, code):
+
         headers = {
             'Content-Type': 'application/x-www-form-urlencoded',
         }
@@ -67,18 +68,19 @@ class LinkedInAPI:
             'code': code,
             'client_id': self.client_id,
             'client_secret': self.client_secret,
-            'redirect_uri': 'YOUR_REDIRECT'
+            'redirect_uri': self.linkedin_redirect_uri
         }
 
         response = requests.post('https://www.linkedin.com/oauth/v2/accessToken', headers=headers, data=data)
+        print(F"Response TEST !@#!@#!@#!@: {response.text}")
+        print(F"Response!@#!@#!@#!@: {response}")
         if response.status_code == 200:
-            self.access_token = response.json()['access_token']
             print("Access token obtained successfully.")
+            return response.json()['access_token']
         else:
             print(f"Failed to obtain access token. Status code: {response.status_code}, Response: {response.text}")
 
-
 # Example usage
-linkedin_api = LinkedInAPI()
+# linkedin_api = LinkedInAPI()
 # linkedin_api.check_access_token()
 # linkedin_api.post_linkedin('Test API')
