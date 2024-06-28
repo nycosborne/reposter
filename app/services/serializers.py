@@ -33,4 +33,11 @@ class CodeSerializer(serializers.Serializer):
 class UserSocialAccountsSettingsSerializer(serializers.ModelSerializer):
     class Meta:
         model = UserSocialAccountsSettings
-        fields = ['access_token', 'refresh_token', 'scope', 'access_token_expires_at', 'token_type', 'id_token']
+        fields = [
+            'access_token',
+            'refresh_token',
+            'scope',
+            'access_token_expires_at',
+            'token_type',
+            'id_token'
+        ]
