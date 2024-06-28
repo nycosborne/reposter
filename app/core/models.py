@@ -87,11 +87,10 @@ class UserSocialAccountsSettings(models.Model):
     )
     name = models.CharField(max_length=255)
     # todo need to rethink about the status field
-    # They should probably be an Enom field
-    # with values like 'active', 'inactive', 'pending'
-    status = models.BooleanField(default=False)
-    access_token_status = models.CharField(max_length=255, blank=True)
-    access_token_create = models.DateTimeField(default=timezone.now)
+    access_token = models.CharField(max_length=255, blank=True)
+    refresh_token = models.CharField(max_length=255, blank=True)
+    scope = models.CharField(max_length=255, blank=True)
+    access_token_expires_at = models.DateTimeField(default=timezone.now)
     # updated_at = models.DateTimeField(default=timezone.now)
 
     def __str__(self):
