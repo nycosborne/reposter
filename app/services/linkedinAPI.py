@@ -8,40 +8,11 @@ load_dotenv()
 
 class LinkedInAPI:
     def __init__(self):
-        self.client_id = os.environ.get('CLIENT_ID')
-        self.client_secret = os.environ.get('CLIENT_SECRET')
-        self.linkedin_redirect_uri = os.environ.get('LINKEDIN_REDIRECT_URI')
+        self.client_id = os.getenv('CLIENT_ID')
+        self.client_secret = os.getenv('CLIENT_SECRET')
+        self.linkedin_redirect_uri = os.getenv('LINKEDIN_REDIRECT_URI')
 
-    def post_linkedin(self, message):
-        headers = {
-            'Content-Type': 'application/json',
-            'Authorization': f'Bearer {self.access_token}',
-            'LinkedIn-Version': '202305',
-        }
-
-        payload = {
-            "author": "urn:li:person:SmvZ3iW1Ma",
-            "commentary": message,
-            "visibility": "PUBLIC",
-            "distribution": {
-                "feedDistribution": "MAIN_FEED",
-                "targetEntities": [],
-                "thirdPartyDistributionChannels": []
-            },
-            "lifecycleState": "PUBLISHED",
-            "isReshareDisabledByAuthor": False
-        }
-
-        response = requests.post('https://api.linkedin.com/v2/posts',
-                                 headers=headers,
-                                 json=payload)
-
-        if response.status_code == 201:
-            print("Posted successfully on LinkedIn!")
-        else:
-            print(f"Failed to post on LinkedIn. Status code: "
-                  f"{response.status_code}, Response: {response.text}")
-
+    # load_dotenv
 
     def get_access_token(self, code):
 
