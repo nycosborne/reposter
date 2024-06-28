@@ -12,6 +12,7 @@ const RedirectHandler: React.FC = () => {
         setAuthorizationCode(code);
 
         if (code) {
+
             // Handle the authorization code (e.g., send it to your backend for further processing)
             console.log('Authorization Code:', code);
 
