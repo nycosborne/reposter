@@ -9,7 +9,7 @@ const getAndSetAccessToken = async (code: string): Promise<AccessTokenResponse> 
         code: code
     };
 
-    let message :string = '';
+    const message :string = '';
     axiosClient.post('/services/passcode/', payload)
         .then((response) => {
 
