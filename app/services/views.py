@@ -46,7 +46,6 @@ class ReceivingCode(APIView):
         serializer = servicesSerializers.CodeSerializer(data=request.data)
         if serializer.is_valid():
             serializer.save()
-            print(f"POST data: {request.data}")
             return Response({"message": "request_code"})
         else:
             return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
