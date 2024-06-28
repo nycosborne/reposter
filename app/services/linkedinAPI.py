@@ -1,13 +1,16 @@
 import os
 import requests
 from datetime import datetime, timezone
+from dotenv import load_dotenv
+
+load_dotenv()
 
 
 class LinkedInAPI:
     def __init__(self):
-        self.client_id = os.environ.get('CLIENT_ID')
-        self.client_secret = os.environ.get('CLIENT_SECRET')
-        self.access_token = os.environ.get('ACCESS_TOKEN')
+        self.client_id = os.getenv('CLIENT_ID')
+        self.client_secret = os.getenv('CLIENT_SECRET')
+        self.access_token = os.getenv('ACCESS_TOKEN')
 
     def post_linkedin(self, message):
         headers = {
@@ -53,16 +56,18 @@ class LinkedInAPI:
 
         # If the token is about to expire in 5 days, get a new access token
         if expires_at_utc_in_seconds - now_utc_in_seconds < 432000:
-            self.get_access_token()
+            print("Token is about to expire, please obtain a new access token.")
+        else:
+            print("Token is still valid.")
 
-    def get_access_token(self):
+    def get_access_token(self, code):
         headers = {
             'Content-Type': 'application/x-www-form-urlencoded',
         }
 
         data = {
             'grant_type': 'authorization_code',
-            'code': 'YOUR_CODE',
+            'code': code,
             'client_id': self.client_id,
             'client_secret': self.client_secret,
             'redirect_uri': 'YOUR_REDIRECT'
@@ -74,26 +79,6 @@ class LinkedInAPI:
             print("Access token obtained successfully.")
         else:
             print(f"Failed to obtain access token. Status code: {response.status_code}, Response: {response.text}")
-
-    def request_code(self):
-        headers = {
-            'Content-Type': 'application/x-www-form-urlencoded',
-        }
-
-        data = {
-            'response_type': 'code',
-            'client_id': self.client_id,
-            'redirect_uri': 'YOUR_REDIRECT',
-            'state': 'YOUR_STATE',
-            'scope': 'YOUR_SCOPE'
-        }
-
-        response = requests.get('https://www.linkedin.com/oauth/v2/authorization', headers=headers, data=data)
-        if response.status_code == 200:
-            print("Authorization code requested successfully.")
-        else:
-            print(
-                f"Failed to request authorization code. Status code: {response.status_code}, Response: {response.text}")
 
 
 # Example usage
