@@ -10,7 +10,6 @@ const getAndSetAccessToken = async (code: string): Promise<AccessTokenResponse> 
     };
 
     const message :string = '';
-
     axiosClient.post('/services/passcode/', payload)
         .then((response) => {
             // todo - set the access token in the local storage OR NOT
