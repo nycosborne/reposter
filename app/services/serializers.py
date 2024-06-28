@@ -4,7 +4,7 @@ Serializers for the api end points of the post
 
 from rest_framework import serializers
 
-from core.models import SocialAccounts
+from core.models import SocialAccounts, UserSocialAccountsSettings
 from services.linkedinAPI import LinkedInAPI  # Modify this line
 
 
@@ -28,3 +28,9 @@ class CodeSerializer(serializers.Serializer):
         linkedin_api = LinkedInAPI()
         code = self.validated_data['code']
         linkedin_api.get_access_token(code)
+
+
+class UserSocialAccountsSettingsSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = UserSocialAccountsSettings
+        fields = ['access_token', 'refresh_token', 'scope', 'access_token_expires_at', 'token_type', 'id_token']

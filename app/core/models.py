@@ -91,6 +91,8 @@ class UserSocialAccountsSettings(models.Model):
     refresh_token = models.CharField(max_length=255, blank=True)
     scope = models.CharField(max_length=255, blank=True)
     access_token_expires_at = models.DateTimeField(default=timezone.now)
+    token_type = models.CharField(max_length=255, blank=True)
+    id_token = models.CharField(max_length=255, blank=True)
     # updated_at = models.DateTimeField(default=timezone.now)
 
     def __str__(self):

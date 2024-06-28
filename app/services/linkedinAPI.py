@@ -2,6 +2,8 @@ import os
 import requests
 from datetime import datetime, timezone
 from dotenv import load_dotenv
+from services import serializers as servicesSerializers
+
 
 load_dotenv()
 
@@ -75,11 +77,14 @@ class LinkedInAPI:
         }
 
         response = requests.post('https://www.linkedin.com/oauth/v2/accessToken', headers=headers, data=data)
-        print(F"Response TEST !@#!@#!@#!@: {response.text}")
-        print(F"Response!@#!@#!@#!@: {response}")
         if response.status_code == 200:
             print("Access token obtained successfully.")
-            return response.json()['access_token']
+            access_token_data = response.json()
+            serializer = servicesSerializers.UserSocialAccountsSettingsSerializer(data=access_token_data)
+            if serializer.is_valid():
+                serializer.save()
+            else:
+                print(f"Failed to save access token data. Errors: {serializer.errors}")
         else:
             print(f"Failed to obtain access token. Status code: {response.status_code}, Response: {response.text}")
 
