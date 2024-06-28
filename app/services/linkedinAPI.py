@@ -1,16 +1,13 @@
 import os
 import requests
 from datetime import datetime, timezone
-from dotenv import load_dotenv
-
-load_dotenv()
 
 
 class LinkedInAPI:
     def __init__(self):
-        self.client_id = os.getenv('CLIENT_ID')
-        self.client_secret = os.getenv('CLIENT_SECRET')
-        self.access_token = os.getenv('ACCESS_TOKEN')
+        self.client_id = os.environ.get('CLIENT_ID')
+        self.client_secret = os.environ.get('CLIENT_SECRET')
+        self.access_token = os.environ.get('ACCESS_TOKEN')
 
     def post_linkedin(self, message):
         headers = {
@@ -39,26 +36,26 @@ class LinkedInAPI:
         else:
             print(f"Failed to post on LinkedIn. Status code: {response.status_code}, Response: {response.text}")
 
-    def check_access_token(self):
-        headers = {
-            'Content-Type': 'application/x-www-form-urlencoded'
-        }
-
-        data = {
-            'client_id': self.client_id,
-            'client_secret': self.client_secret,
-            'token': self.access_token
-        }
-
-        response = requests.post('https://www.linkedin.com/oauth/v2/introspectToken', headers=headers, data=data)
-        expires_at_utc_in_seconds = response.json()['expires_at']
-        now_utc_in_seconds = int(datetime.now(timezone.utc).timestamp())
-
-        # If the token is about to expire in 5 days, get a new access token
-        if expires_at_utc_in_seconds - now_utc_in_seconds < 432000:
-            print("Token is about to expire, please obtain a new access token.")
-        else:
-            print("Token is still valid.")
+    # def check_access_token(self):
+    #     headers = {
+    #         'Content-Type': 'application/x-www-form-urlencoded'
+    #     }
+    #
+    #     data = {
+    #         'client_id': self.client_id,
+    #         'client_secret': self.client_secret,
+    #         'token': self.access_token
+    #     }
+    #
+    #     response = requests.post('https://www.linkedin.com/oauth/v2/introspectToken', headers=headers, data=data)
+    #     expires_at_utc_in_seconds = response.json()['expires_at']
+    #     now_utc_in_seconds = int(datetime.now(timezone.utc).timestamp())
+    #
+    #     # If the token is about to expire in 5 days, get a new access token
+    #     if expires_at_utc_in_seconds - now_utc_in_seconds < 432000:
+    #         print("Token is about to expire, please obtain a new access token.")
+    #     else:
+    #         print("Token is still valid.")
 
     def get_access_token(self, code):
         headers = {
@@ -83,5 +80,5 @@ class LinkedInAPI:
 
 # Example usage
 linkedin_api = LinkedInAPI()
-linkedin_api.check_access_token()
-linkedin_api.post_linkedin('Test API')
+# linkedin_api.check_access_token()
+# linkedin_api.post_linkedin('Test API')

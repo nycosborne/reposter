@@ -14,5 +14,5 @@ app_name = 'services'
 
 urlpatterns = [
     path('', include(router.urls)),
-    path('servicecall/', views.ReceivingCode.as_view(), name='servicecall'),
+    path('passcode/', views.ReceivingCode.as_view(), name='passcode'),
 ]

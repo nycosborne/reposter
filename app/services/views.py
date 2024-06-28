@@ -16,9 +16,7 @@ from rest_framework.permissions import AllowAny
 
 from core.models import SocialAccounts
 from services import serializers as servicesSerializers
-# from services import LinkedInAPI
-
-
+from services import linkedinAPI
 # Create your views here.
 
 
@@ -43,7 +41,11 @@ class SocialAccountsViewSet(viewsets.ModelViewSet):
 
 class ReceivingCode(APIView):
     def get(self, request, format=None):
-        linkedin_api = LinkedInAPI()
-        request_code = linkedin_api.request_code()
+        # linkedin_api = LinkedInAPI()
+        # request_code = linkedin_api.request_code()
+        print(f"Request method: {request.method}")
+        print(f"Request data: {request.data}")
+        print(f"GET parameters: {request.GET}")
+        print(f"POST data: {request.POST}")
 
-        return Response({"message": request_code})
+        return Response({"message": 'request_code'})
