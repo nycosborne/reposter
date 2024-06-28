@@ -16,7 +16,7 @@ from rest_framework.permissions import AllowAny
 
 from core.models import SocialAccounts
 from services import serializers as servicesSerializers
-from .linkedinAPI import LinkedInAPI
+from linkedinAPI import LinkedInAPI
 
 
 # Create your views here.
