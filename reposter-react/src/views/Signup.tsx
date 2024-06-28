@@ -1,6 +1,6 @@
 import React, {createRef, RefObject} from 'react'
 import {Button, Form} from "react-bootstrap";
-import axiosClient from "../axios-clinet.tsx";
+import axiosClient from "../axios-client.tsx";
 import {Navigate} from 'react-router-dom';
 
 

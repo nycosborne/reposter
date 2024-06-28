@@ -10,6 +10,10 @@ jobs:
   test-lint:
     name: Test and Lint
     runs-on: ubuntu-latest
+    env:
+      CLIENT_ID: ${{ secrets.CLIENT_ID }}
+      CLIENT_SECRET: ${{ secrets.CLIENT_SECRET }}
+      LINKEDIN_REDIRECT_URI: ${{ secrets.LINKEDIN_REDIRECT_URI }}
     steps:
       - name: Login to dockerHub
         uses: docker/login-action@v2

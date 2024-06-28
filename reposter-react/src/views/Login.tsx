@@ -1,7 +1,7 @@
 import React, {createRef, RefObject} from 'react';
 import {Form, Button} from "react-bootstrap";
 import useAppContext from "../context/UseAppContext.tsx";
-import axiosClient from "../axios-clinet.tsx";
+import axiosClient from "../axios-client.tsx";
 import {AxiosResponse} from "axios";
 import {Link} from "react-router-dom";
 

@@ -1,20 +1,6 @@
 import React, {createContext} from "react";
+import { StateContextProps } from "../components/types/types";
 
-
-interface User {
-    first_name: string;
-    last_name: string;
-    email: string;
-    linkedin: boolean;
-    reddit: boolean;
-}
-
-interface StateContextProps {
-    user: User,
-    setUser: (user: User | null) => void;
-    token: string | null;
-    setToken: (token: string | null) => void;
-}
 
 const defaultState: StateContextProps = {
     user: {

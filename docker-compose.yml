@@ -23,6 +23,9 @@ services:
       - DB_USER=app_db_user
       - DB_PASSWORD=app_db_password
       - DEBUG=1
+      - CLIENT_ID=${CLIENT_ID}
+      - CLIENT_SECRET=${CLIENT_SECRET}
+      - LINKEDIN_REDIRECT_URI=${LINKEDIN_REDIRECT_URI}
     depends_on:
       - db
 

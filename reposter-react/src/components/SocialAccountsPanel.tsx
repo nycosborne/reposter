@@ -6,7 +6,7 @@ import {FontAwesomeIcon} from '@fortawesome/react-fontawesome';
 import {faLinkSlash} from "@fortawesome/free-solid-svg-icons";
 import {IconProp} from '@fortawesome/fontawesome-svg-core';
 import {useNavigate, useLocation} from "react-router-dom";
-import axiosClient from "../axios-clinet.tsx";
+import axiosClient from "../axios-client.tsx";
 
 
 // Define the parameters for the LinkedIn OAuth 2.0 request
@@ -17,14 +17,17 @@ const scope = import.meta.env.VITE_SCOPE;
 
 // Construct the LinkedIn OAuth 2.0 authorization URL
 const linkedinAuthUrl = new URL('https://www.linkedin.com/oauth/v2/authorization');
+
 linkedinAuthUrl.search = new URLSearchParams({
-  response_type: 'code',
-  client_id: clientId,
-  redirect_uri: redirectUri,
-  state: state,
-  scope: scope
+    response_type: 'code',
+    client_id: clientId,
+    redirect_uri: redirectUri,
+    state: state,
+    scope: scope
 }).toString();
+
 const linkedinAuthUrlString = linkedinAuthUrl.toString();
+
 console.log('linkedinAuthUrl', linkedinAuthUrlString);
 
 const SocialAccountsCard = (): React.JSX.Element => {
@@ -37,10 +40,10 @@ const SocialAccountsCard = (): React.JSX.Element => {
     }
 
     const handleRedditLink = () => {
-        if(location.pathname != "/account")
+        if (location.pathname != "/account")
             navigate("/account");
 
-         // console.log('location.pathname', location.pathname)
+        // console.log('location.pathname', location.pathname)
     }
 
     const linkedinLink = () => {

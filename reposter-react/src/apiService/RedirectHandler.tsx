@@ -1,5 +1,6 @@
-import React, {useEffect, useState} from 'react';
-import {useNavigate, useLocation} from 'react-router-dom';
+import React, { useEffect, useState } from 'react';
+import { useNavigate, useLocation } from 'react-router-dom';
+import getAndSetAccessToken from './requestAccessToken';
 
 const RedirectHandler: React.FC = () => {
     const location = useLocation();
@@ -9,23 +10,30 @@ const RedirectHandler: React.FC = () => {
     useEffect(() => {
         const searchParams = new URLSearchParams(location.search);
         const code = searchParams.get('code');
-        setAuthorizationCode(code);
 
-        if (code) {
-            // Handle the authorization code (e.g., send it to your backend for further processing)
+        if (authorizationCode != null && code !== null) {
+            setAuthorizationCode(code);
             console.log('Authorization Code:', code);
+            console.log('Authorization CodeState:', authorizationCode);
 
-            // Optionally, navigate to a different page or perform some other action
-            // navigate('/some-other-page');
+            getAndSetAccessToken(code)
+                .then((data) => {
+                    console.log('Access Token:', data);
+                    // Redirect to the dashboard after successfully getting the access token
+                    navigate('/dashboard');
+                })
+                .catch((error) => {
+                    console.error('Error:', error);
+                });
         } else {
             console.error('Authorization code not found');
         }
-    }, [location, navigate]);
+    }, [location, navigate, authorizationCode]);
 
     return (
         <div>
             <h2>auth/callbacking</h2>
-            {authorizationCode ? <h2>CODE!!!: {authorizationCode}</h2> : <h2>Processing...</h2>}
+            {authorizationCode ? <h2>CODE!!!</h2> : <h2>Processing...</h2>}
         </div>
     );
 };
