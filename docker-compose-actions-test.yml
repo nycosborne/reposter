@@ -28,6 +28,8 @@ services:
       - LINKEDIN_REDIRECT_URI=${LINKEDIN_REDIRECT_URI}
     depends_on:
       - db
+    env_file:
+      - .env
 
   node-frontend:
     container_name: node-frontend
