@@ -8,14 +8,19 @@ load_dotenv()
 
 
 class LinkedInAPI:
-    def __init__(self):
+    def __init__(self, user, request):
         self.client_id = os.getenv('CLIENT_ID')
         self.client_secret = os.getenv('CLIENT_SECRET')
         self.linkedin_redirect_uri = os.getenv('LINKEDIN_REDIRECT_URI')
+        self.user = user
+        self.request = request
 
     # load_dotenv
 
     def get_access_token(self, code):
+        print(f"Getting access token for code: {code}!!! "
+              f"user ID: {self.user.id}, "
+              f"request: {self.request}")
 
         headers = {
             'Content-Type': 'application/x-www-form-urlencoded',
@@ -35,14 +40,12 @@ class LinkedInAPI:
         )
 
         if response.status_code == 200:
-            supermodel = get_user_model()
-            user = supermodel.objects.get(username='username')
             print(f"Access token obtained successfully.")
             access_token_data = response.json()
             print(f"Response: {access_token_data}")
             serializer = (
                 servicesSerializers.
-                UserSocialAccountsSettingsSerializer(user=user, data=access_token_data))
+                UserSocialAccountsSettingsSerializer(user=self.user, data=access_token_data))
             if serializer.is_valid():
                 serializer.save()
             else:
