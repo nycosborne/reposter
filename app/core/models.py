@@ -87,7 +87,7 @@ class UserSocialAccountsSettings(models.Model):
     )
     name = models.CharField(max_length=255)
     # todo need to rethink about the status field
-    access_token = models.CharField(max_length=255, blank=True)
+    access_token = models.TextField(blank=True)
     refresh_token = models.CharField(max_length=255, blank=True)
     scope = models.CharField(max_length=255, blank=True)
     access_token_expires_at = models.DateTimeField(default=timezone.now)

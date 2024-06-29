@@ -35,9 +35,11 @@ class UserSocialAccountsSettingsSerializer(serializers.ModelSerializer):
         model = UserSocialAccountsSettings
         fields = [
             'access_token',
+            'access_token_expires_at',
             'refresh_token',
             'scope',
-            'access_token_expires_at',
             'token_type',
             'id_token'
         ]
+
+

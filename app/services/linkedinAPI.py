@@ -16,6 +16,7 @@ class LinkedInAPI:
 
     def get_access_token(self, code):
 
+
         headers = {
             'Content-Type': 'application/x-www-form-urlencoded',
         }
@@ -32,9 +33,11 @@ class LinkedInAPI:
             'https://www.linkedin.com/oauth/v2/accessToken',
             headers=headers, data=data
         )
+
         if response.status_code == 200:
-            print("Access token obtained successfully.")
+            print(f"Access token obtained successfully.")
             access_token_data = response.json()
+            print(f"Response: {access_token_data}")
             serializer = (
                 servicesSerializers.
                 UserSocialAccountsSettingsSerializer(data=access_token_data))
