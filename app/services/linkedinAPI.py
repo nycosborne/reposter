@@ -2,6 +2,7 @@ import os
 import requests
 from dotenv import load_dotenv
 from services import serializers as servicesSerializers
+from django.contrib.auth import get_user_model
 
 load_dotenv()
 
@@ -15,7 +16,6 @@ class LinkedInAPI:
     # load_dotenv
 
     def get_access_token(self, code):
-
 
         headers = {
             'Content-Type': 'application/x-www-form-urlencoded',
@@ -35,12 +35,14 @@ class LinkedInAPI:
         )
 
         if response.status_code == 200:
+            supermodel = get_user_model()
+            user = supermodel.objects.get(username='username')
             print(f"Access token obtained successfully.")
             access_token_data = response.json()
             print(f"Response: {access_token_data}")
             serializer = (
                 servicesSerializers.
-                UserSocialAccountsSettingsSerializer(data=access_token_data))
+                UserSocialAccountsSettingsSerializer(user=user, data=access_token_data))
             if serializer.is_valid():
                 serializer.save()
             else:
