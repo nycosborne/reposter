@@ -6,6 +6,7 @@ import {Button} from "react-bootstrap";
 import React, {useEffect} from "react";
 import useAppContext from "../../context/UseAppContext.tsx";
 import axiosClient from "../../axios-client.tsx";
+import {Link} from "react-router-dom";
 
 function NavBar() {
 
@@ -33,7 +34,7 @@ function NavBar() {
     return (
         <Navbar expand="lg" bg="dark" className="bg-body-tertiary">
             <Container fluid>
-                <Navbar.Brand href="#home">React-Bootstrap</Navbar.Brand>
+                <Navbar.Brand as={Link} to="/">React-Bootstrap</Navbar.Brand>
                 <Navbar.Toggle aria-controls="basic-navbar-nav"/>
                 {user &&
                     <Navbar.Text>
@@ -42,8 +43,8 @@ function NavBar() {
                 }
                 <Navbar.Collapse id="basic-navbar-nav">
                     <Nav className="me-auto">
-                        <Nav.Link href="#home">Home</Nav.Link>
-                        <Nav.Link href="#link">Link</Nav.Link>
+                        <Nav.Link as={Link} to="/">Home</Nav.Link>
+                        <Nav.Link as={Link} to="/compose">Compose Post</Nav.Link>
                     </Nav>
                     <Nav className="ml-auto">
                         <Button variant="outline-success" onClick={logout}>Logout</Button>
