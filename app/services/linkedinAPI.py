@@ -2,7 +2,6 @@ import os
 import requests
 from dotenv import load_dotenv
 from services import serializers as servicesSerializers
-from django.contrib.auth import get_user_model
 
 load_dotenv()
 
@@ -37,19 +36,25 @@ class LinkedInAPI:
         )
 
         if response.status_code == 200:
-            print(f"Access token obtained successfully.")
+            print("Access token obtained successfully.")
             access_token_data = response.json()
             access_token_data['user'] = self.user.id
             access_token_data['name'] = 'linkedin'
-            serializer = servicesSerializers.UserSocialAccountsSettingsSerializer(data=access_token_data)
+            serializer = (
+                servicesSerializers.UserSocialAccountsSettingsSerializer(
+                    data=access_token_data))
+
             if serializer.is_valid():
                 serializer.save()
                 self.user.linkedin = True
             else:
-                print(f"Failed to save access token data. Errors: {serializer.errors}")
+                print(f"Failed to save access token data. "
+                      f"Errors: {serializer.errors}")
                 self.user.linkedin = False
         else:
-            print(f"Failed to obtain access token. Status code: {response.status_code}, Response: {response.text}")
+            print(f"Failed to obtain access token. "
+                  f"Status code: {response.status_code},"
+                  f" Response: {response.text}")
             self.user.linkedin = False
         # Update user social account status
         self.user.save()

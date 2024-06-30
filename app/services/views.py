@@ -38,11 +38,10 @@ class ReceivingCode(APIView):
     permission_classes = [IsAuthenticated]
 
     def post(self, request, format=None):
-        serializer = self.serializer_class(data=request.data, context={'request': request})
+        serializer = self.serializer_class(data=request.data,
+                                           context={'request': request})
         if serializer.is_valid():
             serializer.save()
-            return Response({"message": "request_code"}, status=status.HTTP_201_CREATED)
+            return Response({"message": "request_code"},
+                            status=status.HTTP_201_CREATED)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
-
-
-
