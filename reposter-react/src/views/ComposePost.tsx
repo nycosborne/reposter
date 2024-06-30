@@ -29,6 +29,7 @@ const ComposePost: React.FC = () => {
             // Get request with post_slug and arg
             axiosClient.get(`/post/post/${post_id}`)
                 .then(({data}) => {
+                    console.log('data', data);
                     setPost(data);
                 })
         }, [])
@@ -48,10 +49,11 @@ const ComposePost: React.FC = () => {
 
     const handleSubmit = async (event: React.FormEvent) => {
         event.preventDefault();
-        const payload: { title: string, description: string, content: string } = {
+        const payload: { title: string, description: string, content: string, status: string } = {
             title: post.title ? post.title : "",
             description: post.description ? post.description : "",
             content: post.content ? post.content : "",
+            status: post.status ? post.status : "DRAFT"
         };
 
         if (post_id) {
@@ -91,7 +93,7 @@ const ComposePost: React.FC = () => {
             })
             .catch((error) => {
                 console.log('error', error);
-                });
+            });
     }
 
     return (
@@ -125,7 +127,6 @@ const ComposePost: React.FC = () => {
             <Button variant="primary" type="submit">
                 Save Post
             </Button>
-            // Button that posts saved post
             <Button variant="primary" onClick={postToSocialMedia}>
                 Post To Social Media
             </Button>
