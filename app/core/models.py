@@ -111,6 +111,7 @@ class Tag(models.Model):
         return self.name
 
 
+# TODO: rename this
 class SocialAccounts(models.Model):
     """SocialAccounts model."""
     name = models.CharField(max_length=255)

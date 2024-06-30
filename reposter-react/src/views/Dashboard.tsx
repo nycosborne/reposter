@@ -12,7 +12,7 @@ const Dashboard: () => React.JSX.Element = () => {
                     <PostPanel/>
                 </Col>
                 <Col>
-                    <SocialAccountsPanel/>
+                    <SocialAccountsPanel showLink={false}/>
                 </Col>
             </Row>
         </Container>

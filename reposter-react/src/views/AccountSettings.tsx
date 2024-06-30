@@ -9,7 +9,7 @@ const AccountSettings: () => React.JSX.Element = () => {
             <Row>
                 <Col>
                     AccountSettings
-                    <SocialAccountsPanel/>
+                    <SocialAccountsPanel showLink={true}/>
                 </Col>
             </Row>
         </Container>
