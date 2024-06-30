@@ -42,20 +42,16 @@ class LinkedInAPI:
         if response.status_code == 200:
             print(f"Access token obtained successfully.")
             access_token_data = response.json()
-            print(f"Response: {access_token_data}")
-            serializer = (
-                servicesSerializers.
-                UserSocialAccountsSettingsSerializer(user=self.user, data=access_token_data))
+            print(f"Response!@#!@#!#: {access_token_data}")
+            print(f"User ID121234231424: {self.user.id}")
+            access_token_data['user'] = self.user.id
+            serializer = servicesSerializers.UserSocialAccountsSettingsSerializer(data=access_token_data)
             if serializer.is_valid():
                 serializer.save()
             else:
-                print(
-                    f"Failed to save access token data. Errors: "
-                    f"{serializer.errors}")
+                print(f"Failed to save access token data. Errors: {serializer.errors}")
         else:
-            print(f"Failed to obtain access token. Status code: "
-                  f"{response.status_code}, "
-                  f"Response: {response.text}")
+            print(f"Failed to obtain access token. Status code: {response.status_code}, Response: {response.text}")
 
 # Example usage
 # linkedin_api = LinkedInAPI()

@@ -36,6 +36,7 @@ class UserSocialAccountsSettingsSerializer(serializers.ModelSerializer):
     class Meta:
         model = UserSocialAccountsSettings
         fields = [
+            'user',
             'access_token',
             'access_token_expires_at',
             'refresh_token',
