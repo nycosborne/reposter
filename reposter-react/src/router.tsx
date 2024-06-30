@@ -33,7 +33,11 @@ const routerConfig: RouteObject[] = [
             },
             {
                 path: "/compose",
-                element: <ComposePost/>,
+                element: <ComposePost key={'new'}/>,
+            },
+            {
+                path: "/compose/:post_id",
+                element: <ComposePost key={'update'}/>,
             },
         ],
     },

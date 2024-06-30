@@ -72,6 +72,16 @@ class Post(models.Model):
     link = models.CharField(max_length=255, blank=True)
     tags = models.ManyToManyField('Tag', blank=True)
     soc_accounts = models.ManyToManyField('SocialAccounts', blank=True)
+    POST_STATUS = [
+        ('DRAFT', 'Draft'),
+        ('IN_REVIEW', 'In Review'),
+        ('PUBLISHED', 'Published'),
+    ]
+    status = models.CharField(
+        max_length=10,
+        choices=POST_STATUS,
+        default='DRAFT',
+    )
     image = models.ImageField(null=True, upload_to=post_image_file_path)
 
     def __str__(self):
@@ -117,6 +127,7 @@ class SocialAccounts(models.Model):
     name = models.CharField(max_length=255)
     status = models.BooleanField(default=False)
     created_at = models.DateTimeField(default=timezone.now)
+
     # updated_at = models.DateTimeField(default=timezone.now)
 
     def __str__(self):

@@ -1,45 +1,116 @@
-import React, {useState} from 'react';
+import React, {useEffect, useState} from 'react';
 import {Button, Form} from 'react-bootstrap';
 import axiosClient from "../axios-client.tsx";
+import {useNavigate, useParams} from "react-router-dom";
 
 const ComposePost: React.FC = () => {
-    const [postTitle, setPostTitle] = useState('');
-    const [postDescription, setPostDescription] = useState('');
-    const [postContent, setPostContent] = useState('');
+
+    const navigate = useNavigate();
+
+    interface Post {
+        title: string;
+        description: string;
+        content: string;
+        status: string;
+    }
+
+    const [post, setPost] = useState<Post>(
+        {
+            title: '',
+            description: '',
+            content: '',
+            status: 'DRAFT'
+        }
+    );
+
+    let {post_id} = useParams();
+    if (post_id) {
+        useEffect(() => {
+            // Get request with post_slug and arg
+            axiosClient.get(`/post/post/${post_id}`)
+                .then(({data}) => {
+                    setPost(data);
+                })
+        }, [])
+    }
+
+    const handleTitleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+        setPost(prevState => ({...prevState, title: e.target.value}));
+    };
+
+    const handleDescriptionChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+        setPost(prevState => ({...prevState, description: e.target.value}));
+    };
+
+    const handleContentChange = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
+        setPost(prevState => ({...prevState, content: e.target.value}));
+    };
 
     const handleSubmit = async (event: React.FormEvent) => {
         event.preventDefault();
         const payload: { title: string, description: string, content: string } = {
-            title: postTitle ? postTitle : "",
-            description: postDescription ? postDescription : "",
-            content: postContent ? postContent : "",
+            title: post.title ? post.title : "",
+            description: post.description ? post.description : "",
+            content: post.content ? post.content : "",
+        };
+
+        if (post_id) {
+            axiosClient.put(`/post/post/${post_id}/`, payload)
+                .then((response) => {
+                    console.log('Updated successfully', response);
+                    navigate(`/compose/${response.data.id}`);
+                })
+                .catch((error) => {
+                    console.log('error', error);
+                });
+            return;
+        }
+        axiosClient.post('/post/post/', payload)
+            .then((response) => {
+                console.log('Posted successfully', response);
+                navigate(`/compose/${response.data.id}`);
+            })
+            .catch((error) => {
+                console.log('error', error);
+            });
+
+    };
+
+    const postToSocialMedia = async (event: React.FormEvent) => {
+        event.preventDefault();
+        const payload: { title: string, description: string, content: string } = {
+            title: post.title ? post.title : "",
+            description: post.description ? post.description : "",
+            content: post.content ? post.content : "",
         };
 
         axiosClient.post('/post/post/', payload)
             .then((response) => {
                 console.log('Posted successfully', response);
+                navigate(`/compose/${response.data.id}`);
             })
             .catch((error) => {
                 console.log('error', error);
-            });
-    };
+                });
+    }
 
     return (
         <Form onSubmit={handleSubmit}>
+            <Form.Label>Status : {post.status}</Form.Label>
             <Form.Group className="mb-3">
                 <Form.Label>Title</Form.Label>
                 <Form.Control
                     type="text"
-                    value={postTitle}
-                    onChange={e => setPostTitle(e.target.value)}
+                    value={post.title}
+                    onChange={handleTitleChange}
                 />
             </Form.Group>
             <Form.Group className="mb-3">
                 <Form.Label>Description</Form.Label>
                 <Form.Control
                     type="text"
-                    value={postDescription}
-                    onChange={e => setPostDescription(e.target.value)}
+                    value={post.description}
+                    onChange={handleDescriptionChange}
                 />
             </Form.Group>
             <Form.Group className="mb-3">
@@ -47,12 +118,16 @@ const ComposePost: React.FC = () => {
                 <Form.Control
                     as="textarea"
                     rows={3}
-                    value={postContent}
-                    onChange={e => setPostContent(e.target.value)}
+                    value={post.content}
+                    onChange={handleContentChange}
                 />
             </Form.Group>
             <Button variant="primary" type="submit">
-                Submit
+                Save Post
+            </Button>
+            // Button that posts saved post
+            <Button variant="primary" onClick={postToSocialMedia}>
+                Post To Social Media
             </Button>
         </Form>
     );
