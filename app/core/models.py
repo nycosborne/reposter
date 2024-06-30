@@ -87,13 +87,13 @@ class UserSocialAccountsSettings(models.Model):
     )
     name = models.CharField(max_length=255)
     # todo need to rethink about the status field
-    access_token = models.CharField(max_length=255, blank=True)
+    access_token = models.TextField(blank=True)
     refresh_token = models.CharField(max_length=255, blank=True)
     scope = models.CharField(max_length=255, blank=True)
     access_token_expires_at = models.DateTimeField(default=timezone.now)
     token_type = models.CharField(max_length=255, blank=True)
-    id_token = models.CharField(max_length=255, blank=True)
-    # updated_at = models.DateTimeField(default=timezone.now)
+    id_token = models.TextField(blank=True)
+    updated_at = models.DateTimeField(default=timezone.now)
 
     def __str__(self):
         return self.user.name
@@ -111,6 +111,7 @@ class Tag(models.Model):
         return self.name
 
 
+# TODO: rename this
 class SocialAccounts(models.Model):
     """SocialAccounts model."""
     name = models.CharField(max_length=255)

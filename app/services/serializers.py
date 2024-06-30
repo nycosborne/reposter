@@ -25,7 +25,9 @@ class CodeSerializer(serializers.Serializer):
     code = serializers.CharField(required=True)
 
     def save(self):
-        linkedin_api = LinkedInAPI()
+        auth_user = self.context['request'].user
+        request = self.context['request']
+        linkedin_api = LinkedInAPI(auth_user, request)
         code = self.validated_data['code']
         linkedin_api.get_access_token(code)
 
@@ -34,10 +36,11 @@ class UserSocialAccountsSettingsSerializer(serializers.ModelSerializer):
     class Meta:
         model = UserSocialAccountsSettings
         fields = [
+            'user',
             'access_token',
+            'access_token_expires_at',
             'refresh_token',
             'scope',
-            'access_token_expires_at',
             'token_type',
             'id_token'
         ]

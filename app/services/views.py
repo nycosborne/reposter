@@ -33,14 +33,15 @@ class SocialAccountsViewSet(viewsets.ModelViewSet):
 class ReceivingCode(APIView):
     serializer_class = servicesSerializers.CodeSerializer
 
-    # TODO: commented for deving
-    # authentication_classes = [TokenAuthentication]
-    # permission_classes = [IsAuthenticated]
+    # TODO: commented for deving`
+    authentication_classes = [TokenAuthentication]
+    permission_classes = [IsAuthenticated]
+
     def post(self, request, format=None):
-        serializer = servicesSerializers.CodeSerializer(data=request.data)
+        serializer = self.serializer_class(data=request.data,
+                                           context={'request': request})
         if serializer.is_valid():
             serializer.save()
-            return Response({"message": "request_code"})
-        else:
-            return Response(serializer.errors,
-                            status=status.HTTP_400_BAD_REQUEST)
+            return Response({"message": "request_code"},
+                            status=status.HTTP_201_CREATED)
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
