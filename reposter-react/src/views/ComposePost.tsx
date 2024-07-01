@@ -23,17 +23,19 @@ const ComposePost: React.FC = () => {
         }
     );
 
-    let {post_id} = useParams();
-    if (post_id) {
-        useEffect(() => {
+    const {post_id} = useParams();
+
+    useEffect(() => {
+        if (post_id) {
             // Get request with post_slug and arg
             axiosClient.get(`/post/post/${post_id}`)
                 .then(({data}) => {
                     console.log('data', data);
                     setPost(data);
                 })
-        }, [])
-    }
+        }
+    })
+
 
     const handleTitleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
         setPost(prevState => ({...prevState, title: e.target.value}));

@@ -25,7 +25,7 @@ const RedirectHandler: React.FC = () => {
         } else {
             console.error('Authorization code not found');
         }
-    }, []);
+    });
 
     return (
         <div>

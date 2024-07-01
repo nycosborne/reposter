@@ -18,24 +18,25 @@ class LinkedInAPI:
     # load_dotenv
 
     def post_to_linkedin(self, data):
-        access_token = self.user.social_accounts_settings.get(name='linkedin').access_token
+        access_token = self.user.social_accounts_settings.get(
+            name='linkedin').access_token
         headers = {
             'Content-Type': 'application/json',
             'Authorization': f'Bearer {access_token}'
         }
 
-        payload = {
-            "author": "urn:li:person:SmvZ3iW1Ma",
-            "commentary": data['content'],
-            "visibility": "PUBLIC",
-            "distribution": {
-                "feedDistribution": "MAIN_FEED",
-                "targetEntities": [],
-                "thirdPartyDistributionChannels": []
-            },
-            "lifecycleState": "PUBLISHED",
-            "isReshareDisabledByAuthor": False
-        }
+        # payload = {
+        #     "author": "urn:li:person:SmvZ3iW1Ma",
+        #     "commentary": data['content'],
+        #     "visibility": "PUBLIC",
+        #     "distribution": {
+        #         "feedDistribution": "MAIN_FEED",
+        #         "targetEntities": [],
+        #         "thirdPartyDistributionChannels": []
+        #     },
+        #     "lifecycleState": "PUBLISHED",
+        #     "isReshareDisabledByAuthor": False
+        # }
 
         response = requests.post(
             'https://api.linkedin.com/v2/shares',
@@ -49,10 +50,7 @@ class LinkedInAPI:
                   f"Status code: {response.status_code},"
                   f" Response: {response.text}")
 
-    # GET https://api.linkedin.com/v2/userinfo
     def _get_user_info(self, access_token):
-        # access_token = self.user.usersocialaccountssettings_set.latest('updated_at').access_token
-        # print(f"Access token: {access_token}")
         headers = {
             'Authorization': f'Bearer {access_token}'
         }
@@ -63,10 +61,12 @@ class LinkedInAPI:
         linkedin_user_info = response.json()
         linkedin_user_info['user'] = self.user.id
         locale = linkedin_user_info['locale']
-        linkedin_user_info['locale'] = f"{locale['language']}-{locale['country']}"
+        linkedin_user_info['locale'] = \
+            f"{locale['language']}-{locale['country']}"
         print(f"Linkedin user info: {linkedin_user_info}")
         serializer = (
-            servicesSerializers.LinkedinUserInfoSerializer(data=linkedin_user_info))
+            servicesSerializers.LinkedinUserInfoSerializer(
+                data=linkedin_user_info))
         if serializer.is_valid():
             serializer.save()
         else:

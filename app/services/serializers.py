@@ -4,7 +4,9 @@ Serializers for the api end points of the post
 
 from rest_framework import serializers
 
-from core.models import SocialAccounts, UserSocialAccountsSettings, LinkedinUserInfo
+from core.models import (SocialAccounts,
+                         UserSocialAccountsSettings,
+                         LinkedinUserInfo)
 from services.linkedinAPI import LinkedInAPI
 
 
