@@ -10,7 +10,7 @@ from services.linkedinAPI import LinkedInAPI
 
 from core.models import SocialAccounts
 from services import serializers as servicesSerializers
-from post.serializers import serializers as postSerializers
+from post import serializers as postSerializers
 
 
 class SocialAccountsViewSet(viewsets.ModelViewSet):
@@ -50,15 +50,18 @@ class ReceivingCode(APIView):
 
 
 class PostToSocialAccounts(APIView):
-    serializer_class = postSerializers
+    print("PostToSocialAccounts")
+    serializer_class = postSerializers.PostSerializer
     authentication_classes = [TokenAuthentication]
     permission_classes = [IsAuthenticated]
 
     def post(self, request):
+        print("PostToSocialAccounts.post")
         serializer = self.serializer_class(data=request.data)
         if serializer.is_valid():
-            linkedin_api = LinkedInAPI(request.user, request)
-            linkedin_api.post_to_linkedin(serializer.data)
+            print("PostToSocialAccounts.post.serializer.is_valid")
+            # linkedin_api = LinkedInAPI(request.user, request)
+            # linkedin_api.post_to_linkedin(serializer.data)
             return Response({"message": "post"},
                             status=status.HTTP_201_CREATED)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)

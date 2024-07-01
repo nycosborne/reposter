@@ -23,8 +23,8 @@ const ComposePost: React.FC = () => {
         }
     );
 
-    const {post_id} = useParams();
 
+    const {post_id} = useParams();
     useEffect(() => {
         if (post_id) {
             // Get request with post_slug and arg
@@ -34,8 +34,7 @@ const ComposePost: React.FC = () => {
                     setPost(data);
                 })
         }
-    })
-
+    }, [post_id]);
 
     const handleTitleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
         setPost(prevState => ({...prevState, title: e.target.value}));
@@ -91,10 +90,10 @@ const ComposePost: React.FC = () => {
         axiosClient.post('/services/soc-post/', payload)
             .then((response) => {
                 console.log('Posted successfully', response);
-                navigate(`/compose/${response.data.id}`);
+                navigate(`/compose/${post_id}`);
             })
             .catch((error) => {
-                console.log('error', error);
+                console.log('error 2@#$@#$@#$', error);
             });
     }
 
