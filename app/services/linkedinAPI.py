@@ -50,9 +50,9 @@ class LinkedInAPI:
                   f" Response: {response.text}")
 
     # GET https://api.linkedin.com/v2/userinfo
-    def _get_user_info(self):
-        access_token = self.user.social_accounts_settings.get(name='linkedin').access_token
-        print(f"Access token: {access_token}")
+    def _get_user_info(self, access_token):
+        # access_token = self.user.usersocialaccountssettings_set.latest('updated_at').access_token
+        # print(f"Access token: {access_token}")
         headers = {
             'Authorization': f'Bearer {access_token}'
         }
@@ -62,11 +62,16 @@ class LinkedInAPI:
         )
         linkedin_user_info = response.json()
         linkedin_user_info['user'] = self.user.id
+        locale = linkedin_user_info['locale']
+        linkedin_user_info['locale'] = f"{locale['language']}-{locale['country']}"
         print(f"Linkedin user info: {linkedin_user_info}")
         serializer = (
             servicesSerializers.LinkedinUserInfoSerializer(data=linkedin_user_info))
         if serializer.is_valid():
             serializer.save()
+        else:
+            print(f"Failed to save linkedin user info. "
+                  f"Errors: {serializer.errors}")
 
     def get_access_token(self, code):
 
@@ -100,7 +105,8 @@ class LinkedInAPI:
                 self.user.linkedin = True
                 self.user.save()
                 serializer.save()
-                self._get_user_info()
+                print(f"Saved: {access_token_data}")
+                self._get_user_info(access_token_data['access_token'])
             else:
                 print(f"Failed to save access token data. "
                       f"Errors: {serializer.errors}")
