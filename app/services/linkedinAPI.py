@@ -17,14 +17,11 @@ class LinkedInAPI:
 
     # load_dotenv
 
-    def post_to_linkedin(self, data):
-        # access_token = self.user.social_accounts_settings.order_by('-created_at').first().access_token
+    def post_to_linkedin(self, data, post_id):
+
         access_token = self.user.usersocialaccountssettings_set.order_by('-created_at').first().access_token
         sub = self.user.linkedinuserinfo_set.order_by('-created_at').first().sub
-        print(f"Access token: {access_token}")
-        print(f"Sub: {sub}")
-        print(f"Data: {data}")
-        print(f"Data: {data['content']}")
+
         headers = {
             'Content-Type': 'application/json',
             'Authorization': f'Bearer {access_token}'
@@ -53,7 +50,10 @@ class LinkedInAPI:
 
         if response.status_code == 201:
             print("Post shared successfully.")
-            # //qw
+            post = self.user.post_set.get(id=post_id)
+            post.status = 'PUBLISHED'
+            post.save()
+            print(f"Updating post ID: {post} to PUBLISHED.")
         else:
             print(f"Failed to share post. "
                   f"Status code: {response.status_code},"
