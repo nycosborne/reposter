@@ -47,7 +47,7 @@ const ComposePost: React.FC = () => {
         setPost(prevState => ({...prevState, content: e.target.value}));
     };
 
-    const handleSubmit = async (event: React.FormEvent) => {
+    const savePost = async (event: React.FormEvent) => {
         event.preventDefault();
         const payload: { title: string, description: string, content: string, status: string } = {
             title: post.title ? post.title : "",
@@ -86,7 +86,7 @@ const ComposePost: React.FC = () => {
             content: post.content ? post.content : "",
         };
 
-        axiosClient.post('/post/post/', payload)
+        axiosClient.post('/services/soc-post/', payload)
             .then((response) => {
                 console.log('Posted successfully', response);
                 navigate(`/compose/${response.data.id}`);
@@ -97,7 +97,7 @@ const ComposePost: React.FC = () => {
     }
 
     return (
-        <Form onSubmit={handleSubmit}>
+        <Form onSubmit={savePost}>
             <Form.Label>Status : {post.status}</Form.Label>
             <Form.Group className="mb-3">
                 <Form.Label>Title</Form.Label>

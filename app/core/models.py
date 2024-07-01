@@ -89,6 +89,7 @@ class Post(models.Model):
 
 
 # User Social Accounts setting
+# TODO: rename this table to token_details
 class UserSocialAccountsSettings(models.Model):
     """UserSocialAccounts model."""
     user = models.ForeignKey(
@@ -109,6 +110,25 @@ class UserSocialAccountsSettings(models.Model):
         return self.user.name
 
 
+class LinkedinUserInfo(models.Model):
+    """Linkedin User info model."""
+    user = models.ForeignKey(
+        settings.AUTH_USER_MODEL,
+        on_delete=models.CASCADE
+    )
+    sub = models.CharField(max_length=255)
+    name = models.TextField(blank=True)
+    given_name = models.CharField(max_length=255, blank=True)
+    family_name = models.CharField(max_length=255, blank=True)
+    picture = models.TextField(blank=True)
+    locale = models.CharField(max_length=255, blank=True)
+    email = models.CharField(max_length=255, blank=True)
+    email_verified = models.BooleanField(default=False)
+
+    def __str__(self):
+        return self.name
+
+
 class Tag(models.Model):
     """Tag model."""
     user = models.ForeignKey(
@@ -127,7 +147,6 @@ class SocialAccounts(models.Model):
     name = models.CharField(max_length=255)
     status = models.BooleanField(default=False)
     created_at = models.DateTimeField(default=timezone.now)
-
     # updated_at = models.DateTimeField(default=timezone.now)
 
     def __str__(self):

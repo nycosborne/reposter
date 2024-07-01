@@ -6,9 +6,11 @@ from rest_framework.authentication import TokenAuthentication
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.permissions import IsAdminUser
 from rest_framework.permissions import AllowAny
+from services.linkedinAPI import LinkedInAPI
 
 from core.models import SocialAccounts
 from services import serializers as servicesSerializers
+from post.serializers import serializers as postSerializers
 
 
 class SocialAccountsViewSet(viewsets.ModelViewSet):
@@ -31,17 +33,33 @@ class SocialAccountsViewSet(viewsets.ModelViewSet):
 
 
 class ReceivingCode(APIView):
+    # TODO:Need to research if linkedin_api.get_access_token(code)
+    #  should be called in the serializer or here
     serializer_class = servicesSerializers.CodeSerializer
-
-    # TODO: commented for deving`
     authentication_classes = [TokenAuthentication]
     permission_classes = [IsAuthenticated]
 
-    def post(self, request, format=None):
+    def post(self, request):
         serializer = self.serializer_class(data=request.data,
                                            context={'request': request})
         if serializer.is_valid():
             serializer.save()
             return Response({"message": "request_code"},
+                            status=status.HTTP_201_CREATED)
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+
+class PostToSocialAccounts(APIView):
+    serializer_class = postSerializers
+    authentication_classes = [TokenAuthentication]
+    permission_classes = [IsAuthenticated]
+
+    def post(self, request):
+        serializer = self.serializer_class(data=request.data,
+                                           context={'request': request})
+        if serializer.is_valid():
+            linkedin_api = LinkedInAPI(request.user, request)
+            linkedin_api.post_to_linkedin(serializer.data)
+            return Response({"message": "post"},
                             status=status.HTTP_201_CREATED)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)

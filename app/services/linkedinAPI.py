@@ -11,10 +11,43 @@ class LinkedInAPI:
         self.client_id = os.getenv('CLIENT_ID')
         self.client_secret = os.getenv('CLIENT_SECRET')
         self.linkedin_redirect_uri = os.getenv('LINKEDIN_REDIRECT_URI')
+        # TODO Should be able to get the user from the request
         self.user = user
         self.request = request
 
     # load_dotenv
+
+    def post_to_linkedin(self, data):
+        access_token = self.user.social_accounts_settings.get(name='linkedin').access_token
+        headers = {
+            'Content-Type': 'application/json',
+            'Authorization': f'Bearer {access_token}'
+        }
+
+        payload = {
+            "author": "urn:li:person:SmvZ3iW1Ma",
+            "commentary": data['content'],
+            "visibility": "PUBLIC",
+            "distribution": {
+                "feedDistribution": "MAIN_FEED",
+                "targetEntities": [],
+                "thirdPartyDistributionChannels": []
+            },
+            "lifecycleState": "PUBLISHED",
+            "isReshareDisabledByAuthor": False
+        }
+
+        response = requests.post(
+            'https://api.linkedin.com/v2/shares',
+            headers=headers, json=data
+        )
+
+        if response.status_code == 201:
+            print("Post shared successfully.")
+        else:
+            print(f"Failed to share post. "
+                  f"Status code: {response.status_code},"
+                  f" Response: {response.text}")
 
     def get_access_token(self, code):
 
