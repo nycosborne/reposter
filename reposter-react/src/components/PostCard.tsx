@@ -1,11 +1,13 @@
-import React, { useEffect } from 'react';
-import { useLocation } from 'react-router-dom';
-import { Card, ListGroup, Container } from 'react-bootstrap';
+import React, {useEffect} from 'react';
+import {Card, ListGroup, Container} from 'react-bootstrap';
 import axiosClient from "../axios-client.tsx";
+import { Link } from 'react-router-dom';
 
-const PostCard = (): React.JSX.Element => {
+interface PostCardProps {
+    dashboard?: boolean
+}
 
-    const location = useLocation();
+const PostCard = ({dashboard}: PostCardProps): React.JSX.Element => {
 
     interface Tag {
         id: number;
@@ -42,17 +44,25 @@ const PostCard = (): React.JSX.Element => {
                         Posts
                     </Card.Title>
                     <ListGroup>
-                            {posts.map(item => (
-                                <ListGroup.Item key={item.id}>
-                                <h6>{item.title}</h6>
-                                {location.pathname === '/dashboard' && <p>desc: {item.description}</p>}
-                                {location.pathname === '/posts' && <p>title: {item.content}</p>}
+                        {posts.map(item => (
+                            <ListGroup.Item key={item.id}>
+                                {dashboard ? (
+                                    <Link to={`/compose/${item.id}`}>
+                                        <h6>{item.title}</h6>
+                                        <p>desc: {item.description}</p>
+                                    </Link>
+                                ) : (
+                                    <>
+                                        <h6>{item.title}</h6>
+                                        <p>title: {item.content}</p>
+                                    </>
+                                )}
                                 {item.tags.map(tag => (
                                     <span key={tag.id}>tags: {tag.name}</span>
                                 ))}
                             </ListGroup.Item>
-                            ))}
-                        </ListGroup>
+                        ))}
+                    </ListGroup>
                 </Card.Body>
             </Card>
         </Container>

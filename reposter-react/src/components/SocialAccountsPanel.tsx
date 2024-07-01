@@ -6,7 +6,7 @@ import {FontAwesomeIcon} from '@fortawesome/react-fontawesome';
 import {faLinkSlash} from "@fortawesome/free-solid-svg-icons";
 import {IconProp} from '@fortawesome/fontawesome-svg-core';
 import {useNavigate, useLocation} from "react-router-dom";
-import axiosClient from "../axios-client.tsx";
+// import axiosClient from "../axios-client.tsx";
 
 
 // Define the parameters for the LinkedIn OAuth 2.0 request
@@ -60,17 +60,6 @@ const SocialAccountsPanel = ({showLink}: SocialAccountsCardProps): React.JSX.Ele
             navigate("/account");
     }
 
-    const linkedinLink = () => {
-        axiosClient.get('/services/request_code/')
-            .then((response) => {
-                // setUser(response.data);
-                console.log('response', response);
-            })
-            .catch((error) => {
-                console.log('error', error);
-            });
-    }
-
     const renderSocialAccount = (
         isLinked: boolean,
         icon: IconProp,
@@ -85,9 +74,8 @@ const SocialAccountsPanel = ({showLink}: SocialAccountsCardProps): React.JSX.Ele
                     <FontAwesomeIcon icon={icon} size="2x" color={isLinked ? color : "gray"}/>
                     {!isLinked && (
                         <div className="link-icon-container">
-                            <FontAwesomeIcon icon={faLinkSlash} size="sm" color="black" onClick={linkedinLink}/>
-                        </div>
-                    )}
+                            <FontAwesomeIcon icon={faLinkSlash} size="sm" color="black"/>
+                        </div>)}
                 </Col>
                 <Col>
                     <h5>{accountStatusText}</h5>
@@ -95,8 +83,8 @@ const SocialAccountsPanel = ({showLink}: SocialAccountsCardProps): React.JSX.Ele
                     {showLink && !isLinked && (
                         <a href={userAuthLink}>Link Account</a>
                     )}
-                        {/*todo: here for development*/}
-                        <a href={userAuthLink}>Link Account</a>
+                    {/*todo: here for development*/}
+                    <a href={userAuthLink}>Link Account</a>
                 </Col>
             </Row>
         </ListGroup.Item>

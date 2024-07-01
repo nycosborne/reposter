@@ -8,7 +8,7 @@ const PostPanel = (): React.JSX.Element => {
     return (
         <Row className="dashboard-panel-container">
             <Col>
-                <PostCard/>
+                <PostCard dashboard={true}/>
             </Col>
         </Row>
     );

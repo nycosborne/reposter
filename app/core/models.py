@@ -72,6 +72,16 @@ class Post(models.Model):
     link = models.CharField(max_length=255, blank=True)
     tags = models.ManyToManyField('Tag', blank=True)
     soc_accounts = models.ManyToManyField('SocialAccounts', blank=True)
+    POST_STATUS = [
+        ('DRAFT', 'Draft'),
+        ('IN_REVIEW', 'In Review'),
+        ('PUBLISHED', 'Published'),
+    ]
+    status = models.CharField(
+        max_length=10,
+        choices=POST_STATUS,
+        default='DRAFT',
+    )
     image = models.ImageField(null=True, upload_to=post_image_file_path)
 
     def __str__(self):
@@ -79,6 +89,7 @@ class Post(models.Model):
 
 
 # User Social Accounts setting
+# TODO: rename this table to token_details
 class UserSocialAccountsSettings(models.Model):
     """UserSocialAccounts model."""
     user = models.ForeignKey(
@@ -97,6 +108,25 @@ class UserSocialAccountsSettings(models.Model):
 
     def __str__(self):
         return self.user.name
+
+
+class LinkedinUserInfo(models.Model):
+    """Linkedin User info model."""
+    user = models.ForeignKey(
+        settings.AUTH_USER_MODEL,
+        on_delete=models.CASCADE
+    )
+    sub = models.CharField(max_length=255)
+    name = models.TextField(blank=True)
+    given_name = models.CharField(max_length=255, blank=True)
+    family_name = models.CharField(max_length=255, blank=True)
+    picture = models.TextField(blank=True)
+    locale = models.CharField(max_length=255, blank=True)
+    email = models.CharField(max_length=255, blank=True)
+    email_verified = models.BooleanField(default=False)
+
+    def __str__(self):
+        return self.name
 
 
 class Tag(models.Model):

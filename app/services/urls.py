@@ -15,4 +15,5 @@ app_name = 'services'
 urlpatterns = [
     path('', include(router.urls)),
     path('passcode/', views.ReceivingCode.as_view(), name='passcode'),
+    path('soc-post/', views.PostToSocialAccounts.as_view(), name='post'),
 ]
