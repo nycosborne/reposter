@@ -18,33 +18,42 @@ class LinkedInAPI:
     # load_dotenv
 
     def post_to_linkedin(self, data):
-        access_token = self.user.social_accounts_settings.get(
-            name='linkedin').access_token
+        # access_token = self.user.social_accounts_settings.order_by('-created_at').first().access_token
+        access_token = self.user.usersocialaccountssettings_set.order_by('-created_at').first().access_token
+        sub = self.user.linkedinuserinfo_set.order_by('-created_at').first().sub
+        print(f"Access token: {access_token}")
+        print(f"Sub: {sub}")
+        print(f"Data: {data}")
+        print(f"Data: {data['content']}")
         headers = {
             'Content-Type': 'application/json',
             'Authorization': f'Bearer {access_token}'
         }
 
-        # payload = {
-        #     "author": "urn:li:person:SmvZ3iW1Ma",
-        #     "commentary": data['content'],
-        #     "visibility": "PUBLIC",
-        #     "distribution": {
-        #         "feedDistribution": "MAIN_FEED",
-        #         "targetEntities": [],
-        #         "thirdPartyDistributionChannels": []
-        #     },
-        #     "lifecycleState": "PUBLISHED",
-        #     "isReshareDisabledByAuthor": False
-        # }
+        payload = {
+            "author": f"urn:li:person:{sub}",
+            "lifecycleState": "PUBLISHED",
+            "specificContent": {
+                "com.linkedin.ugc.ShareContent": {
+                    "shareCommentary": {
+                        "text": f"{data['content']}"
+                    },
+                    "shareMediaCategory": "NONE"
+                }
+            },
+            "visibility": {
+                "com.linkedin.ugc.MemberNetworkVisibility": "PUBLIC"
+            }
+        }
 
         response = requests.post(
-            'https://api.linkedin.com/v2/shares',
-            headers=headers, json=data
+            'https://api.linkedin.com/v2/ugcPosts',
+            headers=headers, json=payload
         )
 
         if response.status_code == 201:
             print("Post shared successfully.")
+            # //qw
         else:
             print(f"Failed to share post. "
                   f"Status code: {response.status_code},"

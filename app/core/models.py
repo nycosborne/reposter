@@ -83,6 +83,7 @@ class Post(models.Model):
         default='DRAFT',
     )
     image = models.ImageField(null=True, upload_to=post_image_file_path)
+    created_at = models.DateTimeField(default=timezone.now)
 
     def __str__(self):
         return self.title
@@ -105,6 +106,7 @@ class UserSocialAccountsSettings(models.Model):
     token_type = models.CharField(max_length=255, blank=True)
     id_token = models.TextField(blank=True)
     updated_at = models.DateTimeField(default=timezone.now)
+    created_at = models.DateTimeField(default=timezone.now)
 
     def __str__(self):
         return self.user.name
@@ -124,6 +126,7 @@ class LinkedinUserInfo(models.Model):
     locale = models.CharField(max_length=255, blank=True)
     email = models.CharField(max_length=255, blank=True)
     email_verified = models.BooleanField(default=False)
+    created_at = models.DateTimeField(default=timezone.now)
 
     def __str__(self):
         return self.name

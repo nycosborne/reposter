@@ -81,10 +81,11 @@ const ComposePost: React.FC = () => {
 
     const postToSocialMedia = async (event: React.FormEvent) => {
         event.preventDefault();
-        const payload: { title: string, description: string, content: string } = {
+        const payload: { title: string, description: string, content: string, post_id: string } = {
             title: post.title ? post.title : "",
             description: post.description ? post.description : "",
             content: post.content ? post.content : "",
+            post_id: post_id ? post_id : "",
         };
 
         axiosClient.post('/services/soc-post/', payload)
