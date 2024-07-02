@@ -144,9 +144,15 @@ class Tag(models.Model):
         return self.name
 
 
-# TODO: rename this
+# TODO: rename this to PostSocialAccounts
+# Also would like to rename the name post_id to post
+# but their a conflict to consider
 class SocialAccounts(models.Model):
     """SocialAccounts model."""
+    post_id = models.ForeignKey(
+        Post,
+        on_delete=models.CASCADE
+    )
     name = models.CharField(max_length=255)
     status = models.BooleanField(default=False)
     created_at = models.DateTimeField(default=timezone.now)

@@ -7,6 +7,7 @@ from django.contrib.auth import get_user_model
 from core import models
 from core.models import UserSocialAccountsSettings
 from core.models import LinkedinUserInfo
+from core.models import SocialAccounts
 
 
 # from services.linkedinAPI import LinkedInAPI
@@ -92,6 +93,7 @@ class ModelTests(TestCase):
         )
 
         self.assertEqual(tag.name, 'Test Tag')
+        self.assertEqual(str(tag), 'Test Tag')
 
     @patch('core.models.uuid.uuid4')
     def test_post_file_name_uuid(self, mock_uuid):
@@ -152,3 +154,35 @@ class LinkedinUserInfoIModelTests(TestCase):
         self.assertEqual(self.linkedin_user_info.picture, 'nycosborne.com/ny.jpg')
         self.assertEqual(self.linkedin_user_info.locale, 'ID123')
         self.assertEqual(self.linkedin_user_info.email, 'dan@example.com')
+
+
+class SocialAccountsModelTests(TestCase):
+
+    def setUp(self):
+        self.user = get_user_model().objects.create_user(
+            'testuser@example.com',
+            'test123'
+        )
+
+        self.post = models.Post.objects.create(
+            user=self.user,
+            title='Test Post Title',
+            content='Test Post Content',
+            description='Test Post Description',
+        )
+
+        self.social_account = SocialAccounts.objects.create(
+            post_id=self.post,
+            name='Test Social Account',
+            status=True
+        )
+
+    def test_social_accounts_creation(self):
+        """Test creating a SocialAccounts is successful"""
+        self.assertEqual(self.social_account.name, 'Test Social Account')
+        self.assertEqual(str(self.social_account), 'Test Social Account')
+        self.assertTrue(self.social_account.status)
+
+    def test_social_accounts_str(self):
+        """Test the string representation of SocialAccounts"""
+        self.assertEqual(str(self.social_account), 'Test Social Account')
