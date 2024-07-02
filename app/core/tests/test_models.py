@@ -6,6 +6,10 @@ from django.contrib.auth import get_user_model
 
 from core import models
 from core.models import UserSocialAccountsSettings
+from core.models import LinkedinUserInfo
+
+
+# from services.linkedinAPI import LinkedInAPI
 
 
 def sample_user(
@@ -101,6 +105,7 @@ class ModelTests(TestCase):
 
 
 class UserSocialAccountsSettingsModelTests(TestCase):
+    """Test UserSocialAccountsSettings model"""
 
     def setUp(self):
         self.user = sample_user()
@@ -119,3 +124,31 @@ class UserSocialAccountsSettingsModelTests(TestCase):
         self.assertEqual(str(self.user_social_account_setting), 'LinkedIn')
         self.assertEqual(self.user_social_account_setting.access_token, 'ABC123')
         self.assertEqual(self.user_social_account_setting.user, self.user)
+
+
+class LinkedinUserInfoIModelTests(TestCase):
+    """Test LinkedinUserInfo model"""
+
+    def setUp(self):
+        self.user = sample_user()
+        self.linkedin_user_info = LinkedinUserInfo.objects.create(
+            user=self.user,
+            sub='ABC123',
+            name='XYZ789',
+            given_name='Jim',
+            family_name='Django',
+            picture='nycosborne.com/ny.jpg',
+            locale='ID123',
+            email='dan@example.com',
+            email_verified=False
+        )
+
+    def test_linkedin_user_info_creation(self):
+        """Test creating a LinkedinUserInfo is successful"""
+        self.assertEqual(self.linkedin_user_info.sub, 'ABC123')
+        self.assertEqual(str(self.linkedin_user_info), 'XYZ789')
+        self.assertEqual(self.linkedin_user_info.given_name, 'Jim')
+        self.assertEqual(self.linkedin_user_info.family_name, 'Django')
+        self.assertEqual(self.linkedin_user_info.picture, 'nycosborne.com/ny.jpg')
+        self.assertEqual(self.linkedin_user_info.locale, 'ID123')
+        self.assertEqual(self.linkedin_user_info.email, 'dan@example.com')
