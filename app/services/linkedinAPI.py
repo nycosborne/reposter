@@ -17,38 +17,52 @@ class LinkedInAPI:
 
     # load_dotenv
 
-    def post_to_linkedin(self, data):
-        access_token = self.user.social_accounts_settings.get(
-            name='linkedin').access_token
+    def post_to_linkedin(self, data, post_id):
+
+        access_token = (self.user.
+                        usersocialaccountssettings_set.order_by('-created_at').
+                        first().access_token)
+        sub = (self.user.
+               linkedinuserinfo_set.order_by('-created_at').
+               first().sub)
+
         headers = {
             'Content-Type': 'application/json',
             'Authorization': f'Bearer {access_token}'
         }
 
-        # payload = {
-        #     "author": "urn:li:person:SmvZ3iW1Ma",
-        #     "commentary": data['content'],
-        #     "visibility": "PUBLIC",
-        #     "distribution": {
-        #         "feedDistribution": "MAIN_FEED",
-        #         "targetEntities": [],
-        #         "thirdPartyDistributionChannels": []
-        #     },
-        #     "lifecycleState": "PUBLISHED",
-        #     "isReshareDisabledByAuthor": False
-        # }
+        payload = {
+            "author": f"urn:li:person:{sub}",
+            "lifecycleState": "PUBLISHED",
+            "specificContent": {
+                "com.linkedin.ugc.ShareContent": {
+                    "shareCommentary": {
+                        "text": f"{data['content']}"
+                    },
+                    "shareMediaCategory": "NONE"
+                }
+            },
+            "visibility": {
+                "com.linkedin.ugc.MemberNetworkVisibility": "PUBLIC"
+            }
+        }
 
         response = requests.post(
-            'https://api.linkedin.com/v2/shares',
-            headers=headers, json=data
+            'https://api.linkedin.com/v2/ugcPosts',
+            headers=headers, json=payload
         )
 
         if response.status_code == 201:
             print("Post shared successfully.")
+            post = self.user.post_set.get(id=post_id)
+            post.status = 'PUBLISHED'
+            post.save()
+            return True
         else:
             print(f"Failed to share post. "
                   f"Status code: {response.status_code},"
                   f" Response: {response.text}")
+            return False
 
     def _get_user_info(self, access_token):
         headers = {
