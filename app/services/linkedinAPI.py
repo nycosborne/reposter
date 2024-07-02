@@ -19,8 +19,12 @@ class LinkedInAPI:
 
     def post_to_linkedin(self, data, post_id):
 
-        access_token = self.user.usersocialaccountssettings_set.order_by('-created_at').first().access_token
-        sub = self.user.linkedinuserinfo_set.order_by('-created_at').first().sub
+        access_token = (self.user.
+                        usersocialaccountssettings_set.order_by('-created_at').
+                        first().access_token)
+        sub = (self.user.
+               linkedinuserinfo_set.order_by('-created_at').
+               first().sub)
 
         headers = {
             'Content-Type': 'application/json',
