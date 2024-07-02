@@ -5,12 +5,12 @@ from django.test import TestCase
 from django.contrib.auth import get_user_model
 
 from core import models
+from core.models import UserSocialAccountsSettings
 
 
 def sample_user(
         email='testUser_sample_user@example.com',
-        password='test123'
-):
+        password='test123'):
     """Create a sample user"""
     return get_user_model().objects.create_user(email, password)
 
@@ -21,10 +21,12 @@ class ModelTests(TestCase):
     def test_create_user_with_email_successful(self):
         """Test creating a new user with an email is successful"""
         email = 'test@example.com'
+        first_name = 'Test User'
         password = 'TestPass123'
         user = get_user_model().objects.create_user(
             email=email,
-            password=password
+            password=password,
+            first_name=first_name,
         )
 
         # Check if email is equal to the email we passed in
@@ -74,6 +76,7 @@ class ModelTests(TestCase):
         )
 
         self.assertEqual(post.title, 'Test Post Title')
+        self.assertEqual(str(post), 'Test Post Title')
         self.assertEqual(post.content, 'Test Post Content')
 
     def test_create_tag(self):
@@ -95,3 +98,24 @@ class ModelTests(TestCase):
 
         exp_path = f'uploads/post/{uuid}.jpg'
         self.assertEqual(file_path, exp_path)
+
+
+class UserSocialAccountsSettingsModelTests(TestCase):
+
+    def setUp(self):
+        self.user = sample_user()
+        self.user_social_account_setting = UserSocialAccountsSettings.objects.create(
+            user=self.user,
+            name='LinkedIn',
+            access_token='ABC123',
+            refresh_token='XYZ789',
+            scope='r_liteprofile',
+            token_type='Bearer'
+        )
+
+    def test_user_social_accounts_settings_creation(self):
+        """Test creating a UserSocialAccountsSettings is successful"""
+        self.assertEqual(self.user_social_account_setting.name, 'LinkedIn')
+        self.assertEqual(str(self.user_social_account_setting), 'LinkedIn')
+        self.assertEqual(self.user_social_account_setting.access_token, 'ABC123')
+        self.assertEqual(self.user_social_account_setting.user, self.user)

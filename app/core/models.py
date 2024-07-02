@@ -109,7 +109,7 @@ class UserSocialAccountsSettings(models.Model):
     created_at = models.DateTimeField(default=timezone.now)
 
     def __str__(self):
-        return self.user.name
+        return self.name
 
 
 class LinkedinUserInfo(models.Model):
