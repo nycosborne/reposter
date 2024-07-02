@@ -1,7 +1,6 @@
 import os
 import requests
 from dotenv import load_dotenv
-from services import serializers as servicesSerializers
 
 load_dotenv()
 
@@ -11,11 +10,8 @@ class LinkedInAPI:
         self.client_id = os.getenv('CLIENT_ID')
         self.client_secret = os.getenv('CLIENT_SECRET')
         self.linkedin_redirect_uri = os.getenv('LINKEDIN_REDIRECT_URI')
-        # TODO Should be able to get the user from the request
         self.user = user
         self.request = request
-
-    # load_dotenv
 
     def post_to_linkedin(self, data, post_id):
 
@@ -65,6 +61,10 @@ class LinkedInAPI:
             return False
 
     def _get_user_info(self, access_token):
+        # TODO: need to refactor this
+        # this class should not be rependent on services servicesSerializers
+        from services import serializers as servicesSerializers
+
         headers = {
             'Authorization': f'Bearer {access_token}'
         }
@@ -88,6 +88,8 @@ class LinkedInAPI:
                   f"Errors: {serializer.errors}")
 
     def get_access_token(self, code):
+        # TODO: need to refactor this
+        from services import serializers as servicesSerializers
 
         headers = {
             'Content-Type': 'application/x-www-form-urlencoded',

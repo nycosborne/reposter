@@ -5,12 +5,17 @@ from django.test import TestCase
 from django.contrib.auth import get_user_model
 
 from core import models
+from core.models import UserSocialAccountsSettings
+from core.models import LinkedinUserInfo
+from core.models import SocialAccounts
+
+
+# from services.linkedinAPI import LinkedInAPI
 
 
 def sample_user(
         email='testUser_sample_user@example.com',
-        password='test123'
-):
+        password='test123'):
     """Create a sample user"""
     return get_user_model().objects.create_user(email, password)
 
@@ -21,10 +26,12 @@ class ModelTests(TestCase):
     def test_create_user_with_email_successful(self):
         """Test creating a new user with an email is successful"""
         email = 'test@example.com'
+        first_name = 'Test User'
         password = 'TestPass123'
         user = get_user_model().objects.create_user(
             email=email,
-            password=password
+            password=password,
+            first_name=first_name,
         )
 
         # Check if email is equal to the email we passed in
@@ -74,6 +81,7 @@ class ModelTests(TestCase):
         )
 
         self.assertEqual(post.title, 'Test Post Title')
+        self.assertEqual(str(post), 'Test Post Title')
         self.assertEqual(post.content, 'Test Post Content')
 
     def test_create_tag(self):
@@ -85,6 +93,7 @@ class ModelTests(TestCase):
         )
 
         self.assertEqual(tag.name, 'Test Tag')
+        self.assertEqual(str(tag), 'Test Tag')
 
     @patch('core.models.uuid.uuid4')
     def test_post_file_name_uuid(self, mock_uuid):
@@ -95,3 +104,89 @@ class ModelTests(TestCase):
 
         exp_path = f'uploads/post/{uuid}.jpg'
         self.assertEqual(file_path, exp_path)
+
+
+class UserSocialAccountsSettingsModelTests(TestCase):
+    """Test UserSocialAccountsSettings model"""
+
+    def setUp(self):
+        self.user = sample_user()
+        self.user_social_account_setting = (
+            UserSocialAccountsSettings.objects.create(
+                user=self.user,
+                name='LinkedIn',
+                access_token='ABC123',
+                refresh_token='XYZ789',
+                scope='r_liteprofile',
+                token_type='Bearer'
+            )
+        )
+
+    def test_user_social_accounts_settings_creation(self):
+        """Test creating a UserSocialAccountsSettings is successful"""
+        self.assertEqual(self.user_social_account_setting.name, 'LinkedIn')
+        self.assertEqual(str(self.user_social_account_setting), 'LinkedIn')
+        self.assertEqual(self.user_social_account_setting.access_token,
+                         'ABC123')
+        self.assertEqual(self.user_social_account_setting.user, self.user)
+
+
+class LinkedinUserInfoIModelTests(TestCase):
+    """Test LinkedinUserInfo model"""
+
+    def setUp(self):
+        self.user = sample_user()
+        self.linkedin_user_info = LinkedinUserInfo.objects.create(
+            user=self.user,
+            sub='ABC123',
+            name='XYZ789',
+            given_name='Jim',
+            family_name='Django',
+            picture='nycosborne.com/ny.jpg',
+            locale='ID123',
+            email='dan@example.com',
+            email_verified=False
+        )
+
+    def test_linkedin_user_info_creation(self):
+        """Test creating a LinkedinUserInfo is successful"""
+        self.assertEqual(self.linkedin_user_info.sub, 'ABC123')
+        self.assertEqual(str(self.linkedin_user_info), 'XYZ789')
+        self.assertEqual(self.linkedin_user_info.given_name, 'Jim')
+        self.assertEqual(self.linkedin_user_info.family_name, 'Django')
+        self.assertEqual(self.linkedin_user_info.picture,
+                         'nycosborne.com/ny.jpg')
+        self.assertEqual(self.linkedin_user_info.locale, 'ID123')
+        self.assertEqual(self.linkedin_user_info.email, 'dan@example.com')
+
+
+class SocialAccountsModelTests(TestCase):
+
+    def setUp(self):
+        self.user = get_user_model().objects.create_user(
+            'testuser@example.com',
+            'test123'
+        )
+
+        self.post = models.Post.objects.create(
+            user=self.user,
+            title='Test Post Title',
+            content='Test Post Content',
+            description='Test Post Description',
+        )
+
+        self.social_account = SocialAccounts.objects.create(
+            post_id=self.post,
+            name='Test Social Account',
+            status=True
+        )
+
+    def test_social_accounts_creation(self):
+        """Test creating a SocialAccounts is successful"""
+        self.assertEqual(self.social_account.name, 'Test Social Account')
+        self.assertEqual(str(self.social_account), 'Test Social Account')
+        self.assertTrue(self.social_account.status)
+
+    def test_social_accounts_str(self):
+        """Test the string representation of SocialAccounts"""
+        self.assertEqual(str(self.social_account), 'Test Social Account')
