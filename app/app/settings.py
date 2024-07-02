@@ -66,6 +66,8 @@ MIDDLEWARE = [
 CSRF_TRUSTED_ORIGINS = [
     'http://localhost:3000',
     'http://localhost',
+    'http://ec2-54-163-66-227.compute-1.amazonaws.com',
+    'http://ec2-54-163-66-227.compute-1.amazonaws.com:3000',
     'http://127.0.0.1:3000',
     'http://localhost:8000',
     'http://0.0.0.0:3000',
