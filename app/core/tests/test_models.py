@@ -111,20 +111,23 @@ class UserSocialAccountsSettingsModelTests(TestCase):
 
     def setUp(self):
         self.user = sample_user()
-        self.user_social_account_setting = UserSocialAccountsSettings.objects.create(
-            user=self.user,
-            name='LinkedIn',
-            access_token='ABC123',
-            refresh_token='XYZ789',
-            scope='r_liteprofile',
-            token_type='Bearer'
+        self.user_social_account_setting = (
+            UserSocialAccountsSettings.objects.create(
+                user=self.user,
+                name='LinkedIn',
+                access_token='ABC123',
+                refresh_token='XYZ789',
+                scope='r_liteprofile',
+                token_type='Bearer'
+            )
         )
 
     def test_user_social_accounts_settings_creation(self):
         """Test creating a UserSocialAccountsSettings is successful"""
         self.assertEqual(self.user_social_account_setting.name, 'LinkedIn')
         self.assertEqual(str(self.user_social_account_setting), 'LinkedIn')
-        self.assertEqual(self.user_social_account_setting.access_token, 'ABC123')
+        self.assertEqual(self.user_social_account_setting.access_token,
+                         'ABC123')
         self.assertEqual(self.user_social_account_setting.user, self.user)
 
 
@@ -151,7 +154,8 @@ class LinkedinUserInfoIModelTests(TestCase):
         self.assertEqual(str(self.linkedin_user_info), 'XYZ789')
         self.assertEqual(self.linkedin_user_info.given_name, 'Jim')
         self.assertEqual(self.linkedin_user_info.family_name, 'Django')
-        self.assertEqual(self.linkedin_user_info.picture, 'nycosborne.com/ny.jpg')
+        self.assertEqual(self.linkedin_user_info.picture,
+                         'nycosborne.com/ny.jpg')
         self.assertEqual(self.linkedin_user_info.locale, 'ID123')
         self.assertEqual(self.linkedin_user_info.email, 'dan@example.com')
 
