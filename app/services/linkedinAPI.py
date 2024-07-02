@@ -57,11 +57,12 @@ class LinkedInAPI:
             post = self.user.post_set.get(id=post_id)
             post.status = 'PUBLISHED'
             post.save()
-            print(f"Updating post ID: {post} to PUBLISHED.")
+            return True
         else:
             print(f"Failed to share post. "
                   f"Status code: {response.status_code},"
                   f" Response: {response.text}")
+            return False
 
     def _get_user_info(self, access_token):
         headers = {

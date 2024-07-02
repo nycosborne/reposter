@@ -59,8 +59,14 @@ class PostToSocialAccounts(APIView):
         serializer = self.serializer_class(data=request.data)
         if serializer.is_valid():
             linkedin_api = LinkedInAPI(request.user, request)
-            linkedin_api.post_to_linkedin(serializer.data,
-                                          request.data['post_id'])
-            return Response({"message": "post"},
-                            status=status.HTTP_201_CREATED)
-        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+            posted = linkedin_api.post_to_linkedin(serializer.data,
+                                                   request.data['post_id'])
+            if posted:
+                return Response({
+                    "message": f"post ID: {request.data['post_id']}"
+                               f" Successfully posted to LinkedIn."},
+                    status=status.HTTP_201_CREATED)
+
+        return Response({"message": f"post ID {request.data['post_id']}",
+                         "error": serializer.errors},
+                        status=status.HTTP_400_BAD_REQUEST)
