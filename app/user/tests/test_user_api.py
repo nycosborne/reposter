@@ -12,7 +12,7 @@ ME_URL = reverse('user:me')
 
 
 def create_user(**params):
-    """Helper function to create a user for testing."""
+    """Helper function to create a user for testing"""
     return get_user_model().objects.create_user(**params)
 
 
