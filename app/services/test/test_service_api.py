@@ -1,17 +1,9 @@
 """ Tests for Post API """
-from django.urls import reverse
+# from django.urls import reverse
 from django.test import TestCase
-
-from rest_framework import status
+# from rest_framework import status
 from rest_framework.test import APIClient
-
-import tempfile
-import os
-
-from PIL import Image
-
 from django.contrib.auth import get_user_model
-from core.models import Post, Tag
 
 
 def create_user(**params):
