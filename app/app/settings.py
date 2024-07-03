@@ -164,6 +164,10 @@ SPECTACULAR_SETTINGS = {
 }
 
 # CORS settings
-CORS_ALLOWED_ORIGINS = [
-    os.environ.get('DJANGO_ALLOWED_CORS', 'http://localhost:3000')
-]
+CORS_ALLOWED_ORIGINS = []
+CORS_ALLOWED_ORIGINS.extend(
+    filter(
+        None,
+        os.environ.get('DJANGO_ALLOWED_CORS', '').split(',')
+    )
+)
