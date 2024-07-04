@@ -41,8 +41,9 @@ services:
     volumes:
       - ./reposter-react/src:/apps/reposter-react/src
       - node_modules:/reposter-react/node_modules
-    env_file:
-        - reposter-react/.env
+  # TODO: will need to add env values when I add front end testing
+  #    env_file:
+  #        - reposter-react/.env
 
   db:
     image: postgres:16.2-alpine
