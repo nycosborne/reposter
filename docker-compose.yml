@@ -22,6 +22,8 @@ services:
       - DB_NAME=app_db
       - DB_USER=app_db_user
       - DB_PASSWORD=app_db_password
+      - DJANGO_ALLOWED_CORS=${DJANGO_ALLOWED_CORS}
+      - DJANGO_ALLOWED_HOSTS=${DJANGO_ALLOWED_HOSTS}
       - DEBUG=1
       - CLIENT_ID=${CLIENT_ID}
       - CLIENT_SECRET=${CLIENT_SECRET}
@@ -39,6 +41,9 @@ services:
     volumes:
       - ./reposter-react/src:/apps/reposter-react/src
       - node_modules:/reposter-react/node_modules
+  # TODO: will need to add env values when I add front end testing
+  #    env_file:
+  #        - reposter-react/.env
 
   db:
     image: postgres:16.2-alpine
