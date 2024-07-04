@@ -164,6 +164,12 @@ SPECTACULAR_SETTINGS = {
 }
 
 # # CORS settings
+# CORS_ALLOWED_ORIGINS = [
+#     "http://localhost:3000",
+#     "http://localhost:8000",
+#     "http://localhost:8080",
+#     "http://localhost"
+# ]
 CORS_ALLOWED_ORIGINS = []
 CORS_ALLOWED_ORIGINS.extend(
     filter(
