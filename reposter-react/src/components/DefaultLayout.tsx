@@ -15,7 +15,7 @@ const DefaultLayout = (): React.JSX.Element => {
     return (
         <>
             <Navbar/>
-            <Container>
+            <Container className={'default-layout'}>
                 <Outlet/>
             </Container>
         </>
