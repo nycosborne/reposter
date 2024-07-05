@@ -18,7 +18,7 @@ services:
              python manage.py migrate &&
              python manage.py runserver 0.0.0.0:8000"
     environment:
-      - DB_HOST=host
+      - DB_HOST=db
       - DB_NAME=app_db
       - DB_USER=app_db_user
       - DB_PASSWORD=app_db_password
