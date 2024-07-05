@@ -72,20 +72,27 @@ class LinkedInAPI:
             'https://api.linkedin.com/v2/userinfo',
             headers=headers
         )
-        linkedin_user_info = response.json()
-        linkedin_user_info['user'] = self.user.id
-        locale = linkedin_user_info['locale']
-        linkedin_user_info['locale'] = \
-            f"{locale['language']}-{locale['country']}"
-        print(f"Linkedin user info: {linkedin_user_info}")
-        serializer = (
-            servicesSerializers.LinkedinUserInfoSerializer(
-                data=linkedin_user_info))
-        if serializer.is_valid():
-            serializer.save()
+        print(f"Response: {response.text}")
+
+        if response.status_code == 200:
+            linkedin_user_info = response.json()
+            linkedin_user_info['user'] = self.user.id
+            locale = linkedin_user_info['locale']
+            linkedin_user_info['locale'] = \
+                f"{locale['language']}-{locale['country']}"
+            print(f"Linkedin user info: {linkedin_user_info}")
+            serializer = (
+                servicesSerializers.LinkedinUserInfoSerializer(
+                    data=linkedin_user_info))
+            if serializer.is_valid():
+                serializer.save()
+            else:
+                print(f"Failed to save linkedin user info. "
+                      f"Errors: {serializer.errors}")
         else:
-            print(f"Failed to save linkedin user info. "
-                  f"Errors: {serializer.errors}")
+            print(f"Failed to obtain user info. "
+                  f"Status code: {response.status_code},"
+                  f" Response: {response.text}")
 
     def get_access_token(self, code):
         # TODO: need to refactor this
@@ -113,6 +120,7 @@ class LinkedInAPI:
             access_token_data = response.json()
             access_token_data['user'] = self.user.id
             access_token_data['name'] = 'linkedin'
+            print(f"Access token data!!!: {access_token_data}")
             serializer = (
                 servicesSerializers.UserSocialAccountsSettingsSerializer(
                     data=access_token_data))
@@ -121,7 +129,6 @@ class LinkedInAPI:
                 self.user.linkedin = True
                 self.user.save()
                 serializer.save()
-                print(f"Saved: {access_token_data}")
                 self._get_user_info(access_token_data['access_token'])
             else:
                 print(f"Failed to save access token data. "

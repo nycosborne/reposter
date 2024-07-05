@@ -84,7 +84,9 @@ const SocialAccountsPanel = ({showLink}: SocialAccountsCardProps): React.JSX.Ele
                         <a href={userAuthLink}>Link Account</a>
                     )}
                     {/*todo: here for development*/}
-                    {/*<a href={userAuthLink}>Link Account</a>*/}
+                    {showLink && (
+                        <a href={userAuthLink}>Link Account</a>
+                    )}
                 </Col>
             </Row>
         </ListGroup.Item>
