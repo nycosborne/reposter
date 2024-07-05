@@ -32,21 +32,21 @@ function NavBar() {
 
 
     return (
-        <Navbar expand="lg" bg="dark" className="bg-body-tertiary">
+        <Navbar expand="lg" bg="light" className="bg-body-tertiary">
             <Container fluid>
                 <Navbar.Brand as={Link} to="/">React-Bootstrap</Navbar.Brand>
                 <Navbar.Toggle aria-controls="basic-navbar-nav"/>
-                {user &&
-                    <Navbar.Text>
-                        Hello {user.first_name}
-                    </Navbar.Text>
-                }
                 <Navbar.Collapse id="basic-navbar-nav">
                     <Nav className="me-auto">
                         <Nav.Link as={Link} to="/">Home</Nav.Link>
                         <Nav.Link as={Link} to="/compose">Compose Post</Nav.Link>
                     </Nav>
                     <Nav className="ml-auto">
+                        {user &&
+                            <Navbar.Text>
+                                Hello {user.first_name}
+                            </Navbar.Text>
+                        }
                         <Button variant="outline-success" onClick={logout}>Logout</Button>
                     </Nav>
                 </Navbar.Collapse>

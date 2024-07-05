@@ -6,9 +6,9 @@ import PostCard from "./PostCard.tsx";
 const PostPanel = (): React.JSX.Element => {
 
     return (
-        <Row className="dashboard-panel-container">
+        <Row >
             <Col>
-                <PostCard dashboard={true}/>
+                <PostCard dashboard={true} />
             </Col>
         </Row>
     );

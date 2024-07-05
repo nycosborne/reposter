@@ -39,7 +39,7 @@ const PostCard = ({dashboard}: PostCardProps): React.JSX.Element => {
 
     return (
         <Container>
-            <Card>
+            <Card className="dashboard-panel">
                 <Card.Body>
                     <Card.Title as="h4" className="header">
                         Posts
@@ -57,7 +57,7 @@ const PostCard = ({dashboard}: PostCardProps): React.JSX.Element => {
                                                 </Link>
                                             </Col>
                                             <Col>
-                                                <h4>{item.status}</h4>
+                                                <h5>Status: {item.status}</h5>
                                             </Col>
                                         </Row>
                                     ) : (

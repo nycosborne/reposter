@@ -94,7 +94,7 @@ const SocialAccountsPanel = ({showLink}: SocialAccountsCardProps): React.JSX.Ele
 
     return (
         <Container>
-            <Card>
+            <Card className="dashboard-panel">
                 <Card.Body>
                     <Card.Title as="h4" className="header">
                         Social Accounts Status
