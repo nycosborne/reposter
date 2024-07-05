@@ -166,21 +166,10 @@ SPECTACULAR_SETTINGS = {
 CORS_ALLOW_HEADERS = ['*']
 
 # # CORS settings
-CORS_ALLOWED_ORIGINS = [
-    "http://localhost:3000",
-    "http://localhost:8000",
-    "http://localhost:8080",
-    "http://localhost",
-    "http://ec2-54-163-66-227.compute-1.amazonaws.com:8000",
-    "http://ec2-54-163-66-227.compute-1.amazonaws.com:8080",
-    "http://ec2-54-163-66-227.compute-1.amazonaws.com:3000",
-    "http://ec2-54-163-66-227.compute-1.amazonaws.com:80",
-    "http://ec2-54-163-66-227.compute-1.amazonaws.com"
-]
-# CORS_ALLOWED_ORIGINS = []
-# CORS_ALLOWED_ORIGINS.extend(
-#     filter(
-#         None,
-#         os.environ.get('DJANGO_ALLOWED_CORS', '').split(',')
-#     )
-# )
+CORS_ALLOWED_ORIGINS = []
+CORS_ALLOWED_ORIGINS.extend(
+    filter(
+        None,
+        os.environ.get('DJANGO_ALLOWED_CORS', '').split(',')
+    )
+)
