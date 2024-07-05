@@ -171,12 +171,11 @@ CORS_ALLOWED_ORIGINS = [
     "http://localhost:8000",
     "http://localhost:8080",
     "http://localhost",
-    "http://ec2-54-163-66-227.compute-1.amazonaws.com/",
     "http://ec2-54-163-66-227.compute-1.amazonaws.com:8000",
     "http://ec2-54-163-66-227.compute-1.amazonaws.com:8080",
     "http://ec2-54-163-66-227.compute-1.amazonaws.com:3000",
     "http://ec2-54-163-66-227.compute-1.amazonaws.com:80",
-    "http://ec2-54-163-66-227.compute-1.amazonaws.com",
+    "http://ec2-54-163-66-227.compute-1.amazonaws.com"
 ]
 # CORS_ALLOWED_ORIGINS = []
 # CORS_ALLOWED_ORIGINS.extend(
