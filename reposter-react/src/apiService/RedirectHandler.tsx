@@ -13,9 +13,6 @@ const RedirectHandler: React.FC = () => {
         const code = searchParams.get('code');
 
         if (code !== null) {
-            // setAuthorizationCode(code);
-            console.log('Authorization Code:', code);
-            // console.log('Authorization CodeState:', authorizationCode);
             getAndSetAccessToken(code).then((data) => {
                 console.log('Access Token:', data);
                 // Redirect to the dashboard after successfully getting the access token
