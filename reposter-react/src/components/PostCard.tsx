@@ -1,7 +1,7 @@
 import React, {useEffect} from 'react';
-import {Card, ListGroup, Container} from 'react-bootstrap';
+import {Card, ListGroup, Container, Row, Col} from 'react-bootstrap';
 import axiosClient from "../axios-client.tsx";
-import { Link } from 'react-router-dom';
+import {Link} from 'react-router-dom';
 
 interface PostCardProps {
     dashboard?: boolean
@@ -16,6 +16,7 @@ const PostCard = ({dashboard}: PostCardProps): React.JSX.Element => {
 
     interface ListPost {
         id: number;
+        status: string;
         title: string;
         content: string;
         description: string;
@@ -46,20 +47,29 @@ const PostCard = ({dashboard}: PostCardProps): React.JSX.Element => {
                     <ListGroup>
                         {posts.map(item => (
                             <ListGroup.Item key={item.id}>
-                                {dashboard ? (
-                                    <Link to={`/compose/${item.id}`}>
-                                        <h6>{item.title}</h6>
-                                        <p>desc: {item.description}</p>
-                                    </Link>
-                                ) : (
-                                    <>
-                                        <h6>{item.title}</h6>
-                                        <p>title: {item.content}</p>
-                                    </>
-                                )}
-                                {item.tags.map(tag => (
-                                    <span key={tag.id}>tags: {tag.name}</span>
-                                ))}
+                                <Container>
+                                    {dashboard ? (
+                                        <Row>
+                                            <Col>
+                                                <Link to={`/compose/${item.id}`}>
+                                                    <h6>{item.title}</h6>
+                                                    <p>desc: {item.description}</p>
+                                                </Link>
+                                            </Col>
+                                            <Col>
+                                                <h4>{item.status}</h4>
+                                            </Col>
+                                        </Row>
+                                    ) : (
+                                        <>
+                                            <h6>{item.title}</h6>
+                                            <p>title: {item.content}</p>
+                                        </>
+                                    )}
+                                    {item.tags.map(tag => (
+                                        <span key={tag.id}>tags: {tag.name}</span>
+                                    ))}
+                                </Container>
                             </ListGroup.Item>
                         ))}
                     </ListGroup>
