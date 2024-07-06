@@ -2,7 +2,6 @@ import os
 import requests
 import requests.auth
 from dotenv import load_dotenv
-import base64
 
 load_dotenv()
 
@@ -14,7 +13,6 @@ class RedditAPI:
         self.reddit_redirect_uri = os.getenv('REDDIT_REDIRECT_URI')
         self.user = user
 
-
     def post_to_reddit(self, data, post_id):
         pass
 
@@ -22,10 +20,10 @@ class RedditAPI:
         # TODO: need to refactor this
         from services import serializers as servicesSerializers
         print(f'Getting access token for code: {code}')
-        # credentials = f"{self.reddit_client_id}:{self.reddit_client_secret}"
-        # encoded_credentials = base64.b64encode(credentials.encode('utf-8')).decode('utf-8')
+        client_auth = requests.auth.HTTPBasicAuth(
+            self.reddit_client_id,
+            self.reddit_client_secret)
 
-        client_auth = requests.auth.HTTPBasicAuth(self.reddit_client_id, self.reddit_client_secret)
         headers = {
             "Content-Type": "application/x-www-form-urlencoded",
             'User-Agent': 'reposter/0.0.1 (by u/nycosborne)',
