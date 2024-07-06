@@ -3,6 +3,8 @@ import {useNavigate, useLocation} from 'react-router-dom';
 import getAndSetAccessToken from './requestAccessToken';
 import useAppContext from "../context/UseAppContext.tsx";
 
+// TODO: Need to make this a router component
+// All callback will redirect to this component then I'll route to the specific API handler
 const RedirectHandler: React.FC = () => {
     const location = useLocation();
     const navigate = useNavigate();
@@ -13,7 +15,7 @@ const RedirectHandler: React.FC = () => {
         const code = searchParams.get('code');
 
         if (code !== null) {
-            getAndSetAccessToken(code).then((data) => {
+            getAndSetAccessToken(code, 'linkedin').then((data) => {
                 console.log('Access Token:', data);
                 // Redirect to the dashboard after successfully getting the access token
                 if (user) {

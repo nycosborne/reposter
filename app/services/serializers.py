@@ -8,6 +8,7 @@ from core.models import (SocialAccounts,
                          UserSocialAccountsSettings,
                          LinkedinUserInfo)
 from services.linkedinAPI import LinkedInAPI
+from services.redditAPI import RedditAPI
 
 
 class SocialAccountsSerializer(serializers.ModelSerializer):
@@ -25,13 +26,22 @@ class SocialAccountsSerializer(serializers.ModelSerializer):
 
 class CodeSerializer(serializers.Serializer):
     code = serializers.CharField(required=True)
+    account_type = serializers.CharField(required=False)
 
     def save(self):
         auth_user = self.context['request'].user
         request = self.context['request']
-        linkedin_api = LinkedInAPI(auth_user, request)
-        code = self.validated_data['code']
-        linkedin_api.get_access_token(code)
+        if request.data['account_type'] == 'linkedin':
+            linkedin_api = LinkedInAPI(auth_user, request)
+            code = self.validated_data['code']
+            linkedin_api.get_access_token(code)
+        if request.data['account_type'] == 'reddit':
+            reddit_api = RedditAPI(auth_user, request)
+            code = self.validated_data['code']
+            reddit_api.get_access_token(code)
+
+
+
 
 
 class UserSocialAccountsSettingsSerializer(serializers.ModelSerializer):

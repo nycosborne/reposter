@@ -1,6 +1,7 @@
 import os
 import requests
 from dotenv import load_dotenv
+import base64
 
 load_dotenv()
 
@@ -18,6 +19,7 @@ class RedditAPI:
         access_token = (self.user.
                         usersocialaccountssettings_set.order_by('-created_at').
                         first().access_token)
+
         sub = (self.user.
                linkedinuserinfo_set.order_by('-created_at').
                first().sub)
@@ -62,19 +64,23 @@ class RedditAPI:
     def get_access_token(self, code):
         # TODO: need to refactor this
         from services import serializers as servicesSerializers
-
+        print(f'Getting access token for code: {code}')
+        credentials = f"{self.client_id}:{self.client_secret}"
+        encoded_credentials = base64.b64encode(credentials.encode('utf-8')).decode('utf-8')
         headers = {
-            'Content-Type': 'application/x-www-form-urlencoded',
+            'Authorization': f'Basic {encoded_credentials}',
+            # "Content-Type": "application/x-www-form-urlencoded",
             # 'User-Agent': YOUR_USER_AGENT,
         }
 
         data = {
             'grant_type': 'authorization_code',
             'code': code,
-            'client_id': self.client_id,
-            'client_secret': self.client_secret,
             'redirect_uri': self.linkedin_redirect_uri
         }
+
+        print(f"Headers: {headers}")
+        print(f"Data: {data}")
 
         response = requests.post(
             'https://www.linkedin.com/oauth/v2/accessToken',
@@ -85,26 +91,27 @@ class RedditAPI:
             print("Access token obtained successfully.")
             access_token_data = response.json()
             access_token_data['user'] = self.user.id
-            access_token_data['name'] = 'linkedin'
-            print(f"Access token data!!!: {access_token_data}")
+            access_token_data['name'] = 'reddit'
+            print(f"Got Access token data!!!!: {access_token_data}")
             serializer = (
                 servicesSerializers.UserSocialAccountsSettingsSerializer(
                     data=access_token_data))
 
             if serializer.is_valid():
-                self.user.linkedin = True
+                self.user.reddit = True
                 self.user.save()
                 serializer.save()
-                self._get_user_info(access_token_data['access_token'])
+                print("Access token data saved successfully.")
+                # self._get_user_info(access_token_data['access_token'])
             else:
                 print(f"Failed to save access token data. "
                       f"Errors: {serializer.errors}")
-                self.user.linkedin = False
+                self.user.reddit = False
         else:
             print(f"Failed to obtain access token. "
                   f"Status code: {response.status_code},"
                   f" Response: {response.text}")
-            self.user.linkedin = False
+            self.user.reddit = False
         # Update user social account status
         self.user.save()
 
