@@ -20,6 +20,11 @@ jobs:
       DB_PASSWORD: ${{ secrets.DB_PASSWORD }}
       DJANGO_ALLOWED_CORS: ${{ secrets.DJANGO_ALLOWED_CORS }}
       DJANGO_ALLOWED_HOSTS: ${{ secrets.DJANGO_ALLOWED_HOSTS }}
+      REDDIT_CLIENT_ID : ${{ secrets.REDDIT_CLIENT_ID }}
+      REDDIT_CLIENT_SECRET : ${{ secrets.REDDIT_CLIENT_SECRET }}
+      REDDIT_REDIRECT_URI : ${{ secrets.REDDIT_REDIRECT_URI }}
+      REDDIT_STATE : ${{ secrets.REDDIT_STATE }}
+      REDDIT_SCOPE : ${{ secrets.REDDIT_SCOPE }}
     steps:
       - name: Login to dockerHub
         uses: docker/login-action@v2
