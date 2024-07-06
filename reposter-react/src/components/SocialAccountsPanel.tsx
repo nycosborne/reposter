@@ -15,9 +15,16 @@ const redirectUri = import.meta.env.VITE_REDIRECT_URI;
 const state = import.meta.env.VITE_STATE;
 const scope = import.meta.env.VITE_SCOPE;
 
+
+const REDDIT_CLIENT_ID = import.meta.env.VITE_REDDIT_CLIENT_ID;
+// const REDDIT_CLIENT_SECRET = import.meta.env.VITE_REDDIT_CLIENT_SECRET;
+const REDDIT_REDIRECT_URI = import.meta.env.VITE_REDDIT_REDIRECT_URI;
+const REDDIT_SCOP = import.meta.env.VITE_REDDIT_SCOPE;
+const REDDIT_STATE = import.meta.env.VITE_REDDIT_STATE;
+
 // Construct the LinkedIn OAuth 2.0 authorization URL
 const linkedinAuthUrl = new URL('https://www.linkedin.com/oauth/v2/authorization');
-const redditAuthUrl = new URL('https://www.nycosborne.com/oauth2/authorize/');
+const redditAuthUrl = new URL('https://www.reddit.com/api/v1/authorize');
 
 linkedinAuthUrl.search = new URLSearchParams({
         response_type: 'code',
@@ -29,11 +36,12 @@ linkedinAuthUrl.search = new URLSearchParams({
 ).toString();
 
 redditAuthUrl.search = new URLSearchParams({
+        client_id: REDDIT_CLIENT_ID,
         response_type: 'code',
-        client_id: clientId,
-        redirect_uri: redirectUri,
-        state: state,
-        scope: scope
+        state: REDDIT_STATE,
+        redirect_uri: REDDIT_REDIRECT_URI,
+        duration : 'permanent',
+        scope: REDDIT_SCOP
     }
 ).toString();
 

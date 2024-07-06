@@ -4,9 +4,10 @@ interface AccessTokenResponse {
     message: string;
 }
 
-const getAndSetAccessToken = async (code: string): Promise<AccessTokenResponse> => {
-    const payload: { code: string } = {
-        code: code
+const getAndSetAccessToken = async (code: string, account_type: string): Promise<AccessTokenResponse> => {
+    const payload: { code: string, account_type: string } = {
+        code: code,
+        account_type: account_type
     };
 
     const message :string = '';

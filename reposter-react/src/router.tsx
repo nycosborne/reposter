@@ -8,6 +8,7 @@ import PostCard from "./components/PostCard.tsx";
 import AccountSettings from "./views/AccountSettings.tsx";
 import ComposePost from "./views/ComposePost.tsx";
 import RedirectHandler from "./apiService/RedirectHandler.tsx";
+import RedditRedirectHandler from "./apiService/redditRedirectHandler.tsx";
 
 
 const routerConfig: RouteObject[] = [
@@ -59,6 +60,11 @@ const routerConfig: RouteObject[] = [
         // todo: refactoter
         path: "/auth/callback/linkedin",
         element: <RedirectHandler/>,
+    },
+    {
+        // todo: refactoter
+        path: "/auth/callback/reddit",
+        element: <RedditRedirectHandler/>,
     },
     {
         path: "*",
