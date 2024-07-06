@@ -15,7 +15,8 @@ class RedditAPI:
 
     def post_to_reddit(self, data, post_id):
         # TODO: need to refactor this
-        access_token = self.user.usersocialaccountssettings_set.filter(name='linkedin').order_by('-created_at').first().access_token
+        access_token = self.user.usersocialaccountssettings_set.filter(name='linkedin').order_by(
+            '-created_at').first().access_token
 
         print(f"Posting to Reddit: {data}")
         print(f"Post ID: {post_id}")
@@ -67,6 +68,15 @@ class RedditAPI:
                   f" Response: {response.text}")
             self.user.reddit = False
 
+    def _get_user_info(self, access_token):
+        headers = {
+            'Authorization': 'bearer ' + access_token,
+            "Content-Type": "application/x-www-form-urlencoded",
+            'User-Agent': 'reposter/0.0.1 (by u/nycosborne)',
+        }
+
+        response = requests.get('https://oauth.reddit.com/api/v1/me', headers=headers)
+
     def get_access_token(self, code):
         # TODO: need to refactor this
         from services import serializers as servicesSerializers
@@ -111,7 +121,7 @@ class RedditAPI:
                 self.user.save()
                 serializer.save()
                 print("Access token data saved successfully.")
-                # self._get_user_info(access_token_data['access_token'])
+                self._get_user_info(access_token_data['access_token'])
             else:
                 print(f"Failed to save access token data. "
                       f"Errors: {serializer.errors}")
@@ -125,4 +135,3 @@ class RedditAPI:
         self.user.save()
 
     # def get_
-

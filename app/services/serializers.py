@@ -73,3 +73,20 @@ class LinkedinUserInfoSerializer(serializers.ModelSerializer):
             'email',
             'email_verified'
         ]
+
+
+class RedditUserInfoSerializer(serializers.ModelSerializer):
+    """Serializer for social accounts RedditUserInfoSerializer objects"""
+
+    class Meta:
+        model = UserSocialAccountsSettings
+        fields = [
+            'user',
+            'name',
+            'access_token',
+            'access_token_expires_at',
+            'refresh_token',
+            'scope',
+            'token_type',
+            'id_token'
+        ]
