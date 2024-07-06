@@ -4,8 +4,8 @@ import {useNavigate, useLocation} from 'react-router-dom';
 import useAppContext from "../context/UseAppContext.tsx";
 // import axios from "axios";
 import axiosClient from "../axios-client.tsx";
-
-
+//
+//
 // interface AccessTokenResponse {
 //     message: string;
 // }
@@ -14,9 +14,9 @@ import axiosClient from "../axios-client.tsx";
 const redditRedirectHandler: React.FC = () => {
     const location = useLocation();
     const navigate = useNavigate();
-    // const REDDIT_CLIENT_ID = import.meta.env.VITE_REDDIT_CLIENT_ID;
-    // const REDDIT_CLIENT_SECRET = import.meta.env.VITE_REDDIT_CLIENT_SECRET;
-    // const REDDIT_REDIRECT_URI = import.meta.env.VITE_REDDIT_REDIRECT_URI;
+    const REDDIT_CLIENT_ID = import.meta.env.VITE_REDDIT_CLIENT_ID;
+    const REDDIT_CLIENT_SECRET = import.meta.env.VITE_REDDIT_CLIENT_SECRET;
+    const REDDIT_REDIRECT_URI = import.meta.env.VITE_REDDIT_REDIRECT_URI;
     const {user, setUser} = useAppContext();
 
     // const [authorizationCode, setAuthorizationCode] = useState<string | null>('');
@@ -27,7 +27,6 @@ const redditRedirectHandler: React.FC = () => {
     let code: string = searchParams.get('code') || '';
     console.log('code:', code);
 
-    // const redditAccessToke = 'https://www.reddit.com/api/v1/access_token';
     // redditAccessToke.search = new URLSearchParams({
     //         grant_type: 'authorization_code',
     //         authorization_code: code,
@@ -76,11 +75,13 @@ const redditRedirectHandler: React.FC = () => {
 
 
     // const getToken = async () => {
+    //     const redditAccessToke = 'https://www.reddit.com/api/v1/access_token';
     //     const body = new URLSearchParams({
     //         grant_type: 'authorization_code',
     //         code: code, // Assuming 'code' is defined and holds the authorization code
     //         redirect_uri: REDDIT_REDIRECT_URI
     //     }).toString();
+    //
     //
     //     const data = await axios.post(
     //         redditAccessToke, // Ensure this variable holds the correct URL
@@ -89,9 +90,12 @@ const redditRedirectHandler: React.FC = () => {
     //             headers: {
     //                 Authorization: `Basic ${btoa(`${REDDIT_CLIENT_ID}:${REDDIT_CLIENT_SECRET}`)}`,
     //                 "Content-Type": "application/x-www-form-urlencoded",
+    //                 'User-Agent': 'reposter/0.0.1 (by u/nycosborne)',
     //             },
     //         }
     //     );
+    //     console.log('body:', body);
+    //     console.log('headers', body);
     //     console.log('redditRedirect.data:', data);
     //     return data.data;
     // };

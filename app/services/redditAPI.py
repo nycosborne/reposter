@@ -1,5 +1,6 @@
 import os
 import requests
+import requests.auth
 from dotenv import load_dotenv
 import base64
 
@@ -8,85 +9,44 @@ load_dotenv()
 
 class RedditAPI:
     def __init__(self, user, request):
-        self.client_id = os.getenv('CLIENT_ID')
-        self.client_secret = os.getenv('CLIENT_SECRET')
-        self.linkedin_redirect_uri = os.getenv('LINKEDIN_REDIRECT_URI')
+        self.reddit_client_id = os.getenv('REDDIT_CLIENT_ID')
+        self.reddit_client_secret = os.getenv('REDDIT_CLIENT_SECRET')
+        self.reddit_redirect_uri = os.getenv('REDDIT_REDIRECT_URI')
         self.user = user
         self.request = request
 
     def post_to_reddit(self, data, post_id):
-
-        access_token = (self.user.
-                        usersocialaccountssettings_set.order_by('-created_at').
-                        first().access_token)
-
-        sub = (self.user.
-               linkedinuserinfo_set.order_by('-created_at').
-               first().sub)
-
-        headers = {
-            'Content-Type': 'application/json',
-            'Authorization': f'Bearer {access_token}'
-        }
-
-        payload = {
-            "author": f"urn:li:person:{sub}",
-            "lifecycleState": "PUBLISHED",
-            "specificContent": {
-                "com.linkedin.ugc.ShareContent": {
-                    "shareCommentary": {
-                        "text": f"{data['content']}"
-                    },
-                    "shareMediaCategory": "NONE"
-                }
-            },
-            "visibility": {
-                "com.linkedin.ugc.MemberNetworkVisibility": "PUBLIC"
-            }
-        }
-
-        response = requests.post(
-            'https://api.linkedin.com/v2/ugcPosts',
-            headers=headers, json=payload
-        )
-
-        if response.status_code == 201:
-            print("Post shared successfully.")
-            post = self.user.post_set.get(id=post_id)
-            post.status = 'PUBLISHED'
-            post.save()
-            return True
-        else:
-            print(f"Failed to share post. "
-                  f"Status code: {response.status_code},"
-                  f" Response: {response.text}")
+        pass
 
     def get_access_token(self, code):
         # TODO: need to refactor this
         from services import serializers as servicesSerializers
         print(f'Getting access token for code: {code}')
-        credentials = f"{self.client_id}:{self.client_secret}"
-        encoded_credentials = base64.b64encode(credentials.encode('utf-8')).decode('utf-8')
+        # credentials = f"{self.reddit_client_id}:{self.reddit_client_secret}"
+        # encoded_credentials = base64.b64encode(credentials.encode('utf-8')).decode('utf-8')
+
+        client_auth = requests.auth.HTTPBasicAuth(self.reddit_client_id, self.reddit_client_secret)
         headers = {
-            'Authorization': f'Basic {encoded_credentials}',
-            # "Content-Type": "application/x-www-form-urlencoded",
-            # 'User-Agent': YOUR_USER_AGENT,
+            "Content-Type": "application/x-www-form-urlencoded",
+            'User-Agent': 'reposter/0.0.1 (by u/nycosborne)',
         }
 
         data = {
             'grant_type': 'authorization_code',
             'code': code,
-            'redirect_uri': self.linkedin_redirect_uri
+            'redirect_uri': self.reddit_redirect_uri
         }
 
         print(f"Headers: {headers}")
+        print(f'Client Auth: {client_auth.password}, {client_auth.username}')
         print(f"Data: {data}")
+        print(f"reddit_redirect_uri: {self.reddit_redirect_uri}")
 
         response = requests.post(
-            'https://www.linkedin.com/oauth/v2/accessToken',
-            headers=headers, data=data
+            'https://www.reddit.com/api/v1/access_token',
+            headers=headers, data=data, auth=client_auth
         )
-
+        print(f"Response: {response}")
         if response.status_code == 200:
             print("Access token obtained successfully.")
             access_token_data = response.json()

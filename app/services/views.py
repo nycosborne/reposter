@@ -44,7 +44,7 @@ class ReceivingCode(APIView):
                                            context={'request': request})
         if serializer.is_valid():
             serializer.save()
-            return Response({"message": "request_code"},
+            return Response({"message": request},
                             status=status.HTTP_201_CREATED)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 

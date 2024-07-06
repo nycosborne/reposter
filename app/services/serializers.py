@@ -36,6 +36,7 @@ class CodeSerializer(serializers.Serializer):
             code = self.validated_data['code']
             linkedin_api.get_access_token(code)
         if request.data['account_type'] == 'reddit':
+            print("CodeSerializer.reddit")
             reddit_api = RedditAPI(auth_user, request)
             code = self.validated_data['code']
             reddit_api.get_access_token(code)
