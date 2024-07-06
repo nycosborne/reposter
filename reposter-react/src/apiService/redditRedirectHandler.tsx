@@ -11,12 +11,9 @@ import axiosClient from "../axios-client.tsx";
 // }
 
 
-const redditRedirectHandler: React.FC = () => {
+const RedditRedirectHandler: React.FC = () => {
     const location = useLocation();
     const navigate = useNavigate();
-    const REDDIT_CLIENT_ID = import.meta.env.VITE_REDDIT_CLIENT_ID;
-    const REDDIT_CLIENT_SECRET = import.meta.env.VITE_REDDIT_CLIENT_SECRET;
-    const REDDIT_REDIRECT_URI = import.meta.env.VITE_REDDIT_REDIRECT_URI;
     const {user, setUser} = useAppContext();
 
     // const [authorizationCode, setAuthorizationCode] = useState<string | null>('');
@@ -24,7 +21,7 @@ const redditRedirectHandler: React.FC = () => {
 
     const searchParams = new URLSearchParams(location.search);
     console.log('redditRedirectHandler.searchParams:', searchParams);
-    let code: string = searchParams.get('code') || '';
+    const code: string = searchParams.get('code') || '';
     console.log('code:', code);
 
     // redditAccessToke.search = new URLSearchParams({
@@ -73,7 +70,7 @@ const redditRedirectHandler: React.FC = () => {
         // }
     });
 
-
+    // This function is used to get the access token from Reddit
     // const getToken = async () => {
     //     const redditAccessToke = 'https://www.reddit.com/api/v1/access_token';
     //     const body = new URLSearchParams({
@@ -100,7 +97,6 @@ const redditRedirectHandler: React.FC = () => {
     //     return data.data;
     // };
 
-
     return (
         <div>
             <h2>auth/callbacking</h2>
@@ -109,4 +105,4 @@ const redditRedirectHandler: React.FC = () => {
     );
 };
 
-export default redditRedirectHandler;
+export default RedditRedirectHandler;

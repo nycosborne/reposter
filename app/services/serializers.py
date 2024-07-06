@@ -42,9 +42,6 @@ class CodeSerializer(serializers.Serializer):
             reddit_api.get_access_token(code)
 
 
-
-
-
 class UserSocialAccountsSettingsSerializer(serializers.ModelSerializer):
     class Meta:
         model = UserSocialAccountsSettings
@@ -62,6 +59,7 @@ class UserSocialAccountsSettingsSerializer(serializers.ModelSerializer):
 
 class LinkedinUserInfoSerializer(serializers.ModelSerializer):
     """Serializer for social accounts LinkedinUserInfoSerializer objects"""
+
     class Meta:
         model = LinkedinUserInfo
         fields = [
