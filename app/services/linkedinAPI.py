@@ -53,6 +53,9 @@ class LinkedInAPI:
             post.save()
             return True
         else:
+            # TODO: Add error status for posts that failed to post
+            # post.status = 'FAILED_TO_POST'
+            # post.save()
             print(f"Failed to share post. "
                   f"Status code: {response.status_code},"
                   f" Response: {response.text}")

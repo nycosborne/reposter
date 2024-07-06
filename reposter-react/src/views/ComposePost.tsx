@@ -81,11 +81,13 @@ const ComposePost: React.FC = () => {
 
     const postToSocialMedia = async (event: React.FormEvent) => {
         event.preventDefault();
-        const payload: { title: string, description: string, content: string, post_id: string } = {
+        const payload: { title: string, description: string, content: string, post_id: string, social_accounts: string } = {
             title: post.title ? post.title : "",
             description: post.description ? post.description : "",
             content: post.content ? post.content : "",
             post_id: post_id ? post_id : "",
+            // TODO: Need to set the social account from new modal
+            social_accounts: 'reddit'
         };
 
         axiosClient.post('/services/soc-post/', payload)

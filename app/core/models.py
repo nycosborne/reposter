@@ -215,3 +215,4 @@ class RedditUserInfo(models.Model):
     inbox_count = models.IntegerField(default=0)
     seen_premium_adblock_modal = models.BooleanField(default=False)
     pref_top_karma_subreddits = models.BooleanField(default=True)
+    created_at = models.DateTimeField(default=timezone.now)

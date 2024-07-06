@@ -59,7 +59,8 @@ class PostToSocialAccounts(APIView):
     def post(self, request):
         serializer = self.serializer_class(data=request.data)
         if serializer.is_valid():
-            if request.data['social_account'] == 'linkedin':
+            print(request.data)
+            if request.data['social_accounts'] == 'linkedin':
                 linkedin_api = LinkedInAPI(request.user, request)
                 posted = linkedin_api.post_to_linkedin(serializer.data,
                                                        request.data['post_id'])
@@ -70,7 +71,7 @@ class PostToSocialAccounts(APIView):
                                    f" Successfully posted to LinkedIn."},
                         status=status.HTTP_201_CREATED)
 
-            if request.data['social_account'] == 'reddit':
+            if request.data['social_accounts'] == 'reddit':
                 print("Reddit")
                 reddit_api = RedditAPI(request.user, request)
                 posted = reddit_api.post_to_reddit(serializer.data,
