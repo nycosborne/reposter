@@ -14,7 +14,58 @@ class RedditAPI:
         self.user = user
 
     def post_to_reddit(self, data, post_id):
-        pass
+        # TODO: need to refactor this
+        access_token = self.user.usersocialaccountssettings_set.filter(name='linkedin').order_by('-created_at').first().access_token
+
+        print(f"Posting to Reddit: {data}")
+        print(f"Post ID: {post_id}")
+
+        headers = {
+            'Authorization': 'bearer ' + access_token,
+            "Content-Type": "application/x-www-form-urlencoded",
+            'User-Agent': 'reposter/0.0.1 (by u/nycosborne)',
+        }
+
+        data = {
+            'title': data['title'],
+            'text': data['content'],
+            'url': data['link'],
+            'sr': 'nycosborne',
+            'kind': 'link',
+            'spoiler': False,
+            'nsfw': False,
+            'resubmit': False,
+            'sendreplies': False,
+            'api_type': "json"
+        }
+
+        response = requests.post('https://oauth.reddit.com/api/submit', headers=headers, data=data)
+
+        if response.status_code == 200:
+            print("Post submitted successfully.")
+            post_data = response.json()
+            post_data['user'] = self.user.id
+            post_data['name'] = 'reddit'
+            print(f"Posted data!!!!: {post_data}")
+            serializer = (
+                servicesSerializers.UserSocialAccountsSettingsSerializer(
+                    data=post_data))
+
+            if serializer.is_valid():
+                self.user.reddit = True
+                self.user.save()
+                serializer.save()
+                print("Post data saved successfully.")
+                # self._get_user_info(access_token_data['access_token'])
+            else:
+                print(f"Failed to save post data. "
+                      f"Errors: {serializer.errors}")
+                self.user.reddit = False
+        else:
+            print(f"Failed to post. "
+                  f"Status code: {response.status_code},"
+                  f" Response: {response.text}")
+            self.user.reddit = False
 
     def get_access_token(self, code):
         # TODO: need to refactor this
@@ -74,3 +125,4 @@ class RedditAPI:
         self.user.save()
 
     # def get_
+
