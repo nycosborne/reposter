@@ -13,7 +13,7 @@ class RedditAPI:
         self.reddit_client_secret = os.getenv('REDDIT_CLIENT_SECRET')
         self.reddit_redirect_uri = os.getenv('REDDIT_REDIRECT_URI')
         self.user = user
-        self.request = request
+
 
     def post_to_reddit(self, data, post_id):
         pass
