@@ -6,7 +6,8 @@ from rest_framework import serializers
 
 from core.models import (SocialAccounts,
                          UserSocialAccountsSettings,
-                         LinkedinUserInfo)
+                         LinkedinUserInfo,
+                         RedditUserInfo)
 from services.linkedinAPI import LinkedInAPI
 from services.redditAPI import RedditAPI
 
@@ -72,4 +73,60 @@ class LinkedinUserInfoSerializer(serializers.ModelSerializer):
             'locale',
             'email',
             'email_verified'
+        ]
+
+
+class RedditUserInfoSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = RedditUserInfo
+        fields = [
+            'user',
+            'is_employee',
+            'seen_layout_switch',
+            'has_visited_new_profile',
+            'pref_no_profanity',
+            'has_external_account',
+            'pref_geopopular',
+            'seen_redesign_modal',
+            'pref_show_trending',
+            'subreddit',
+            'pref_show_presence',
+            'snoovatar_img',
+            'snoovatar_size',
+            'gold_expiration',
+            'has_gold_subscription',
+            'is_sponsor',
+            'num_friends',
+            'features',
+            'can_edit_name',
+            'verified',
+            'pref_autoplay',
+            'coins',
+            'has_paypal_subscription',
+            'has_subscribed_to_premium',
+            'reddit_id',
+            'has_stripe_subscription',
+            'can_create_subreddit',
+            'over_18',
+            'is_gold',
+            'is_mod',
+            'awarder_karma',
+            'suspension_expiration_utc',
+            'has_verified_email',
+            'is_suspended',
+            'pref_video_autoplay',
+            'has_android_subscription',
+            'in_redesign_beta',
+            'icon_img',
+            'pref_nightmode',
+            'awardee_karma',
+            'hide_from_robots',
+            'password_set',
+            'link_karma',
+            'force_password_reset',
+            'total_karma',
+            'seen_give_award_tooltip',
+            'inbox_count',
+            'seen_premium_adblock_modal',
+            'pref_top_karma_subreddits'
         ]

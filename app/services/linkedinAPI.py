@@ -16,8 +16,8 @@ class LinkedInAPI:
     def post_to_linkedin(self, data, post_id):
 
         access_token = (self.user.
-                        usersocialaccountssettings_set.order_by('-created_at').
-                        first().access_token)
+                        usersocialaccountssettings_set.filter(name='linkedin').
+                        order_by('-created_at').first().access_token)
         sub = (self.user.
                linkedinuserinfo_set.order_by('-created_at').
                first().sub)
@@ -55,6 +55,9 @@ class LinkedInAPI:
             post.save()
             return True
         else:
+            # TODO: Add error status for posts that failed to post
+            # post.status = 'FAILED_TO_POST'
+            # post.save()
             print(f"Failed to share post. "
                   f"Status code: {response.status_code},"
                   f" Response: {response.text}")

@@ -7,6 +7,7 @@ from rest_framework.permissions import IsAuthenticated
 from rest_framework.permissions import IsAdminUser
 from rest_framework.permissions import AllowAny
 from services.linkedinAPI import LinkedInAPI
+from services.redditAPI import RedditAPI
 
 from core.models import SocialAccounts
 from services import serializers as servicesSerializers
@@ -58,14 +59,29 @@ class PostToSocialAccounts(APIView):
     def post(self, request):
         serializer = self.serializer_class(data=request.data)
         if serializer.is_valid():
-            linkedin_api = LinkedInAPI(request.user, request)
-            posted = linkedin_api.post_to_linkedin(serializer.data,
+            print(request.data)
+            if request.data['social_accounts'] == 'linkedin':
+                linkedin_api = LinkedInAPI(request.user, request)
+                posted = linkedin_api.post_to_linkedin(serializer.data,
+                                                       request.data['post_id'])
+
+                if posted:
+                    return Response({
+                        "message": f"post ID: {request.data['post_id']}"
+                                   f" Successfully posted to LinkedIn."},
+                        status=status.HTTP_201_CREATED)
+
+            if request.data['social_accounts'] == 'reddit':
+                print("Reddit")
+                reddit_api = RedditAPI(request.user, request)
+                posted = reddit_api.post_to_reddit(serializer.data,
                                                    request.data['post_id'])
-            if posted:
-                return Response({
-                    "message": f"post ID: {request.data['post_id']}"
-                               f" Successfully posted to LinkedIn."},
-                    status=status.HTTP_201_CREATED)
+
+                if posted:
+                    return Response({
+                        "message": f"post ID: {request.data['post_id']}"
+                                   f" Successfully posted to Reddit."},
+                        status=status.HTTP_201_CREATED)
 
         return Response({"message": f"post ID {request.data['post_id']}",
                          "error": serializer.errors},
