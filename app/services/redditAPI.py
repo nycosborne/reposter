@@ -9,9 +9,9 @@ load_dotenv()
 def _set_default_subreddit(user_info):
     if user_info.get('default_set'):
         default_subreddit = user_info.get('display_name')
-        # prefix = "u_"
-        # if default_subreddit.startswith(prefix):
-        #     return default_subreddit[len(prefix):]
+        prefix = "u_"
+        if default_subreddit.startswith(prefix):
+            return default_subreddit[len(prefix):]
         return default_subreddit
 
     return None
@@ -39,16 +39,14 @@ class RedditAPI:
         headers = {
             'Authorization': 'bearer ' + access_token,
             'User-Agent': 'reposter/0.0.1 (by u/nycosborne)',
-            # "Content-Type": "application/x-www-form-urlencoded",
         }
 
         data = {
             'title': data['title'],
             'text': data['content'],
             # TODO: Need to add the link to the post
-            'url': 'nycosborne.com',
-            # TODO: this should not be hardcoded
-            'sr': 'nycosborne',
+            'url': 'reposter.com',
+            'sr': subreddit,
             'kind': 'link',
             'spoiler': False,
             'nsfw': False,
