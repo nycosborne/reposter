@@ -45,7 +45,9 @@ class PostSerializer(serializers.ModelSerializer):
             service_event, created = PostServiceEvents.objects.get_or_create(
                 post=post,
                 user=auth_user,
-                defaults=service_data  # Assuming service_data is a dict with the fields for PostServiceEvents
+                # Assuming service_data is a dict
+                # with the fields for PostServiceEvents
+                defaults=service_data
             )
             if not created:
                 # Update the service_event with new data if it already existed
