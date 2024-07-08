@@ -4,7 +4,7 @@ Serializers for the api end points of the post
 
 from rest_framework import serializers
 
-from core.models import Post, Tag
+from core.models import Post, Tag, PostServiceEvents
 from services import serializers as servicesSerializers
 
 
@@ -20,7 +20,7 @@ class TagSerializer(serializers.ModelSerializer):
 class PostSerializer(serializers.ModelSerializer):
     """Serializers for the post object."""
     tags = TagSerializer(many=True, required=False)
-    soc_accounts = servicesSerializers.SocialAccountsSerializer(
+    service_requested = servicesSerializers.PostServiceEventsSerializer(
         many=True,
         required=False
     )
@@ -28,7 +28,7 @@ class PostSerializer(serializers.ModelSerializer):
     class Meta:
         model = Post
         fields = ['id', 'title', 'content', 'description',
-                  'link', 'tags', 'soc_accounts', 'status', 'image']
+                  'link', 'tags', 'service_requested', 'status', 'image']
         read_only_fields = ['id']
 
     def _get_or_create_tag(self, tags, post):
@@ -38,6 +38,21 @@ class PostSerializer(serializers.ModelSerializer):
             tag, _ = Tag.objects.get_or_create(user=auth_user, **tag)
             post.tags.add(tag)
 
+    def _get_or_create_service_requested(self, service_requested, post):
+        """Get or create a service requested."""
+        auth_user = self.context['request'].user
+        for service_data in service_requested:
+            service_event, created = PostServiceEvents.objects.get_or_create(
+                post=post,
+                user=auth_user,
+                defaults=service_data  # Assuming service_data is a dict with the fields for PostServiceEvents
+            )
+            if not created:
+                # Update the service_event with new data if it already existed
+                for key, value in service_data.items():
+                    setattr(service_event, key, value)
+                service_event.save()
+
     # This is overriding there create method to create a new post object
     def create(self, validated_data):
         """Create a new post and return it."""
@@ -45,8 +60,10 @@ class PostSerializer(serializers.ModelSerializer):
         # return Post.objects.create(**validated_data)
         """Create a new post and return it."""
         tags = validated_data.pop('tags', [])
+        service_requested = validated_data.pop('service_requested', [])
         post = Post.objects.create(**validated_data)
         self._get_or_create_tag(tags, post)
+        self._get_or_create_service_requested(service_requested, post)
 
         return post
 

@@ -8,6 +8,7 @@ from core import models
 from core.models import UserSocialAccountsSettings
 from core.models import LinkedinUserInfo
 from core.models import SocialAccounts
+from core.models import PostServiceEvents
 
 
 # from services.linkedinAPI import LinkedInAPI
@@ -163,20 +164,7 @@ class LinkedinUserInfoIModelTests(TestCase):
 class SocialAccountsModelTests(TestCase):
 
     def setUp(self):
-        self.user = get_user_model().objects.create_user(
-            'testuser@example.com',
-            'test123'
-        )
-
-        self.post = models.Post.objects.create(
-            user=self.user,
-            title='Test Post Title',
-            content='Test Post Content',
-            description='Test Post Description',
-        )
-
         self.social_account = SocialAccounts.objects.create(
-            post_id=self.post,
             name='Test Social Account',
             status=True
         )
@@ -187,6 +175,27 @@ class SocialAccountsModelTests(TestCase):
         self.assertEqual(str(self.social_account), 'Test Social Account')
         self.assertTrue(self.social_account.status)
 
-    def test_social_accounts_str(self):
-        """Test the string representation of SocialAccounts"""
-        self.assertEqual(str(self.social_account), 'Test Social Account')
+
+class PostServiceEventsTest(TestCase):
+    """Test PostServiceEvents model"""
+
+    def setUp(self):
+        self.user = sample_user()
+        post = models.Post.objects.create(
+            user=self.user,
+            title='Test Post Title',
+            content='Test Post Content',
+            description='Test Post Description',
+        )
+        self.post_service_event = PostServiceEvents.objects.create(
+            user=self.user,
+            post=post,
+            service='LinkedIn',
+            status='Success',
+        )
+
+    def test_post_service_event_creation(self):
+        """Test creating a PostServiceEvents is successful"""
+        self.assertEqual(self.post_service_event.service, 'LinkedIn')
+        self.assertEqual(self.post_service_event.status, 'Success')
+        self.assertEqual(str(self.post_service_event), 'LinkedIn')

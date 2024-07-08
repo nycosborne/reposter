@@ -71,7 +71,6 @@ class Post(models.Model):
     description = models.TextField(blank=True)
     link = models.CharField(max_length=255, blank=True)
     tags = models.ManyToManyField('Tag', blank=True)
-    soc_accounts = models.ManyToManyField('SocialAccounts', blank=True)
     POST_STATUS = [
         ('DRAFT', 'Draft'),
         ('IN_REVIEW', 'In Review'),
@@ -89,8 +88,40 @@ class Post(models.Model):
         return self.title
 
 
+class Tag(models.Model):
+    """Tag model."""
+    user = models.ForeignKey(
+        settings.AUTH_USER_MODEL,
+        on_delete=models.CASCADE
+    )
+    name = models.CharField(max_length=255)
+
+    def __str__(self):
+        return self.name
+
+
+# TODO: might wanted to implement a nosql database option for this
+class PostServiceEvents(models.Model):
+    """PostServiceEvents model."""
+    user = models.ForeignKey(
+        settings.AUTH_USER_MODEL,
+        on_delete=models.CASCADE
+    )
+    post = models.ForeignKey(
+        'Post',
+        related_name='post_service_events',
+        on_delete=models.CASCADE
+    )
+    service = models.CharField(max_length=255)
+    status = models.CharField(max_length=255)
+    created_at = models.DateTimeField(default=timezone.now)
+
+    def __str__(self):
+        return self.service
+
+
 # User Social Accounts setting
-# TODO: rename this table to token_details
+# TODO: rename this table to UserSocialAccountsTokens
 class UserSocialAccountsSettings(models.Model):
     """UserSocialAccounts model."""
     user = models.ForeignKey(
@@ -112,6 +143,18 @@ class UserSocialAccountsSettings(models.Model):
         return self.name
 
 
+# TODO: rename this to SocialAccountsOptions
+class SocialAccounts(models.Model):
+    """SocialAccounts model."""
+    name = models.CharField(max_length=255)
+    status = models.BooleanField(default=False)
+    created_at = models.DateTimeField(default=timezone.now)
+    # updated_at = models.DateTimeField(default=timezone.now)
+
+    def __str__(self):
+        return self.name
+
+
 class LinkedinUserInfo(models.Model):
     """Linkedin User info model."""
     user = models.ForeignKey(
@@ -127,37 +170,6 @@ class LinkedinUserInfo(models.Model):
     email = models.CharField(max_length=255, blank=True)
     email_verified = models.BooleanField(default=False)
     created_at = models.DateTimeField(default=timezone.now)
-
-    def __str__(self):
-        return self.name
-
-
-class Tag(models.Model):
-    """Tag model."""
-    user = models.ForeignKey(
-        settings.AUTH_USER_MODEL,
-        on_delete=models.CASCADE
-    )
-    name = models.CharField(max_length=255)
-
-    def __str__(self):
-        return self.name
-
-
-# TODO: rename this to PostSocialAccounts
-# Also would like to rename the name post_id to post
-# but their a conflict to consider
-class SocialAccounts(models.Model):
-    """SocialAccounts model."""
-    post_id = models.ForeignKey(
-        Post,
-        on_delete=models.CASCADE
-    )
-    name = models.CharField(max_length=255)
-    status = models.BooleanField(default=False)
-    created_at = models.DateTimeField(default=timezone.now)
-
-    # updated_at = models.DateTimeField(default=timezone.now)
 
     def __str__(self):
         return self.name
