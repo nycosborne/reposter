@@ -7,7 +7,8 @@ from rest_framework import serializers
 from core.models import (SocialAccounts,
                          UserSocialAccountsSettings,
                          LinkedinUserInfo,
-                         RedditUserInfo)
+                         RedditUserInfo,
+                         PostServiceEvents)
 from services.linkedinAPI import LinkedInAPI
 from services.redditAPI import RedditAPI
 
@@ -17,12 +18,25 @@ class SocialAccountsSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = SocialAccounts
-        fields = ['id', 'name']
+        fields = ['id', 'name', 'status']
         read_only_fields = ['id']
 
     def create(self, validated_data):
         """Create a new social account and return it."""
         return SocialAccounts.objects.create(**validated_data)
+
+
+class PostServiceEventsSerializer(serializers.ModelSerializer):
+    """Serializer for post service events objects"""
+
+    class Meta:
+        model = PostServiceEvents
+        fields = ['post_id', 'service', 'status']
+        read_only_fields = ['id']
+
+    def create(self, validated_data):
+        """Create a new post service event and return it."""
+        return PostServiceEvents.objects.create(**validated_data)
 
 
 class CodeSerializer(serializers.Serializer):
