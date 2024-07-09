@@ -7,6 +7,8 @@ from rest_framework import serializers
 from core.models import Post, Tag, PostServiceEvents
 from services import serializers as servicesSerializers
 
+from services.serializers import PostServiceEventsSerializer
+
 
 class TagSerializer(serializers.ModelSerializer):
     """Serializer for tag objects"""
@@ -91,9 +93,10 @@ class PostSerializer(serializers.ModelSerializer):
 
 class PostDetailSerializer(PostSerializer):
     """Serializer for post detail"""
+    post_service_events = servicesSerializers.PostServiceEventsSerializer(many=True, read_only=True)
 
     class Meta(PostSerializer.Meta):
-        fields = PostSerializer.Meta.fields + ['description', 'link', 'image']
+        fields = PostSerializer.Meta.fields + ['description', 'link', 'image', 'post_service_events']
 
 
 class PostImageSerializer(serializers.ModelSerializer):

@@ -31,8 +31,8 @@ class PostServiceEventsSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = PostServiceEvents
-        fields = ['post_id', 'service', 'status']
-        read_only_fields = ['id']
+        fields = ['id', 'service', 'status', 'created_at']
+        read_only_fields = ['id', 'created_at']
 
     def create(self, validated_data):
         """Create a new post service event and return it."""
