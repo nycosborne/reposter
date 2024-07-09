@@ -25,7 +25,6 @@ const SocialAccount: React.FC<SocialAccountProps> = ({
     userAuthLink,
     showLink
 }) => (
-    // <ListGroup.Item action onClick={handleLink}>
     <Container>
         <Row>
             <Col onClick={handleLink}>
@@ -35,16 +34,8 @@ const SocialAccount: React.FC<SocialAccountProps> = ({
                         <FontAwesomeIcon icon={faLinkSlash} size="sm" color="black"/>
                     </div>)}
             </Col>
-            {/*<Col>*/}
-            {/*    <h5>{accountStatusText}</h5>*/}
-            {/*    <p>Account is: {isLinked ? "Linked" : "Unlinked"}</p>*/}
-            {/*    {showLink && !isLinked && (*/}
-            {/*        <a href={userAuthLink}>Link Account</a>*/}
-            {/*    )}*/}
-            {/*</Col>*/}
         </Row>
     </Container>
-    // </ListGroup.Item>
 );
 
 export default SocialAccount;

@@ -2,8 +2,13 @@ import React, {useEffect, useState} from 'react';
 import {Button, Form} from 'react-bootstrap';
 import axiosClient from "../axios-client.tsx";
 import {useNavigate, useParams} from "react-router-dom";
+import SocialAccountsPostStatusBar from "../components/ui/SocialAccountsPostStatusBar.tsx";
+import useAppContext from "../context/UseAppContext.tsx";
+import {User} from "../components/types/types.tsx";
 
 const ComposePost: React.FC = () => {
+
+    const {user} = useAppContext();
 
     const navigate = useNavigate();
 
@@ -12,6 +17,7 @@ const ComposePost: React.FC = () => {
         description: string;
         content: string;
         status: string;
+        user?: User | null;
     }
 
     const [post, setPost] = useState<Post>(
@@ -81,7 +87,13 @@ const ComposePost: React.FC = () => {
 
     const postToSocialMedia = async (event: React.FormEvent) => {
         event.preventDefault();
-        const payload: { title: string, description: string, content: string, post_id: string, social_accounts: string } = {
+        const payload: {
+            title: string,
+            description: string,
+            content: string,
+            post_id: string,
+            social_accounts: string
+        } = {
             title: post.title ? post.title : "",
             description: post.description ? post.description : "",
             content: post.content ? post.content : "",
@@ -119,6 +131,10 @@ const ComposePost: React.FC = () => {
                     onChange={handleDescriptionChange}
                 />
             </Form.Group>
+            {user &&
+                <SocialAccountsPostStatusBar showLink={true} user={user}/>
+
+            }
             <Form.Group className="mb-3">
                 <Form.Label>Compose Post</Form.Label>
                 <Form.Control

@@ -14,7 +14,6 @@ export interface Post {
     title: string;
     description: string;
     compose: string;
-    user: User;
 }
 
 
