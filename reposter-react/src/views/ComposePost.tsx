@@ -132,7 +132,7 @@ const ComposePost: React.FC = () => {
                 />
             </Form.Group>
             {user &&
-                <SocialAccountsPostStatusBar showLink={true} user={user}/>
+                <SocialAccountsPostStatusBar user={user}/>
 
             }
             <Form.Group className="mb-3">
