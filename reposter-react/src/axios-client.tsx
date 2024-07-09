@@ -4,7 +4,7 @@ const axiosClient = axios.create({
     baseURL: `${import.meta.env.VITE_API_BASE_URL}/api`,
     headers: {
         // 'Content-Type': 'multipart/form-data',
-        'Content-Type': 'application/x-www-form-urlencoded',
+        'Content-Type': 'application/json',
         'Accept': 'application/json',
 
     }

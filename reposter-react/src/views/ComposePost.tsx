@@ -86,19 +86,34 @@ const ComposePost: React.FC = () => {
             content: post.content || "",
             link: "", // Assuming you have a link to include or it can be an empty string if not
             tags: [], // Assuming you have tags to include or it can be an empty array if not
-            service_requested: [
-                {
-                    "service": "reddit",
-                    "status": "string"
-                }
-            ],
+            service_requested: createServiceRequested(),
             status: post.status || "DRAFT",
         };
+        //
+        // const payload = {
+        //
+        //     "title": "string",
+        //     "content": "string",
+        //     "description": "string",
+        //     "link": "string",
+        //     "service_requested": [
+        //         {
+        //             "service": "poop",
+        //             "status": "string"
+        //         }
+        //     ],
+        //     "status": "DRAFT"
+        // }
 
         console.log('payload', payload);
 
+
         if (post_id) {
-            axiosClient.put(`/post/post/${post_id}/`, payload)
+            axiosClient.put(`/post/post/${post_id}/`, payload, {
+                headers: {
+                    'Content-Type': 'application/json'
+                }
+            })
                 .then((response) => {
                     console.log('Updated successfully', response);
                     navigate(`/compose/${response.data.id}`);
