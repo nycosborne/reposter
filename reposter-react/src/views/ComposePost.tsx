@@ -73,20 +73,22 @@ const ComposePost: React.FC = () => {
 
     const savePost = async (event: React.FormEvent) => {
         event.preventDefault();
-        // Assuming selectedReddit and selectedLinkedin are correctly set to 'reddit' or 'linkedin' when selected
-        const serviceRequested = [];
-        if (selectedReddit) {
-            serviceRequested.push({service: 'reddit', status: 'PENDING'});
-        }
-        if (selectedLinkedin) {
-            serviceRequested.push({service: 'linkedin', status: 'PENDING'});
-        }
+        event.preventDefault();
+
+        // Define service_requested as an object
+        const serviceRequested = {
+            reddit: selectedReddit ? {service: 'reddit', status: 'PENDING'} : undefined,
+            linkedin: selectedLinkedin ? {service: 'linkedin', status: 'PENDING'} : undefined,
+        };
+
+        // Filter out undefined services
+        Object.keys(serviceRequested).forEach(key => serviceRequested[key] === undefined && delete serviceRequested[key]);
 
         const payload = {
             title: post.title || "",
             description: post.description || "",
             content: post.content || "",
-            link: "",
+            link: "", // Assuming you have a link to include or it can be an empty string if not
             service_requested: serviceRequested,
             status: post.status || "DRAFT",
         };
