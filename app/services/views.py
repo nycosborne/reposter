@@ -51,7 +51,6 @@ class ReceivingCode(APIView):
 
 
 class PostToSocialAccounts(APIView):
-    print("PostToSocialAccounts")
     serializer_class = postSerializers.PostSerializer
     authentication_classes = [TokenAuthentication]
     permission_classes = [IsAuthenticated]

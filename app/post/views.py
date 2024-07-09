@@ -42,6 +42,11 @@ class PostViewSet(viewsets.ModelViewSet):
     def get_queryset(self):
         """Return objects for the current authenticated user only."""
         tags = self.request.query_params.get('tags')
+        service_requested = self.request.query_params.get('service_requested')
+        post_id = self.kwargs.get('pk')
+        print('tags', tags)
+        print('service_requested', service_requested)
+        print('post_id', post_id)
         queryset = self.queryset
         # If tags are provided, filter the queryset by tags
         if tags:
@@ -51,7 +56,6 @@ class PostViewSet(viewsets.ModelViewSet):
         return queryset.filter(
             user=self.request.user
         ).order_by('-id').distinct()
-        print('test', test)
 
         # Ensure that the 'user' field exists in the Post model
         # this was the original code before adding the tags filter
