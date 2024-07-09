@@ -1,26 +1,27 @@
-import React from 'react';
+import React, {useState} from 'react';
 import {Card, Container, Row, Col} from 'react-bootstrap';
 import {faLinkedin, faRedditAlien} from '@fortawesome/free-brands-svg-icons';
-import {useNavigate, useLocation} from "react-router-dom";
-import {User} from "../types/types.tsx";
 import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
-import {faLinkSlash} from "@fortawesome/free-solid-svg-icons";
 
-
-interface SocialAccountsCardProps {
-    user: User;
+interface SocialAccountsIcons {
+    reddit: boolean;
+    linkedin: boolean;
 }
 
-const SocialAccountsPostStatusBar = ({user}: SocialAccountsCardProps): React.JSX.Element => {
+interface SocialAccountsPostStatusBarProps {
+    icons: SocialAccountsIcons;
+}
 
+const SocialAccountsPostStatusBar = ({icons}: SocialAccountsPostStatusBarProps): React.JSX.Element => {
+    const [selectedReddit, setSelectedReddit] = useState<string>('');
+    const [selectedLinkedin, setSelectedLinkedin] = useState<string>('');
 
-    const navigate = useNavigate();
-    const location = useLocation();
+    const selectReddit = (service: string) => {
+        setSelectedReddit(prevService => prevService === service ? '' : service); // Toggle service selection
+    }
 
-
-    const selectService = () => {
-        if (location.pathname != "/account")
-            navigate("/account");
+    const selectLinkedin = (service: string) => {
+        setSelectedLinkedin(prevService => prevService === service ? '' : service); // Toggle service selection
     }
 
     return (
@@ -34,25 +35,17 @@ const SocialAccountsPostStatusBar = ({user}: SocialAccountsCardProps): React.JSX
                         <Row className="align-items-center">
                             <Col xs="auto">
                                 <Row>
-                                    <Col onClick={selectService}>
+                                    <Col onClick={() => selectReddit('reddit')}>
                                         <FontAwesomeIcon icon={faRedditAlien} size="2x"
-                                                         color={user.reddit ? "#FF5700" : "gray"}/>
-                                        {!user.reddit && (
-                                            <div className="link-icon-container">
-                                                <FontAwesomeIcon icon={faLinkSlash} size="sm" color="black"/>
-                                            </div>)}
+                                                         color={selectedReddit === 'reddit' ? "#FF5700" : "gray"}/>
                                     </Col>
                                 </Row>
                             </Col>
                             <Col xs="auto">
                                 <Row>
-                                    <Col onClick={selectService}>
+                                    <Col onClick={() => selectLinkedin('linkedin')}>
                                         <FontAwesomeIcon icon={faLinkedin} size="2x"
-                                                         color={user.linkedin ? "#0072b1" : "gray"}/>
-                                        {!user.reddit && (
-                                            <div className="link-icon-container">
-                                                <FontAwesomeIcon icon={faLinkedin} size="sm" color="black"/>
-                                            </div>)}
+                                                         color={selectedLinkedin === 'linkedin' ? "#0072b1" : "gray"}/>
                                     </Col>
                                 </Row>
                             </Col>
@@ -61,8 +54,7 @@ const SocialAccountsPostStatusBar = ({user}: SocialAccountsCardProps): React.JSX
                 </Card.Body>
             </Card>
         </Container>
-    )
-        ;
+    );
 };
 
 export default SocialAccountsPostStatusBar;

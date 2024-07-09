@@ -29,6 +29,14 @@ const ComposePost: React.FC = () => {
         }
     );
 
+    let icons = {reddit: false, linkedin: false}; // Initialize with default values
+    if (user) {
+        icons = {
+            reddit: user.reddit,
+            linkedin: user.linkedin,
+        };
+    }
+
 
     const {post_id} = useParams();
     useEffect(() => {
@@ -131,10 +139,7 @@ const ComposePost: React.FC = () => {
                     onChange={handleDescriptionChange}
                 />
             </Form.Group>
-            {user &&
-                <SocialAccountsPostStatusBar user={user}/>
-
-            }
+            <SocialAccountsPostStatusBar icons={icons}/>
             <Form.Group className="mb-3">
                 <Form.Label>Compose Post</Form.Label>
                 <Form.Control
@@ -147,6 +152,7 @@ const ComposePost: React.FC = () => {
             <Button variant="primary" type="submit">
                 Save Post
             </Button>
+            <span> | </span>
             <Button variant="primary" onClick={postToSocialMedia}>
                 Post To Social Media
             </Button>
