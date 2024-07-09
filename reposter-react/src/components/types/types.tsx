@@ -9,6 +9,15 @@ export interface User {
     reddit: boolean;
 }
 
+
+export interface Post {
+    title: string;
+    description: string;
+    compose: string;
+    user: User;
+}
+
+
 export interface ContextProviderProps {
     children: ReactNode;
 }
