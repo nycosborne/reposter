@@ -7,9 +7,7 @@ import useAppContext from "../context/UseAppContext.tsx";
 import {User} from "../components/types/types.tsx";
 
 const ComposePost: React.FC = () => {
-
     const {user} = useAppContext();
-
     const navigate = useNavigate();
 
     interface Post {
@@ -20,24 +18,23 @@ const ComposePost: React.FC = () => {
         user?: User | null;
     }
 
-    const [post, setPost] = useState<Post>(
-        {
-            title: '',
-            description: '',
-            content: '',
-            status: 'DRAFT'
-        }
-    );
+    const [post, setPost] = useState<Post>({
+        title: '',
+        description: '',
+        content: '',
+        status: 'DRAFT'
+    });
 
     const [selectedReddit, setSelectedReddit] = useState<string>('');
     const [selectedLinkedin, setSelectedLinkedin] = useState<string>('');
 
     const selectReddit = (service: string) => {
         setSelectedReddit(prevService => prevService === service ? '' : service); // Toggle service selection
-    }
+    };
     const selectLinkedin = (service: string) => {
         setSelectedLinkedin(prevService => prevService === service ? '' : service); // Toggle service selection
-    }
+    };
+
     let icons = {reddit: false, linkedin: false}; // Initialize with default values
     if (user) {
         icons = {
@@ -46,16 +43,14 @@ const ComposePost: React.FC = () => {
         };
     }
 
-
     const {post_id} = useParams();
     useEffect(() => {
         if (post_id) {
-            // Get request with post_slug and arg
             axiosClient.get(`/post/post/${post_id}`)
                 .then(({data}) => {
                     console.log('data', data);
                     setPost(data);
-                })
+                });
         }
     }, [post_id]);
 
@@ -71,29 +66,37 @@ const ComposePost: React.FC = () => {
         setPost(prevState => ({...prevState, content: e.target.value}));
     };
 
+    const createServiceRequested = (): { service: string; status: string }[] => {
+        const services: { service: string; status: string }[] = [];
+        if (selectedReddit) {
+            services.push({service: 'reddit', status: 'PENDING'});
+        }
+        if (selectedLinkedin) {
+            services.push({service: 'linkedin', status: 'PENDING'});
+        }
+        return services;
+    };
+
     const savePost = async (event: React.FormEvent) => {
         event.preventDefault();
-        event.preventDefault();
-
-        // Define service_requested as an object
-        const serviceRequested = {
-            reddit: selectedReddit ? {service: 'reddit', status: 'PENDING'} : undefined,
-            linkedin: selectedLinkedin ? {service: 'linkedin', status: 'PENDING'} : undefined,
-        };
-
-        // Filter out undefined services
-        Object.keys(serviceRequested).forEach(key => serviceRequested[key] === undefined && delete serviceRequested[key]);
 
         const payload = {
             title: post.title || "",
             description: post.description || "",
             content: post.content || "",
             link: "", // Assuming you have a link to include or it can be an empty string if not
-            service_requested: serviceRequested,
+            tags: [], // Assuming you have tags to include or it can be an empty array if not
+            service_requested: [
+                {
+                    "service": "reddit",
+                    "status": "string"
+                }
+            ],
             status: post.status || "DRAFT",
         };
 
         console.log('payload', payload);
+
         if (post_id) {
             axiosClient.put(`/post/post/${post_id}/`, payload)
                 .then((response) => {
@@ -105,15 +108,15 @@ const ComposePost: React.FC = () => {
                 });
             return;
         }
+
         axiosClient.post('/post/post/', payload)
             .then((response) => {
-                console.log('Posted successfully', response);
+                console.log('Successfully created new Post', response);
                 navigate(`/compose/${response.data.id}`);
             })
             .catch((error) => {
                 console.log('error', error);
             });
-
     };
 
     const postToSocialMedia = async (event: React.FormEvent) => {
@@ -129,7 +132,6 @@ const ComposePost: React.FC = () => {
             description: post.description ? post.description : "",
             content: post.content ? post.content : "",
             post_id: post_id ? post_id : "",
-            // TODO: Need to set the social account from new modal
             social_accounts: 'reddit'
         };
 
@@ -141,7 +143,7 @@ const ComposePost: React.FC = () => {
             .catch((error) => {
                 console.log('error 2@#$@#$@#$', error);
             });
-    }
+    };
 
     return (
         <Form onSubmit={savePost}>
@@ -167,7 +169,6 @@ const ComposePost: React.FC = () => {
                                          selectedReddit={selectedReddit}
                                          selectLinkedin={selectLinkedin}
                                          selectedLinkedin={selectedLinkedin}/>
-
             <Form.Group className="mb-3">
                 <Form.Label>Compose Post</Form.Label>
                 <Form.Control

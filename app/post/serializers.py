@@ -62,9 +62,11 @@ class PostSerializer(serializers.ModelSerializer):
         # return Post.objects.create(**validated_data)
         """Create a new post and return it."""
         tags = validated_data.pop('tags', [])
+        print('validated_data', validated_data)
         service_requested = validated_data.pop('service_requested', [])
         post = Post.objects.create(**validated_data)
         self._get_or_create_tag(tags, post)
+        print('service_requested', service_requested)
         self._get_or_create_service_requested(service_requested, post)
 
         return post
