@@ -29,6 +29,15 @@ const ComposePost: React.FC = () => {
         }
     );
 
+    const [selectedReddit, setSelectedReddit] = useState<string>('');
+    const [selectedLinkedin, setSelectedLinkedin] = useState<string>('');
+
+    const selectReddit = (service: string) => {
+        setSelectedReddit(prevService => prevService === service ? '' : service); // Toggle service selection
+    }
+    const selectLinkedin = (service: string) => {
+        setSelectedLinkedin(prevService => prevService === service ? '' : service); // Toggle service selection
+    }
     let icons = {reddit: false, linkedin: false}; // Initialize with default values
     if (user) {
         icons = {
@@ -64,13 +73,25 @@ const ComposePost: React.FC = () => {
 
     const savePost = async (event: React.FormEvent) => {
         event.preventDefault();
-        const payload: { title: string, description: string, content: string, status: string } = {
-            title: post.title ? post.title : "",
-            description: post.description ? post.description : "",
-            content: post.content ? post.content : "",
-            status: post.status ? post.status : "DRAFT"
+        // Assuming selectedReddit and selectedLinkedin are correctly set to 'reddit' or 'linkedin' when selected
+        const serviceRequested = [];
+        if (selectedReddit) {
+            serviceRequested.push({service: 'reddit', status: 'PENDING'});
+        }
+        if (selectedLinkedin) {
+            serviceRequested.push({service: 'linkedin', status: 'PENDING'});
+        }
+
+        const payload = {
+            title: post.title || "",
+            description: post.description || "",
+            content: post.content || "",
+            link: "",
+            service_requested: serviceRequested,
+            status: post.status || "DRAFT",
         };
 
+        console.log('payload', payload);
         if (post_id) {
             axiosClient.put(`/post/post/${post_id}/`, payload)
                 .then((response) => {
@@ -139,7 +160,12 @@ const ComposePost: React.FC = () => {
                     onChange={handleDescriptionChange}
                 />
             </Form.Group>
-            <SocialAccountsPostStatusBar icons={icons}/>
+            <SocialAccountsPostStatusBar icons={icons}
+                                         selectReddit={selectReddit}
+                                         selectedReddit={selectedReddit}
+                                         selectLinkedin={selectLinkedin}
+                                         selectedLinkedin={selectedLinkedin}/>
+
             <Form.Group className="mb-3">
                 <Form.Label>Compose Post</Form.Label>
                 <Form.Control

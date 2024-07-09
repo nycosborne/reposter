@@ -10,19 +10,19 @@ interface SocialAccountsIcons {
 
 interface SocialAccountsPostStatusBarProps {
     icons: SocialAccountsIcons;
+    selectReddit: (service: string) => void;
+    selectedReddit: string;
+    selectedLinkedin: string;
+    selectLinkedin: (service: string) => void;
 }
 
-const SocialAccountsPostStatusBar = ({icons}: SocialAccountsPostStatusBarProps): React.JSX.Element => {
-    const [selectedReddit, setSelectedReddit] = useState<string>('');
-    const [selectedLinkedin, setSelectedLinkedin] = useState<string>('');
-
-    const selectReddit = (service: string) => {
-        setSelectedReddit(prevService => prevService === service ? '' : service); // Toggle service selection
-    }
-
-    const selectLinkedin = (service: string) => {
-        setSelectedLinkedin(prevService => prevService === service ? '' : service); // Toggle service selection
-    }
+const SocialAccountsPostStatusBar = ({
+                                         icons,
+                                         selectReddit,
+                                         selectedReddit,
+                                         selectedLinkedin,
+                                         selectLinkedin
+                                     }: SocialAccountsPostStatusBarProps): React.JSX.Element => {
 
     return (
         <Container>
