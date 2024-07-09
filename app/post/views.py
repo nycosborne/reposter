@@ -51,6 +51,8 @@ class PostViewSet(viewsets.ModelViewSet):
         return queryset.filter(
             user=self.request.user
         ).order_by('-id').distinct()
+        print('test', test)
+
         # Ensure that the 'user' field exists in the Post model
         # this was the original code before adding the tags filter
         # return self.queryset.filter(user=self.request.user).order_by('-id')

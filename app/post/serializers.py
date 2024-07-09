@@ -39,21 +39,25 @@ class PostSerializer(serializers.ModelSerializer):
             post.tags.add(tag)
 
     def _get_or_create_service_requested(self, service_requested, post):
-        """Get or create a service requested."""
+        """Get or create service requested."""
         auth_user = self.context['request'].user
         for service_data in service_requested:
-            service_event, created = PostServiceEvents.objects.get_or_create(
-                post=post,
-                user=auth_user,
-                # Assuming service_data is a dict
-                # with the fields for PostServiceEvents
-                defaults=service_data
+            # Check if the service event already exists
+            existing_service_event = PostServiceEvents.objects.filter(
+                post=post, user=auth_user, **{key: service_data[key] for key in service_data if key != 'defaults'}
             )
-            if not created:
-                # Update the service_event with new data if it already existed
+
+            if existing_service_event.exists():
+                # Update the existing service event
+                service_event = existing_service_event.first()
                 for key, value in service_data.items():
                     setattr(service_event, key, value)
                 service_event.save()
+            else:
+                # Create a new service event
+                service_event = PostServiceEvents.objects.create(
+                    post=post, user=auth_user, **service_data
+                )
 
     # This is overriding there create method to create a new post object
     def create(self, validated_data):
