@@ -20,7 +20,7 @@ class TagSerializer(serializers.ModelSerializer):
 class PostSerializer(serializers.ModelSerializer):
     """Serializers for the post object."""
     tags = TagSerializer(many=True, required=False)
-    service_requested = servicesSerializers.PostServiceEventsSerializer(
+    post_service_events = servicesSerializers.PostServiceEventsSerializer(
         many=True,
         required=False
     )
@@ -28,7 +28,7 @@ class PostSerializer(serializers.ModelSerializer):
     class Meta:
         model = Post
         fields = ['id', 'title', 'content', 'description',
-                  'link', 'tags', 'service_requested', 'status', 'image']
+                  'link', 'tags', 'post_service_events', 'status', 'image']
         read_only_fields = ['id']
 
     def _get_or_create_tag(self, tags, post):
