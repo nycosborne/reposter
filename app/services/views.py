@@ -9,9 +9,33 @@ from rest_framework.permissions import AllowAny
 from services.linkedinAPI import LinkedInAPI
 from services.redditAPI import RedditAPI
 
-from core.models import SocialAccounts
+from core.models import SocialAccounts, PostServiceEvents
+
 from services import serializers as servicesSerializers
 from post import serializers as postSerializers
+
+
+class PostServiceEventsViewSet(viewsets.ModelViewSet):
+    """Manage post service events in the database."""
+    serializer_class = servicesSerializers.PostServiceEventsSerializer
+    queryset = PostServiceEvents.objects.all()
+    authentication_classes = [TokenAuthentication]
+    permission_classes = [IsAuthenticated]
+
+    def get_permissions(self):
+        """
+        Instantiates and returns the list of permissions
+        that this view requires.
+        """
+        if self.action in ['list', 'retrieve']:
+            permission_classes = [AllowAny]
+        else:
+            permission_classes = [IsAdminUser]
+        return [permission() for permission in permission_classes]
+
+    def get_queryset(self):
+        """Return objects for the current authenticated user only."""
+        return self.queryset.filter(user=self.request.user)
 
 
 class SocialAccountsViewSet(viewsets.ModelViewSet):
