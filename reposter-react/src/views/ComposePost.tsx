@@ -2,39 +2,82 @@ import React, {useEffect, useState} from 'react';
 import {Button, Form} from 'react-bootstrap';
 import axiosClient from "../axios-client.tsx";
 import {useNavigate, useParams} from "react-router-dom";
+import SocialAccountsPostStatusBar from "../components/ui/SocialAccountsPostStatusBar.tsx";
+
 
 const ComposePost: React.FC = () => {
-
     const navigate = useNavigate();
 
-    interface Post {
-        title: string;
-        description: string;
-        content: string;
+    interface Tag {
+        id: number;
+        name: string;
+    }
+
+    interface PostServiceEvent {
+        id: number;
+        post_id: number;
+        service: string;
         status: string;
     }
 
-    const [post, setPost] = useState<Post>(
-        {
-            title: '',
-            description: '',
-            content: '',
-            status: 'DRAFT'
-        }
-    );
+    interface Post {
+        id?: number;
+        title?: string;
+        content: string;
+        description?: string;
+        link?: string;
+        tags?: Tag[];
+        status: string;
+        image?: string | null;
+        post_service_events?: PostServiceEvent[];
+    }
 
+    const [post, setPost] = useState<Post>({
+        title: '',
+        description: '',
+        content: '',
+        status: 'DRAFT',
+        post_service_events: []
+    });
+
+    const [selectedReddit, setSelectedReddit] = useState<string>('');
+    const [selectedLinkedin, setSelectedLinkedin] = useState<string>('');
+
+    const selectReddit = (service: string) => {
+        setSelectedReddit(prevService => prevService === service ? '' : service); // Toggle service selection
+    };
+    const selectLinkedin = (service: string) => {
+        setSelectedLinkedin(prevService => prevService === service ? '' : service); // Toggle service selection
+    };
 
     const {post_id} = useParams();
     useEffect(() => {
         if (post_id) {
-            // Get request with post_slug and arg
             axiosClient.get(`/post/post/${post_id}`)
                 .then(({data}) => {
                     console.log('data', data);
+                    // console.log('checkServices :', checkServices(data));
                     setPost(data);
-                })
+                    // check data if it has post_service_events and if service === reddit or linkedin
+                });
+
         }
     }, [post_id]);
+
+    useEffect(() => {
+        if (post.post_service_events) {
+            post.post_service_events.map((event) => {
+                // Modify this return statement as needed for your specific use case
+                if (event.service === 'reddit') {
+                    setSelectedReddit(event.status);
+                }
+                if (event.service === 'linkedin') {
+                    setSelectedLinkedin(event.status);
+                }
+            });
+        }
+    }, [post]);
+
 
     const handleTitleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
         setPost(prevState => ({...prevState, title: e.target.value}));
@@ -48,17 +91,37 @@ const ComposePost: React.FC = () => {
         setPost(prevState => ({...prevState, content: e.target.value}));
     };
 
+    const createServiceRequested = (): { service: string; status: string }[] => {
+        const services: { service: string; status: string }[] = [];
+        if (selectedReddit) {
+            services.push({service: 'reddit', status: 'PENDING'});
+        }
+        if (selectedLinkedin) {
+            services.push({service: 'linkedin', status: 'PENDING'});
+        }
+        return services;
+    };
+
     const savePost = async (event: React.FormEvent) => {
         event.preventDefault();
-        const payload: { title: string, description: string, content: string, status: string } = {
-            title: post.title ? post.title : "",
-            description: post.description ? post.description : "",
-            content: post.content ? post.content : "",
-            status: post.status ? post.status : "DRAFT"
+
+        const payload = {
+            title: post.title || "",
+            description: post.description || "",
+            content: post.content || "",
+            link: "", // Assuming you have a link to include or it can be an empty string if not
+            tags: [], // Assuming you have tags to include or it can be an empty array if not
+            service_requested: createServiceRequested(),
+            status: post.status || "DRAFT",
         };
 
+
         if (post_id) {
-            axiosClient.put(`/post/post/${post_id}/`, payload)
+            axiosClient.put(`/post/post/${post_id}/`, payload, {
+                headers: {
+                    'Content-Type': 'application/json'
+                }
+            })
                 .then((response) => {
                     console.log('Updated successfully', response);
                     navigate(`/compose/${response.data.id}`);
@@ -68,25 +131,30 @@ const ComposePost: React.FC = () => {
                 });
             return;
         }
+
         axiosClient.post('/post/post/', payload)
             .then((response) => {
-                console.log('Posted successfully', response);
+                console.log('Successfully created new Post', response);
                 navigate(`/compose/${response.data.id}`);
             })
             .catch((error) => {
                 console.log('error', error);
             });
-
     };
 
     const postToSocialMedia = async (event: React.FormEvent) => {
         event.preventDefault();
-        const payload: { title: string, description: string, content: string, post_id: string, social_accounts: string } = {
+        const payload: {
+            title: string,
+            description: string,
+            content: string,
+            post_id: string,
+            social_accounts: string
+        } = {
             title: post.title ? post.title : "",
             description: post.description ? post.description : "",
             content: post.content ? post.content : "",
             post_id: post_id ? post_id : "",
-            // TODO: Need to set the social account from new modal
             social_accounts: 'reddit'
         };
 
@@ -98,7 +166,7 @@ const ComposePost: React.FC = () => {
             .catch((error) => {
                 console.log('error 2@#$@#$@#$', error);
             });
-    }
+    };
 
     return (
         <Form onSubmit={savePost}>
@@ -119,6 +187,13 @@ const ComposePost: React.FC = () => {
                     onChange={handleDescriptionChange}
                 />
             </Form.Group>
+            <SocialAccountsPostStatusBar
+                // selectReddit={selectReddit}
+                selectReddit={selectReddit}
+                selectedReddit={selectedReddit}
+                selectLinkedin={selectLinkedin}
+                selectedLinkedin={selectedLinkedin}
+                postData={post}/>
             <Form.Group className="mb-3">
                 <Form.Label>Compose Post</Form.Label>
                 <Form.Control
@@ -131,6 +206,7 @@ const ComposePost: React.FC = () => {
             <Button variant="primary" type="submit">
                 Save Post
             </Button>
+            <span> | </span>
             <Button variant="primary" onClick={postToSocialMedia}>
                 Post To Social Media
             </Button>
