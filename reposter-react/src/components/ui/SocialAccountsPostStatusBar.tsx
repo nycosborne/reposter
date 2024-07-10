@@ -4,13 +4,8 @@ import {faLinkedin, faRedditAlien} from '@fortawesome/free-brands-svg-icons';
 import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
 import {Post} from "../types/types.tsx";
 
-interface SocialAccountsIcons {
-    reddit: boolean;
-    linkedin: boolean;
-}
 
 interface SocialAccountsPostStatusBarProps {
-    icons: SocialAccountsIcons;
     selectReddit: (service: string) => void;
     selectedReddit: string;
     selectedLinkedin: string;

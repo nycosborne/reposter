@@ -3,11 +3,11 @@ import {Button, Form} from 'react-bootstrap';
 import axiosClient from "../axios-client.tsx";
 import {useNavigate, useParams} from "react-router-dom";
 import SocialAccountsPostStatusBar from "../components/ui/SocialAccountsPostStatusBar.tsx";
-import useAppContext from "../context/UseAppContext.tsx";
+// import useAppContext from "../context/UseAppContext.tsx";
 
 
 const ComposePost: React.FC = () => {
-    const {user} = useAppContext();
+    // const {user} = useAppContext();
     const navigate = useNavigate();
 
     interface Post {
@@ -38,24 +38,14 @@ const ComposePost: React.FC = () => {
         setSelectedLinkedin(prevService => prevService === service ? '' : service); // Toggle service selection
     };
 
-    let icons = {reddit: false, linkedin: false}; // Initialize with default values
-    if (user) {
-        icons = {
-            reddit: user.reddit,
-            linkedin: user.linkedin,
-        };
-    }
-
     const {post_id} = useParams();
     useEffect(() => {
         if (post_id) {
             axiosClient.get(`/post/post/${post_id}`)
                 .then(({data}) => {
-                    console.log('data', data);
                     setPost(data);
 
                 });
-
         }
     }, [post_id]);
 
@@ -110,13 +100,9 @@ const ComposePost: React.FC = () => {
             status: post.status || "DRAFT",
         };
 
-
+        console.log('payload', payload);
         if (post_id) {
-            axiosClient.put(`/post/post/${post_id}/`, payload, {
-                headers: {
-                    'Content-Type': 'application/json'
-                }
-            })
+            axiosClient.put(`/post/post/${post_id}/`, payload, {})
                 .then((response) => {
                     console.log('Updated successfully', response);
                     navigate(`/compose/${response.data.id}`);
@@ -182,12 +168,12 @@ const ComposePost: React.FC = () => {
                     onChange={handleDescriptionChange}
                 />
             </Form.Group>
-            <SocialAccountsPostStatusBar icons={icons}
-                                         selectReddit={selectReddit}
-                                         selectedReddit={selectedReddit}
-                                         selectLinkedin={selectLinkedin}
-                                         selectedLinkedin={selectedLinkedin}
-                                         postData={post}/>
+            <SocialAccountsPostStatusBar
+                selectReddit={selectReddit}
+                selectedReddit={selectedReddit}
+                selectLinkedin={selectLinkedin}
+                selectedLinkedin={selectedLinkedin}
+                postData={post}/>
             <Form.Group className="mb-3">
                 <Form.Label>Compose Post</Form.Label>
                 <Form.Control

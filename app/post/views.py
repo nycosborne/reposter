@@ -34,6 +34,7 @@ class PostViewSet(viewsets.ModelViewSet):
     queryset = Post.objects.all()
     authentication_classes = [TokenAuthentication]
     permission_classes = [IsAuthenticated]
+    print('PostViewSet', queryset)
 
     def _params_to_ints(self, qs):
         """Convert a list of string IDs to a list of integers."""
@@ -44,9 +45,6 @@ class PostViewSet(viewsets.ModelViewSet):
         tags = self.request.query_params.get('tags')
         service_requested = self.request.query_params.get('service_requested')
         post_id = self.kwargs.get('pk')
-        print('tags', tags)
-        print('service_requested', service_requested)
-        print('post_id', post_id)
         queryset = self.queryset
         # If tags are provided, filter the queryset by tags
         if tags:
