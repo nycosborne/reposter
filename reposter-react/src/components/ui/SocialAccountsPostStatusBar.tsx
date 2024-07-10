@@ -23,34 +23,8 @@ const SocialAccountsPostStatusBar = ({
                                          selectedReddit,
                                          selectedLinkedin,
                                          selectLinkedin,
-                                         postData
                                      }: SocialAccountsPostStatusBarProps): React.JSX.Element => {
-    postData.post_service_events && postData.post_service_events.map((event, index) => (
-        // console.log('index', postData.post_service_events[index])
-        console.log('index', event.service),
-            console.log('index', event.service)
-        // console.log('event', event)
-        // <div key={index}>
-        //     <p>Service: {event.service}</p>
-        //     <p>Status: {event.status}</p>
-        // </div>
-    ))
 
-    if (postData.post_service_events) {
-        const newArray = postData.post_service_events.map((event, index) => {
-            // Modify this return statement as needed for your specific use case
-            if(event.service){
-
-            }
-            return {
-                service: event.service,
-                status: event.status,
-            };
-        });
-
-        // newArray now holds the transformed array
-        // Use newArray as needed in your application
-    }
 
     return (
         <Container>

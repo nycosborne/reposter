@@ -61,25 +61,17 @@ const ComposePost: React.FC = () => {
 
     useEffect(() => {
         if (post.post_service_events) {
-            const newArray = post.post_service_events.map((event, index) => {
+            post.post_service_events.map((event) => {
                 // Modify this return statement as needed for your specific use case
-                if(event.service === 'reddit'){
+                if (event.service === 'reddit') {
                     setSelectedReddit(event.status);
                 }
-                if(event.service === 'linkedin'){
+                if (event.service === 'linkedin') {
                     setSelectedLinkedin(event.status);
                 }
-
-                // return {
-                //     service: event.service,
-                //     status: event.status,
-                // };
             });
-
-            // newArray now holds the transformed array
-            // Use newArray as needed in your application
         }
-    }, [post.post_service_events]);
+    }, [post]);
 
 
     const handleTitleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -114,7 +106,7 @@ const ComposePost: React.FC = () => {
             content: post.content || "",
             link: "", // Assuming you have a link to include or it can be an empty string if not
             tags: [], // Assuming you have tags to include or it can be an empty array if not
-            service_requested: createServiceRequested(),
+            // service_requested: createServiceRequested(),
             status: post.status || "DRAFT",
         };
 
