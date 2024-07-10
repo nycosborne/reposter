@@ -41,19 +41,18 @@ class PostSerializer(serializers.ModelSerializer):
     def _get_or_create_service_requested(self, service_requested, post):
         """Get or create a service requested."""
         auth_user = self.context['request'].user
+        created_services = []
         for service_data in service_requested:
-            service_event, created = PostServiceEvents.objects.get_or_create(
+            post_service_event, created = PostServiceEvents.objects.get_or_create(
                 post=post,
                 user=auth_user,
-                # Assuming service_data is a dict
-                # with the fields for PostServiceEvents
-                defaults=service_data
+                service=service_data['service'],
+                status=service_data['status']
             )
-            if not created:
-                # Update the service_event with new data if it already existed
-                for key, value in service_data.items():
-                    setattr(service_event, key, value)
-                service_event.save()
+            if created:
+                created_services.append(post_service_event)
+
+        return created_services
 
     # This is overriding there create method to create a new post object
     def create(self, validated_data):
@@ -72,9 +71,15 @@ class PostSerializer(serializers.ModelSerializer):
     def update(self, instance, validated_data):
         """Update a post and return it."""
         tags = validated_data.pop('tags', None)
+        service_requested = validated_data.pop('service_requested', None)
         if tags is not None:
             instance.tags.clear()
             self._get_or_create_tag(tags, instance)
+
+        if service_requested is not None:
+             # get the service_requested by post
+            PostServiceEvents.objects.filter(post=instance).delete()
+            self._get_or_create_service_requested(service_requested, instance)
 
         for key, value in validated_data.items():
             setattr(instance, key, value)
