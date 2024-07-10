@@ -20,7 +20,7 @@ class TagSerializer(serializers.ModelSerializer):
 class PostSerializer(serializers.ModelSerializer):
     """Serializers for the post object."""
     tags = TagSerializer(many=True, required=False)
-    post_service_events = servicesSerializers.PostServiceEventsSerializer(
+    service_requested = servicesSerializers.PostServiceEventsSerializer(
         many=True,
         required=False
     )
@@ -28,7 +28,7 @@ class PostSerializer(serializers.ModelSerializer):
     class Meta:
         model = Post
         fields = ['id', 'title', 'content', 'description',
-                  'link', 'tags', 'post_service_events', 'status', 'image']
+                  'link', 'tags', 'service_requested', 'status', 'image']
         read_only_fields = ['id']
 
     def _get_or_create_tag(self, tags, post):
@@ -70,24 +70,14 @@ class PostSerializer(serializers.ModelSerializer):
         return post
 
     def update(self, instance, validated_data):
-        tags_data = validated_data.pop('tags', None)
-        service_requested_data = validated_data.pop('post_service_events', None)
-
-        if tags_data is not None:
+        """Update a post and return it."""
+        tags = validated_data.pop('tags', None)
+        if tags is not None:
             instance.tags.clear()
-            self._get_or_create_tag(tags_data, instance)
+            self._get_or_create_tag(tags, instance)
 
-        if service_requested_data is not None:
-            # service_events = []
-            # instance.post_service_events.clear()
-            # instance.post_service_events.clear()
-            instance.post_service_events.all().delete()
-            self._get_or_create_service_requested(service_requested_data, instance)
-
-        # Update other fields as before
         for key, value in validated_data.items():
-            if hasattr(instance, key):
-                setattr(instance, key, value)
+            setattr(instance, key, value)
 
         instance.save()
         return instance
@@ -95,13 +85,9 @@ class PostSerializer(serializers.ModelSerializer):
 
 class PostDetailSerializer(PostSerializer):
     """Serializer for post detail"""
-    post_service_events = servicesSerializers.PostServiceEventsSerializer(
-        many=True,
-        required=False
-    )
 
     class Meta(PostSerializer.Meta):
-        fields = PostSerializer.Meta.fields + ['description', 'link', 'image', 'post_service_events']
+        fields = PostSerializer.Meta.fields + ['description', 'link', 'image']
 
 
 class PostImageSerializer(serializers.ModelSerializer):
