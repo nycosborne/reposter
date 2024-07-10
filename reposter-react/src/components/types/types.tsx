@@ -13,6 +13,14 @@ export interface ContextProviderProps {
     children: ReactNode;
 }
 
+export interface Post {
+    title: string;
+    description: string;
+    content: string;
+    status: string;
+    post_service_events?: string[];
+    // user?: User;
+}
 
 export interface StateContextProps {
     user: User | null;
