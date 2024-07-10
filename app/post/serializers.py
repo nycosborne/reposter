@@ -44,14 +44,16 @@ class PostSerializer(serializers.ModelSerializer):
         """Get or create service requested."""
         auth_user = self.context['request'].user
         for service_data in service_requested:
-            # Check if the service event already exists
-            existing_service_event = PostServiceEvents.objects.filter(
-                post=post, user=auth_user, **{key: service_data[key] for key in service_data if key != 'defaults'}
+            service_event, created = PostServiceEvents.objects.get_or_create(
+                post=post,
+                user=auth_user,
+                # Assuming service_data is a dict
+                # with the fields for PostServiceEvents
+                defaults=service_data
             )
 
-            if existing_service_event.exists():
-                # Update the existing service event
-                service_event = existing_service_event.first()
+            if not created:
+                # Update the service_event with new data if it already existed
                 for key, value in service_data.items():
                     setattr(service_event, key, value)
                 service_event.save()
