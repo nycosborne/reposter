@@ -71,21 +71,18 @@ class PostSerializer(serializers.ModelSerializer):
 
     def update(self, instance, validated_data):
         tags_data = validated_data.pop('tags', None)
-        service_requested_data = validated_data.pop('service_requested', None)
+        service_requested_data = validated_data.pop('post_service_events', None)
 
         if tags_data is not None:
             instance.tags.clear()
             self._get_or_create_tag(tags_data, instance)
 
         if service_requested_data is not None:
-            service_events = []
-            for service_data in service_requested_data:
-                service_event, _ = PostServiceEvents.objects.get_or_create(
-                    post=instance,
-                    defaults=service_data  # Adjust as necessary
-                )
-                service_events.append(service_event.id)
-            instance.post_service_events.set(service_events)
+            # service_events = []
+            # instance.post_service_events.clear()
+            # instance.post_service_events.clear()
+            instance.post_service_events.all().delete()
+            self._get_or_create_service_requested(service_requested_data, instance)
 
         # Update other fields as before
         for key, value in validated_data.items():
