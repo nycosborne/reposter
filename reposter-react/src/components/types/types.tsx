@@ -13,7 +13,9 @@ export interface User {
 export interface Post {
     title: string;
     description: string;
-    compose: string;
+    content: string;
+    status: string;
+    post_service_events?: any[];
 }
 
 

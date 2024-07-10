@@ -1,7 +1,8 @@
-import React, {useState} from 'react';
+import React from 'react';
 import {Card, Container, Row, Col} from 'react-bootstrap';
 import {faLinkedin, faRedditAlien} from '@fortawesome/free-brands-svg-icons';
 import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
+import {Post} from "../types/types.tsx";
 
 interface SocialAccountsIcons {
     reddit: boolean;
@@ -14,16 +15,17 @@ interface SocialAccountsPostStatusBarProps {
     selectedReddit: string;
     selectedLinkedin: string;
     selectLinkedin: (service: string) => void;
+    postData: Post;
 }
 
 const SocialAccountsPostStatusBar = ({
-                                         icons,
                                          selectReddit,
                                          selectedReddit,
                                          selectedLinkedin,
-                                         selectLinkedin
+                                         selectLinkedin,
+                                         postData
                                      }: SocialAccountsPostStatusBarProps): React.JSX.Element => {
-
+console.log('selectedReddit', postData.post_service_events)
     return (
         <Container>
             <Card className="dashboard-panel">
@@ -37,7 +39,7 @@ const SocialAccountsPostStatusBar = ({
                                 <Row>
                                     <Col onClick={() => selectReddit('reddit')}>
                                         <FontAwesomeIcon icon={faRedditAlien} size="2x"
-                                                         color={selectedReddit === 'reddit' ? "#FF5700" : "gray"}/>
+                                                         color={selectedReddit ? "#FF5700" : "gray"}/>
                                     </Col>
                                 </Row>
                             </Col>
@@ -45,7 +47,7 @@ const SocialAccountsPostStatusBar = ({
                                 <Row>
                                     <Col onClick={() => selectLinkedin('linkedin')}>
                                         <FontAwesomeIcon icon={faLinkedin} size="2x"
-                                                         color={selectedLinkedin === 'linkedin' ? "#0072b1" : "gray"}/>
+                                                         color={selectedLinkedin ? "#0072b1" : "gray"}/>
                                     </Col>
                                 </Row>
                             </Col>

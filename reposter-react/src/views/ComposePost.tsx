@@ -4,7 +4,7 @@ import axiosClient from "../axios-client.tsx";
 import {useNavigate, useParams} from "react-router-dom";
 import SocialAccountsPostStatusBar from "../components/ui/SocialAccountsPostStatusBar.tsx";
 import useAppContext from "../context/UseAppContext.tsx";
-import {User} from "../components/types/types.tsx";
+
 
 const ComposePost: React.FC = () => {
     const {user} = useAppContext();
@@ -15,14 +15,17 @@ const ComposePost: React.FC = () => {
         description: string;
         content: string;
         status: string;
-        user?: User | null;
+        // user?: User | null;
+        post_service_events?: any[];
+        compose?: string;
     }
 
     const [post, setPost] = useState<Post>({
         title: '',
         description: '',
         content: '',
-        status: 'DRAFT'
+        status: 'DRAFT',
+        post_service_events: []
     });
 
     const [selectedReddit, setSelectedReddit] = useState<string>('');
@@ -50,9 +53,12 @@ const ComposePost: React.FC = () => {
                 .then(({data}) => {
                     console.log('data', data);
                     setPost(data);
+
                 });
+
         }
     }, [post_id]);
+
 
     const handleTitleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
         setPost(prevState => ({...prevState, title: e.target.value}));
@@ -89,23 +95,6 @@ const ComposePost: React.FC = () => {
             service_requested: createServiceRequested(),
             status: post.status || "DRAFT",
         };
-        //
-        // const payload = {
-        //
-        //     "title": "string",
-        //     "content": "string",
-        //     "description": "string",
-        //     "link": "string",
-        //     "service_requested": [
-        //         {
-        //             "service": "poop",
-        //             "status": "string"
-        //         }
-        //     ],
-        //     "status": "DRAFT"
-        // }
-
-        console.log('payload', payload);
 
 
         if (post_id) {
@@ -183,7 +172,8 @@ const ComposePost: React.FC = () => {
                                          selectReddit={selectReddit}
                                          selectedReddit={selectedReddit}
                                          selectLinkedin={selectLinkedin}
-                                         selectedLinkedin={selectedLinkedin}/>
+                                         selectedLinkedin={selectedLinkedin}
+                                         postData={post}/>
             <Form.Group className="mb-3">
                 <Form.Label>Compose Post</Form.Label>
                 <Form.Control
