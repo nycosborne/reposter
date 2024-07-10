@@ -31,12 +31,12 @@ class PostServiceEventsSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = PostServiceEvents
-        fields = ['post_id', 'service', 'status']
-        read_only_fields = ['id']
+        fields = ['id', 'post_id', 'service', 'status']
+        read_only_fields = ['id', 'post_id']
 
-    def create(self, validated_data):
-        """Create a new post service event and return it."""
-        return PostServiceEvents.objects.create(**validated_data)
+    # def create(self, validated_data):
+    #     """Create a new post service event and return it."""
+    #     return PostServiceEvents.objects.create(**validated_data)
 
 
 class CodeSerializer(serializers.Serializer):
