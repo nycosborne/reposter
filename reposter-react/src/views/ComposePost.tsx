@@ -59,6 +59,28 @@ const ComposePost: React.FC = () => {
         }
     }, [post_id]);
 
+    useEffect(() => {
+        if (post.post_service_events) {
+            const newArray = post.post_service_events.map((event, index) => {
+                // Modify this return statement as needed for your specific use case
+                if(event.service === 'reddit'){
+                    setSelectedReddit(event.status);
+                }
+                if(event.service === 'linkedin'){
+                    setSelectedLinkedin(event.status);
+                }
+
+                // return {
+                //     service: event.service,
+                //     status: event.status,
+                // };
+            });
+
+            // newArray now holds the transformed array
+            // Use newArray as needed in your application
+        }
+    }, [post.post_service_events]);
+
 
     const handleTitleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
         setPost(prevState => ({...prevState, title: e.target.value}));

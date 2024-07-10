@@ -15,7 +15,7 @@ export interface Post {
     description: string;
     content: string;
     status: string;
-    post_service_events?: any[];
+    post_service_events?: string[];
 }
 
 
