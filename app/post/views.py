@@ -34,7 +34,6 @@ class PostViewSet(viewsets.ModelViewSet):
     queryset = Post.objects.all()
     authentication_classes = [TokenAuthentication]
     permission_classes = [IsAuthenticated]
-    print('PostViewSet', queryset)
 
     def _params_to_ints(self, qs):
         """Convert a list of string IDs to a list of integers."""

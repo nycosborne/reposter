@@ -22,11 +22,10 @@ class TagSerializer(serializers.ModelSerializer):
 class PostSerializer(serializers.ModelSerializer):
     """Serializers for the post object."""
     tags = TagSerializer(many=True, required=False)
-    # service_requested = servicesSerializers.PostServiceEventsSerializer(
-    #     many=True,
-    #     required=False
-    # )
-    post_service_events = servicesSerializers.PostServiceEventsSerializer(many=True, read_only=True)
+    post_service_events = servicesSerializers.PostServiceEventsSerializer(
+        many=True,
+        required=False
+    )
 
     class Meta:
         model = Post
