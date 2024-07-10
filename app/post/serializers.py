@@ -28,7 +28,7 @@ class PostSerializer(serializers.ModelSerializer):
     class Meta:
         model = Post
         fields = ['id', 'title', 'content', 'description',
-                  'link', 'tags', 'service_requested', 'status', 'image']
+                  'link', 'tags', 'status', 'image', 'service_requested']
         read_only_fields = ['id']
 
     def _get_or_create_tag(self, tags, post):
@@ -85,9 +85,13 @@ class PostSerializer(serializers.ModelSerializer):
 
 class PostDetailSerializer(PostSerializer):
     """Serializer for post detail"""
+    post_service_events = servicesSerializers.PostServiceEventsSerializer(
+        many=True,
+        read_only=True
+    )
 
     class Meta(PostSerializer.Meta):
-        fields = PostSerializer.Meta.fields + ['description', 'link', 'image']
+        fields = PostSerializer.Meta.fields + ['description', 'link', 'image', 'post_service_events']
 
 
 class PostImageSerializer(serializers.ModelSerializer):
