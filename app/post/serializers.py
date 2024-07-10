@@ -95,9 +95,13 @@ class PostSerializer(serializers.ModelSerializer):
 
 class PostDetailSerializer(PostSerializer):
     """Serializer for post detail"""
+    post_service_events = servicesSerializers.PostServiceEventsSerializer(
+        many=True,
+        required=False
+    )
 
     class Meta(PostSerializer.Meta):
-        fields = PostSerializer.Meta.fields + ['description', 'link', 'image']
+        fields = PostSerializer.Meta.fields + ['description', 'link', 'image', 'post_service_events']
 
 
 class PostImageSerializer(serializers.ModelSerializer):
