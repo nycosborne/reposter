@@ -43,12 +43,13 @@ class PostSerializer(serializers.ModelSerializer):
         auth_user = self.context['request'].user
         created_services = []
         for service_data in service_requested:
-            post_service_event, created = PostServiceEvents.objects.get_or_create(
-                post=post,
-                user=auth_user,
-                service=service_data['service'],
-                status=service_data['status']
-            )
+            post_service_event, created = (
+                PostServiceEvents.objects.get_or_create(
+                    post=post,
+                    user=auth_user,
+                    service=service_data['service'],
+                    status=service_data['status']
+                ))
             if created:
                 created_services.append(post_service_event)
 
@@ -77,7 +78,6 @@ class PostSerializer(serializers.ModelSerializer):
             self._get_or_create_tag(tags, instance)
 
         if service_requested is not None:
-             # get the service_requested by post
             PostServiceEvents.objects.filter(post=instance).delete()
             self._get_or_create_service_requested(service_requested, instance)
 
@@ -96,7 +96,10 @@ class PostDetailSerializer(PostSerializer):
     )
 
     class Meta(PostSerializer.Meta):
-        fields = PostSerializer.Meta.fields + ['description', 'link', 'image', 'post_service_events']
+        fields = PostSerializer.Meta.fields + ['description',
+                                               'link',
+                                               'image',
+                                               'post_service_events']
 
 
 class PostImageSerializer(serializers.ModelSerializer):
