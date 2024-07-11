@@ -100,8 +100,8 @@ class PostToSocialAccounts(APIView):
                 if item['service'] == 'linkedin':
                     print("linkedin")
                     linkedin_api = LinkedInAPI(request.user, request)
-                    posted = linkedin_api.post_to_linkedin(serializer.data,
-                                                           request.data['post_id'])
+                    posted = linkedin_api.post_to_linkedin(
+                        serializer.data, request.data['post_id'])
 
                     if posted:
                         # Update the status of the post
@@ -123,9 +123,10 @@ class PostToSocialAccounts(APIView):
                                        f" Successfully posted to Reddit."},
                             status=status.HTTP_201_CREATED)
 
-                    return Response({"message": f"post ID {request.data['post_id']}",
-                                     "error": serializer.errors},
-                                    status=status.HTTP_400_BAD_REQUEST)
+                    return Response(
+                        {"message": f"post ID {request.data['post_id']}",
+                         "error": serializer.errors},
+                        status=status.HTTP_400_BAD_REQUEST)
 
         #     if request.data['service_requested'] == 'linkedin':
         #         linkedin_api = LinkedInAPI(request.user, request)

@@ -22,7 +22,7 @@ class RedditAPI:
                      reddituserinfo_set.order_by('-created_at').
                      first().subreddit)
         # Checks if the user has a default subreddit set
-        subreddit = set_default_subreddit(subreddit)
+        subreddit = self.set_default_subreddit(subreddit)
 
         print(f"Posting to Reddit: {data}")
         print(f"Post ID: {post_id}")
@@ -95,7 +95,7 @@ class RedditAPI:
             if serializer.is_valid():
                 self.user.save()
                 serializer.save()
-                set_default_subreddit(user_info)
+                self.set_default_subreddit(user_info)
                 print("User info data saved successfully.")
             else:
                 print(f"Failed to save user info data. "
