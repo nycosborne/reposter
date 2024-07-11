@@ -84,29 +84,60 @@ class PostToSocialAccounts(APIView):
         serializer = self.serializer_class(data=request.data)
         if serializer.is_valid():
             print(request.data)
-            if request.data['social_accounts'] == 'linkedin':
-                linkedin_api = LinkedInAPI(request.user, request)
-                posted = linkedin_api.post_to_linkedin(serializer.data,
+            for item in request.data:
+                if item['service'] == 'linkedin':
+                    print("linkedin")
+                    linkedin_api = LinkedInAPI(request.user, request)
+                    posted = linkedin_api.post_to_linkedin(serializer.data,
+                                                           request.data['post_id'])
+
+                    if posted:
+                        # Update the status of the post
+                        # Update the status of the post_service_event
+                        return Response({
+                            "message": f"post ID: {request.data['post_id']}"
+                                       f" Successfully posted to LinkedIn."},
+                            status=status.HTTP_201_CREATED)
+
+                if item['service'] == 'reddit':
+                    print("Reddit")
+                    reddit_api = RedditAPI(request.user, request)
+                    posted = reddit_api.post_to_reddit(serializer.data,
                                                        request.data['post_id'])
 
-                if posted:
-                    return Response({
-                        "message": f"post ID: {request.data['post_id']}"
-                                   f" Successfully posted to LinkedIn."},
-                        status=status.HTTP_201_CREATED)
+                    if posted:
+                        return Response({
+                            "message": f"post ID: {request.data['post_id']}"
+                                       f" Successfully posted to Reddit."},
+                            status=status.HTTP_201_CREATED)
 
-            if request.data['social_accounts'] == 'reddit':
-                print("Reddit")
-                reddit_api = RedditAPI(request.user, request)
-                posted = reddit_api.post_to_reddit(serializer.data,
-                                                   request.data['post_id'])
+                    return Response({"message": f"post ID {request.data['post_id']}",
+                                     "error": serializer.errors},
+                                    status=status.HTTP_400_BAD_REQUEST)
 
-                if posted:
-                    return Response({
-                        "message": f"post ID: {request.data['post_id']}"
-                                   f" Successfully posted to Reddit."},
-                        status=status.HTTP_201_CREATED)
-
-        return Response({"message": f"post ID {request.data['post_id']}",
-                         "error": serializer.errors},
-                        status=status.HTTP_400_BAD_REQUEST)
+        #     if request.data['service_requested'] == 'linkedin':
+        #         linkedin_api = LinkedInAPI(request.user, request)
+        #         posted = linkedin_api.post_to_linkedin(serializer.data,
+        #                                                request.data['post_id'])
+        #
+        #         if posted:
+        #             return Response({
+        #                 "message": f"post ID: {request.data['post_id']}"
+        #                            f" Successfully posted to LinkedIn."},
+        #                 status=status.HTTP_201_CREATED)
+        #
+        #     if request.data['service_requested'] == 'reddit':
+        #         print("Reddit")
+        #         reddit_api = RedditAPI(request.user, request)
+        #         posted = reddit_api.post_to_reddit(serializer.data,
+        #                                            request.data['post_id'])
+        #
+        #         if posted:
+        #             return Response({
+        #                 "message": f"post ID: {request.data['post_id']}"
+        #                            f" Successfully posted to Reddit."},
+        #                 status=status.HTTP_201_CREATED)
+        #
+        # return Response({"message": f"post ID {request.data['post_id']}",
+        #                  "error": serializer.errors},
+        #                 status=status.HTTP_400_BAD_REQUEST)

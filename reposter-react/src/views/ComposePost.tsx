@@ -164,7 +164,7 @@ const ComposePost: React.FC = () => {
             content: post.content || "",
             link: "", // Assuming you have a link to include or it can be an empty string if not
             tags: [], // Assuming you have tags to include or it can be an empty array if not
-            service_requested: createServiceRequested('PUBLISHED'),
+            service_requested: createServiceRequested('SET_TO_PUBLISH'),
             status: post.status || "DRAFT",
         };
 
