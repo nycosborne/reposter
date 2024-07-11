@@ -23,16 +23,15 @@ const RedditRedirectHandler: React.FC = () => {
     const state: string = searchParams.get('state') || '';
     console.log('code:', code);
 
-    // TODO this should be better
-    // Maybe I should uses a randomly generated string
-    // one off string for each code request
-    // TODO: set up logging
-    if (state !== REDDIT_STATE) {
-        console.error('Invalid state:', state);
-        return
-    }
-
     useEffect(() => {
+        // TODO this should be better
+        // Maybe I should uses a randomly generated string
+        // one off string for each code request
+        // TODO: set up logging
+        if (state !== REDDIT_STATE) {
+            console.error('Invalid state:', state);
+            return
+        }
         if (code !== null) {
             getAndSetAccessToken(code, 'reddit').then((data) => {
                 console.log('Access Token:', data);

@@ -24,7 +24,6 @@ const RedirectHandler: React.FC = () => {
             console.error('Invalid state:', state);
             return;
         }
-
         if (code !== null) {
             getAndSetAccessToken(code, 'linkedin').then((data) => {
                 console.log('Access Token:', data);
