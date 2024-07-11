@@ -127,7 +127,7 @@ class PostToSocialAccounts(APIView):
                         {"message": f"post ID {request.data['post_id']}",
                          "error": serializer.errors},
                         status=status.HTTP_400_BAD_REQUEST)
-
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
         #     if request.data['service_requested'] == 'linkedin':
         #         linkedin_api = LinkedInAPI(request.user, request)
         #         posted = linkedin_api.post_to_linkedin(serializer.data,

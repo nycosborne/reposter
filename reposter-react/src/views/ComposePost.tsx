@@ -58,25 +58,22 @@ const ComposePost: React.FC = () => {
                     console.log('data', data);
                     // console.log('checkServices :', checkServices(data));
                     setPost(data);
+                    // Check if data has post_service_events
+                    if (data.service_requested && Array.isArray(data.service_requested)) {
+                        // Loop over the post_service_events array
+                        data.service_requested.forEach(event => {
+                            if (event.service === 'reddit') {
+                                setSelectedReddit(event.status);
+                            } else if (event.service === 'linkedin') {
+                                setSelectedLinkedin(event.status);
+                            }
+                        });
+                    }
                     // check data if it has post_service_events and if service === reddit or linkedin
                 });
 
         }
     }, [post_id]);
-
-    useEffect(() => {
-        if (post.service_requested) {
-            post.service_requested.map((event) => {
-                // Modify this return statement as needed for your specific use case
-                if (event.service === 'reddit') {
-                    setSelectedReddit(event.status);
-                }
-                if (event.service === 'linkedin') {
-                    setSelectedLinkedin(event.status);
-                }
-            });
-        }
-    }, [post]);
 
 
     const handleTitleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
