@@ -68,111 +68,108 @@ class RedditAPI:
                   f" Response: {response.text}")
             self.user.reddit = False
 
+    def _get_user_info(self, access_token):
+        # TODO: need to refactor this
+        from services import serializers as servicesSerializers
 
-def _get_user_info(self, access_token):
-    # TODO: need to refactor this
-    from services import serializers as servicesSerializers
+        headers = {
+            'Authorization': 'bearer ' + access_token,
+            "Content-Type": "application/x-www-form-urlencoded",
+            'User-Agent': 'reposter/0.0.1 (by u/nycosborne)',
+        }
 
-    headers = {
-        'Authorization': 'bearer ' + access_token,
-        "Content-Type": "application/x-www-form-urlencoded",
-        'User-Agent': 'reposter/0.0.1 (by u/nycosborne)',
-    }
+        response = requests.get(
+            'https://oauth.reddit.com/api/v1/me', headers=headers)
 
-    response = requests.get(
-        'https://oauth.reddit.com/api/v1/me', headers=headers)
+        if response.status_code == 200:
+            print("User info obtained successfully.")
+            user_info = response.json()
+            print(f"User info data!!!!: {user_info}")
+            user_info['user'] = self.user.id
+            user_info['reddit_id'] = user_info['id']
 
-    if response.status_code == 200:
-        print("User info obtained successfully.")
-        user_info = response.json()
-        print(f"User info data!!!!: {user_info}")
-        user_info['user'] = self.user.id
-        user_info['reddit_id'] = user_info['id']
+            serializer = (
+                servicesSerializers.RedditUserInfoSerializer(
+                    data=user_info))
 
-        serializer = (
-            servicesSerializers.RedditUserInfoSerializer(
-                data=user_info))
-
-        if serializer.is_valid():
-            self.user.save()
-            serializer.save()
-            set_default_subreddit(user_info)
-            print("User info data saved successfully.")
+            if serializer.is_valid():
+                self.user.save()
+                serializer.save()
+                set_default_subreddit(user_info)
+                print("User info data saved successfully.")
+            else:
+                print(f"Failed to save user info data. "
+                      f"Errors: {serializer.errors}")
+                self.user.reddit = False
         else:
-            print(f"Failed to save user info data. "
-                  f"Errors: {serializer.errors}")
+            print(f"Failed to obtain user info. "
+                  f"Status code: {response.status_code},"
+                  f" Response: {response.text}")
             self.user.reddit = False
-    else:
-        print(f"Failed to obtain user info. "
-              f"Status code: {response.status_code},"
-              f" Response: {response.text}")
-        self.user.reddit = False
 
+    def get_access_token(self, code):
+        # TODO: need to refactor this
+        from services import serializers as servicesSerializers
+        print(f'Getting access token for code: {code}')
+        client_auth = requests.auth.HTTPBasicAuth(
+            self.reddit_client_id,
+            self.reddit_client_secret)
 
-def get_access_token(self, code):
-    # TODO: need to refactor this
-    from services import serializers as servicesSerializers
-    print(f'Getting access token for code: {code}')
-    client_auth = requests.auth.HTTPBasicAuth(
-        self.reddit_client_id,
-        self.reddit_client_secret)
+        headers = {
+            "Content-Type": "application/x-www-form-urlencoded",
+            'User-Agent': 'reposter/0.0.1 (by u/nycosborne)',
+        }
 
-    headers = {
-        "Content-Type": "application/x-www-form-urlencoded",
-        'User-Agent': 'reposter/0.0.1 (by u/nycosborne)',
-    }
+        data = {
+            'grant_type': 'authorization_code',
+            'code': code,
+            'redirect_uri': self.reddit_redirect_uri
+        }
 
-    data = {
-        'grant_type': 'authorization_code',
-        'code': code,
-        'redirect_uri': self.reddit_redirect_uri
-    }
+        print(f"Headers: {headers}")
+        print(f'Client Auth: {client_auth.password}, {client_auth.username}')
+        print(f"Data: {data}")
+        print(f"reddit_redirect_uri: {self.reddit_redirect_uri}")
 
-    print(f"Headers: {headers}")
-    print(f'Client Auth: {client_auth.password}, {client_auth.username}')
-    print(f"Data: {data}")
-    print(f"reddit_redirect_uri: {self.reddit_redirect_uri}")
+        response = requests.post(
+            'https://www.reddit.com/api/v1/access_token',
+            headers=headers, data=data, auth=client_auth
+        )
+        print(f"Response: {response}")
+        if response.status_code == 200:
+            print("Access token obtained successfully.")
+            access_token_data = response.json()
+            access_token_data['user'] = self.user.id
+            access_token_data['name'] = 'reddit'
+            print(f"Got Access token data!!!!: {access_token_data}")
+            serializer = (
+                servicesSerializers.UserSocialAccountsSettingsSerializer(
+                    data=access_token_data))
 
-    response = requests.post(
-        'https://www.reddit.com/api/v1/access_token',
-        headers=headers, data=data, auth=client_auth
-    )
-    print(f"Response: {response}")
-    if response.status_code == 200:
-        print("Access token obtained successfully.")
-        access_token_data = response.json()
-        access_token_data['user'] = self.user.id
-        access_token_data['name'] = 'reddit'
-        print(f"Got Access token data!!!!: {access_token_data}")
-        serializer = (
-            servicesSerializers.UserSocialAccountsSettingsSerializer(
-                data=access_token_data))
-
-        if serializer.is_valid():
-            self.user.reddit = True
-            self.user.save()
-            serializer.save()
-            print("Access token data saved successfully.")
-            self._get_user_info(access_token_data['access_token'])
+            if serializer.is_valid():
+                self.user.reddit = True
+                self.user.save()
+                serializer.save()
+                print("Access token data saved successfully.")
+                self._get_user_info(access_token_data['access_token'])
+            else:
+                print(f"Failed to save access token data. "
+                      f"Errors: {serializer.errors}")
+                self.user.reddit = False
         else:
-            print(f"Failed to save access token data. "
-                  f"Errors: {serializer.errors}")
+            print(f"Failed to obtain access token. "
+                  f"Status code: {response.status_code},"
+                  f" Response: {response.text}")
             self.user.reddit = False
-    else:
-        print(f"Failed to obtain access token. "
-              f"Status code: {response.status_code},"
-              f" Response: {response.text}")
-        self.user.reddit = False
-    # Update user social account status
-    self.user.save()
+        # Update user social account status
+        self.user.save()
 
-
-def set_default_subreddit(user_info):
-    if user_info.get('default_set'):
-        default_subreddit = user_info.get('display_name')
-        prefix = "u_"
-        if default_subreddit.startswith(prefix):
-            return default_subreddit[len(prefix):]
-        return default_subreddit
+    def set_default_subreddit(user_info):
+        if user_info.get('default_set'):
+            default_subreddit = user_info.get('display_name')
+            prefix = "u_"
+            if default_subreddit.startswith(prefix):
+                return default_subreddit[len(prefix):]
+            return default_subreddit
 
 # def get_
