@@ -13,9 +13,9 @@ const ComposePost: React.FC = () => {
         name: string;
     }
 
-    interface PostServiceEvent {
-        id: number;
-        post_id: number;
+    interface ServiceRequested {
+        id?: number;
+        post_id?: number;
         service: string;
         status: string;
     }
@@ -29,7 +29,7 @@ const ComposePost: React.FC = () => {
         tags?: Tag[];
         status: string;
         image?: string | null;
-        post_service_events?: PostServiceEvent[];
+        service_requested?: ServiceRequested[];
     }
 
     const [post, setPost] = useState<Post>({
@@ -37,7 +37,7 @@ const ComposePost: React.FC = () => {
         description: '',
         content: '',
         status: 'DRAFT',
-        post_service_events: []
+        service_requested: []
     });
 
     const [selectedReddit, setSelectedReddit] = useState<string>('');
@@ -65,8 +65,8 @@ const ComposePost: React.FC = () => {
     }, [post_id]);
 
     useEffect(() => {
-        if (post.post_service_events) {
-            post.post_service_events.map((event) => {
+        if (post.service_requested) {
+            post.service_requested.map((event) => {
                 // Modify this return statement as needed for your specific use case
                 if (event.service === 'reddit') {
                     setSelectedReddit(event.status);
@@ -91,13 +91,13 @@ const ComposePost: React.FC = () => {
         setPost(prevState => ({...prevState, content: e.target.value}));
     };
 
-    const createServiceRequested = (): { service: string; status: string }[] => {
+    const createServiceRequested = (status?: string): ServiceRequested[] => {
         const services: { service: string; status: string }[] = [];
         if (selectedReddit) {
-            services.push({service: 'reddit', status: 'PENDING'});
+            services.push({service: 'reddit', status: status ? status : 'PENDING'});
         }
         if (selectedLinkedin) {
-            services.push({service: 'linkedin', status: 'PENDING'});
+            services.push({service: 'linkedin', status: status ? status : 'PENDING'});
         }
         return services;
     };
@@ -111,7 +111,7 @@ const ComposePost: React.FC = () => {
             content: post.content || "",
             link: "", // Assuming you have a link to include or it can be an empty string if not
             tags: [], // Assuming you have tags to include or it can be an empty array if not
-            service_requested: createServiceRequested(),
+            service_requested: createServiceRequested('PENDING'),
             status: post.status || "DRAFT",
         };
 
@@ -144,18 +144,28 @@ const ComposePost: React.FC = () => {
 
     const postToSocialMedia = async (event: React.FormEvent) => {
         event.preventDefault();
-        const payload: {
-            title: string,
-            description: string,
-            content: string,
-            post_id: string,
-            social_accounts: string
-        } = {
-            title: post.title ? post.title : "",
-            description: post.description ? post.description : "",
-            content: post.content ? post.content : "",
-            post_id: post_id ? post_id : "",
-            social_accounts: 'reddit'
+        // const payload: {
+        //     title: string,
+        //     description: string,
+        //     content: string,
+        //     post_id: string,
+        //     social_accounts: string
+        // } = {
+        //     title: post.title ? post.title : "",
+        //     description: post.description ? post.description : "",
+        //     content: post.content ? post.content : "",
+        //     post_id: post_id ? post_id : "",
+        //     social_accounts: 'reddit'
+        // };
+
+        const payload: Post = {
+            title: post.title || "",
+            description: post.description || "",
+            content: post.content || "",
+            link: "", // Assuming you have a link to include or it can be an empty string if not
+            tags: [], // Assuming you have tags to include or it can be an empty array if not
+            service_requested: createServiceRequested('PUBLISHED'),
+            status: post.status || "DRAFT",
         };
 
         axiosClient.post('/services/soc-post/', payload)
