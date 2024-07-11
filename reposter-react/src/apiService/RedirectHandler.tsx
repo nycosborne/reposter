@@ -3,6 +3,7 @@ import {useNavigate, useLocation} from 'react-router-dom';
 import getAndSetAccessToken from './requestAccessToken';
 import useAppContext from "../context/UseAppContext.tsx";
 
+const LINKEDIN_STATE = import.meta.env.VITE_STATE;
 // TODO: Need to make this a router component
 // All callback will redirect to this component then I'll route to the specific API handler
 const RedirectHandler: React.FC = () => {
@@ -13,6 +14,16 @@ const RedirectHandler: React.FC = () => {
     useEffect(() => {
         const searchParams = new URLSearchParams(location.search);
         const code = searchParams.get('code');
+        const state = searchParams.get('state');
+
+        // TODO this should be better
+        // Maybe I should uses a randomly generated string
+        // one off string for each code request
+        // TODO: set up logging
+        if (state !== LINKEDIN_STATE) {
+            console.error('Invalid state:', state);
+            return;
+        }
 
         if (code !== null) {
             getAndSetAccessToken(code, 'linkedin').then((data) => {
