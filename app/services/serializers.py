@@ -42,19 +42,20 @@ class PostServiceEventsSerializer(serializers.ModelSerializer):
 class CodeSerializer(serializers.Serializer):
     code = serializers.CharField(required=True)
     account_type = serializers.CharField(required=False)
+    print(f"CodeSerializer has code: ${code} and account_type: ${account_type}")
 
-    def save(self):
-        auth_user = self.context['request'].user
-        request = self.context['request']
-        if request.data['account_type'] == 'linkedin':
-            linkedin_api = LinkedInAPI(auth_user, request)
-            code = self.validated_data['code']
-            linkedin_api.get_access_token(code)
-        if request.data['account_type'] == 'reddit':
-            print("CodeSerializer.reddit")
-            reddit_api = RedditAPI(auth_user, request)
-            code = self.validated_data['code']
-            reddit_api.get_access_token(code)
+    # def save(self):
+    #     auth_user = self.context['request'].user
+    #     request = self.context['request']
+    #     if request.data['account_type'] == 'linkedin':
+    #         linkedin_api = LinkedInAPI(auth_user, request)
+    #         code = self.validated_data['code']
+    #         linkedin_api.get_access_token(code)
+    #     if request.data['account_type'] == 'reddit':
+    #         print("CodeSerializer.reddit")
+    #         reddit_api = RedditAPI(auth_user, request)
+    #         code = self.validated_data['code']
+    #         reddit_api.get_access_token(code)
 
 
 class UserSocialAccountsSettingsSerializer(serializers.ModelSerializer):

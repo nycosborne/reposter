@@ -68,7 +68,19 @@ class ReceivingCode(APIView):
         serializer = self.serializer_class(data=request.data,
                                            context={'request': request})
         if serializer.is_valid():
-            serializer.save()
+            auth_user = request.user
+            # request = self.request
+            print(f"ReceivingCode.post request: {serializer.data}")
+            if serializer.data['account_type'] == 'linkedin':
+                linkedin_api = LinkedInAPI(auth_user, serializer.data)
+                code = serializer.data['code']
+                linkedin_api.get_access_token(code)
+            if serializer.data['account_type'] == 'reddit':
+                print("CodeSerializer.reddit")
+                reddit_api = RedditAPI(auth_user, serializer.data)
+                code = serializer.data['code']
+                reddit_api.get_access_token(code)
+
             return Response({"message": "Toke received successfully."},
                             status=status.HTTP_201_CREATED)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
