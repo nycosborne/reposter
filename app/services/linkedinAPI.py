@@ -14,7 +14,8 @@ class LinkedInAPI:
         self.request = request
 
     def post_to_linkedin(self, data, post_id):
-
+        print(f"Posting to LinkedIn: {data}")
+        pass
         access_token = (self.user.
                         usersocialaccountssettings_set.filter(name='linkedin').
                         order_by('-created_at').first().access_token)
@@ -144,6 +145,9 @@ class LinkedInAPI:
             self.user.linkedin = False
         # Update user social account status
         self.user.save()
+
+
+
 
 # Example usage
 # linkedin_api = LinkedInAPI()

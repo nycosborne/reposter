@@ -159,6 +159,7 @@ const ComposePost: React.FC = () => {
         // };
 
         const payload: Post = {
+            id: post_id ? parseInt(post_id) : undefined,
             title: post.title || "",
             description: post.description || "",
             content: post.content || "",
