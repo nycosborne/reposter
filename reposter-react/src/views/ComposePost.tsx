@@ -63,7 +63,10 @@ const ComposePost: React.FC = () => {
                     if (data.post_service_events && Array.isArray(data.post_service_events)) {
                         console.log('data.post_service_events', data.post_service_events);
                         // Loop over the post_service_events array
-                        data.post_service_events.forEach(function (event: { service: string; status: React.SetStateAction<string>; }) {
+                        data.post_service_events.forEach(function (event: {
+                            service: string;
+                            status: React.SetStateAction<string>;
+                        }) {
                             console.log('event', event);
                             if (event.service === 'reddit') {
                                 setSelectedReddit('reddit');
@@ -206,7 +209,7 @@ const ComposePost: React.FC = () => {
                 selectedReddit={selectedReddit}
                 selectLinkedin={selectLinkedin}
                 selectedLinkedin={selectedLinkedin}
-                postData={post}/>
+            />
             <Form.Group className="mb-3">
                 <Form.Label>Compose Post</Form.Label>
                 <Form.Control

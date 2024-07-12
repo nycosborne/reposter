@@ -2,7 +2,6 @@ import React from 'react';
 import {Card, Container, Row, Col} from 'react-bootstrap';
 import {faLinkedin, faRedditAlien} from '@fortawesome/free-brands-svg-icons';
 import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
-// import {Post} from "../types/types.tsx";
 
 
 interface SocialAccountsPostStatusBarProps {
@@ -10,32 +9,8 @@ interface SocialAccountsPostStatusBarProps {
     selectedReddit: string;
     selectedLinkedin: string;
     selectLinkedin: (service: string) => void;
-    postData: Post;
 }
 
-    interface Tag {
-        id: number;
-        name: string;
-    }
-
-    interface PostServiceEvent {
-        id: number;
-        post_id: number;
-        service: string;
-        status: string;
-    }
-
-    interface Post {
-        id?: number;
-        title?: string;
-        content: string;
-        description?: string;
-        link?: string;
-        tags?: Tag[];
-        status: string;
-        image?: string | null;
-        post_service_events?: PostServiceEvent[];
-    }
 
 const SocialAccountsPostStatusBar = ({
                                          selectReddit,
