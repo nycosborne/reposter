@@ -38,7 +38,7 @@ class PostServiceEventsSerializer(serializers.ModelSerializer):
 
 
 class CodeSerializer(serializers.Serializer):
-    code = serializers.CharField(required=True)
+    code = serializers.CharField(required=False)
     account_type = serializers.CharField(required=False)
 
 
