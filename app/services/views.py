@@ -138,8 +138,8 @@ class PostToSocialAccounts(APIView):
                 if post_service_event['service'] == 'reddit' and post_service_event['status'] == 'SET_TO_PUBLISH':
                     print("Processing Reddit service")
                     reddit_api = RedditAPI(request.user, request)
-                    # posted = reddit_api.post_to_reddit(
-                    #     post_serializer.data, request.data['id'])
+                    posted = reddit_api.post_to_reddit(
+                        post_serializer.data, request.data['id'])
                     posted_to = 'Reddit'
 
             # if posted:
