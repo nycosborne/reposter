@@ -145,11 +145,3 @@ class LinkedInAPI:
             self.user.linkedin = False
         # Update user social account status
         self.user.save()
-
-
-
-
-# Example usage
-# linkedin_api = LinkedInAPI()
-# linkedin_api.check_access_token()
-# linkedin_api.post_linkedin('Test API')

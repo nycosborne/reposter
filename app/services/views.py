@@ -125,27 +125,31 @@ class PostToSocialAccounts(APIView):
             post_service_events = standerdize_post_service_events(request.data)
 
             for post_service_event in post_service_events:
-                print(f"Service: {post_service_event['service']}, Status: {post_service_event['status']}")
+                print(f"Service: {post_service_event['service']},"
+                      f" Status: {post_service_event['status']}")
 
-                if post_service_event['service'] == 'linkedin' and post_service_event['status'] == 'SET_TO_PUBLISH':
+                if (post_service_event['service'] == 'linkedin' and
+                        post_service_event['status'] == 'SET_TO_PUBLISH'):
                     print("Processing LinkedIn service")
                     linkedin_api = LinkedInAPI(request.user, request)
                     print(post_serializer.data, request.data['id'])
-                    posted = linkedin_api.post_to_linkedin(
+                    linkedin_api.post_to_linkedin(
                         post_serializer.data, request.data['id'])
-                    posted_to = 'LinkedIn'
+                    # TODO: need to handle update response
+                    # posted = linkedin_api.post_to_linkedin(
+                    #     post_serializer.data, request.data['id'])
+                    # posted_to = 'LinkedIn'
 
-                if post_service_event['service'] == 'reddit' and post_service_event['status'] == 'SET_TO_PUBLISH':
+                if (post_service_event['service'] == 'reddit' and
+                        post_service_event['status'] == 'SET_TO_PUBLISH'):
                     print("Processing Reddit service")
                     reddit_api = RedditAPI(request.user, request)
-                    posted = reddit_api.post_to_reddit(
+                    reddit_api.post_to_reddit(
                         post_serializer.data, request.data['id'])
-                    posted_to = 'Reddit'
-
-            # if posted:
-            #     return Response({
-            #         "message": f"Post ID: {request.data['post_id']} Successfully posted !!!!."
-            #     }, status=status.HTTP_201_CREATED)
+                    # TODO: need to handle update response
+                    # posted = reddit_api.post_to_reddit(
+                    #     post_serializer.data, request.data['id'])
+                    # posted_to = 'Reddit'
 
             return Response({
                 "message": f"Post ID {request.data.get('title')}",
@@ -153,47 +157,5 @@ class PostToSocialAccounts(APIView):
             }, status=status.HTTP_400_BAD_REQUEST)
 
         print('Error:', post_serializer.errors)
-        return Response(f"Validation failed: {post_serializer.errors}", status=status.HTTP_400_BAD_REQUEST)
-
-# def post(self, request):
-#     post_serializer = self.post_serializers_class(data=request.data)
-#     print(f"PostToSocialAccounts request: {request.data}")
-#     if post_serializer.is_valid():
-#         print(request.data)
-#         for item in request.data:
-#             print('item title :', str(item.title))
-#             print('item title :', item['title'])
-#             print('item post_service_events :', item)
-#             for service in item['post_service_events']:
-#                 if service == 'linkedin':
-#                     print("linkedin")
-#                     linkedin_api = LinkedInAPI(request.user, request)
-#                     posted = linkedin_api.post_to_linkedin(
-#                         post_serializer.data, request.data['post_id'])
-#
-#                     if posted:
-#                         # Update the status of the post
-#                         # Update the status of the post_service_event
-#                         return Response({
-#                             "message": f"post ID: {request.data['post_id']}"
-#                                        f" Successfully posted to LinkedIn."},
-#                             status=status.HTTP_201_CREATED)
-#
-#                     if item['service'] == 'reddit':
-#                         print("Reddit")
-#                         reddit_api = RedditAPI(request.user, request)
-#                         posted = reddit_api.post_to_reddit(post_serializer.data,
-#                                                            request.data['post_id'])
-#
-#                     if posted:
-#                         return Response({
-#                             "message": f"post ID: {request.data['post_id']}"
-#                                        f" Successfully posted to Reddit."},
-#                             status=status.HTTP_201_CREATED)
-#
-#                     return Response(
-#                         {"message": f"post ID {request.data['post_id']}",
-#                          "error": post_serializer.errors},
-#                         status=status.HTTP_400_BAD_REQUEST)
-#     print('error', post_serializer.errors)
-#     return Response(f"Validation failed ${post_serializer.errors}", status=status.HTTP_400_BAD_REQUEST)
+        return Response(f"Validation failed: {post_serializer.errors}",
+                        status=status.HTTP_400_BAD_REQUEST)

@@ -28,12 +28,10 @@ class RedditAPI:
                         usersocialaccountssettings_set.filter(name='reddit').
                         order_by('-created_at').first().access_token)
         subreddit_user_info = (self.user.
-        reddituserinfo_set.order_by('-created_at').first().subreddit)
-        print(f"Posting to Reddit subreddit subreddit subreddit subreddit subreddit: {subreddit_user_info}")
+                               reddituserinfo_set.order_by('-created_at').
+                               first().subreddit)
         # Checks if the user has a default subreddit set
-        print('subreddit_user_name', subreddit_user_info)
         subreddit = set_default_subreddit(subreddit_user_info)
-        pass
         print(f"Posting to Reddit: {data}")
         print(f"Post ID: {post_id}")
         print(f"Access Token: {access_token}")

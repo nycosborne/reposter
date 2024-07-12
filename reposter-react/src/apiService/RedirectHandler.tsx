@@ -1,4 +1,4 @@
-import React, {useEffect, useState} from 'react';
+import React, {useEffect} from 'react';
 import {useNavigate, useLocation} from 'react-router-dom';
 import getAndSetAccessToken from './requestAccessToken';
 import useAppContext from "../context/UseAppContext.tsx";
@@ -12,7 +12,8 @@ const RedirectHandler: React.FC = () => {
     const navigate = useNavigate();
     // const [authorizationCode, setAuthorizationCode] = useState<string | null>('');
     const {user, setUser} = useAppContext();
-    const [loading, setLoading] = useState(false);
+
+    // const [loading, setLoading] = useState(false);
 
     async function handleAccessToken(code: string, platform: string) {
         try {
@@ -27,7 +28,7 @@ const RedirectHandler: React.FC = () => {
         } catch (error) {
             console.error('Error:', error);
         } finally {
-            setLoading(false);
+            // setLoading(false);
         }
     }
 
@@ -44,10 +45,10 @@ const RedirectHandler: React.FC = () => {
             console.error('Invalid state:', state);
             return;
         }
-        if (loading) {
-            return;
-        }
-        setLoading(true);
+        // if (loading) {
+        //     return;
+        // }
+        // setLoading(true);
         if (code !== null) {
             handleAccessToken(code, 'linkedin').then(r => {
                 console.log('Access token:', r);
