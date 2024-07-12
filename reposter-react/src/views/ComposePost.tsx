@@ -30,6 +30,7 @@ const ComposePost: React.FC = () => {
         status: string;
         image?: string | null;
         service_requested?: ServiceRequested[];
+        post_service_events?: ServiceRequested[];
     }
 
     const [post, setPost] = useState<Post>({
@@ -59,13 +60,15 @@ const ComposePost: React.FC = () => {
                     // console.log('checkServices :', checkServices(data));
                     setPost(data);
                     // Check if data has post_service_events
-                    if (data.service_requested && Array.isArray(data.service_requested)) {
+                    if (data.post_service_events && Array.isArray(data.post_service_events)) {
+                        console.log('data.post_service_events', data.post_service_events);
                         // Loop over the post_service_events array
-                        data.service_requested.forEach(event => {
+                        data.post_service_events.forEach(function (event: { service: string; status: React.SetStateAction<string>; }) {
+                            console.log('event', event);
                             if (event.service === 'reddit') {
-                                setSelectedReddit(event.status);
+                                setSelectedReddit('reddit');
                             } else if (event.service === 'linkedin') {
-                                setSelectedLinkedin(event.status);
+                                setSelectedLinkedin('linkedin');
                             }
                         });
                     }
@@ -108,7 +111,7 @@ const ComposePost: React.FC = () => {
             content: post.content || "",
             link: "", // Assuming you have a link to include or it can be an empty string if not
             tags: [], // Assuming you have tags to include or it can be an empty array if not
-            service_requested: createServiceRequested('PENDING'),
+            post_service_events: createServiceRequested('PENDING'),
             status: post.status || "DRAFT",
         };
 
@@ -161,10 +164,11 @@ const ComposePost: React.FC = () => {
             content: post.content || "",
             link: "", // Assuming you have a link to include or it can be an empty string if not
             tags: [], // Assuming you have tags to include or it can be an empty array if not
-            service_requested: createServiceRequested('SET_TO_PUBLISH'),
+            post_service_events: createServiceRequested('SET_TO_PUBLISH'),
             status: post.status || "DRAFT",
         };
 
+        console.log('payload', payload);
         axiosClient.post('/services/soc-post/', payload)
             .then((response) => {
                 console.log('Posted successfully', response);
