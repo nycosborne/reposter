@@ -6,6 +6,15 @@ from dotenv import load_dotenv
 load_dotenv()
 
 
+def set_default_subreddit(user_info):
+    if user_info.get('default_set'):
+        default_subreddit = user_info.get('display_name')
+        prefix = "u_"
+        if default_subreddit.startswith(prefix):
+            return default_subreddit[len(prefix):]
+        return default_subreddit
+
+
 class RedditAPI:
     def __init__(self, user, request):
         self.reddit_client_id = os.getenv('REDDIT_CLIENT_ID')
@@ -18,12 +27,11 @@ class RedditAPI:
         access_token = (self.user.
                         usersocialaccountssettings_set.filter(name='reddit').
                         order_by('-created_at').first().access_token)
-        subreddit = (self.user.
-                     reddituserinfo_set.order_by('-created_at').
-                     first().subreddit)
+        subreddit_user_info = (self.user.
+                               reddituserinfo_set.order_by('-created_at').
+                               first().subreddit)
         # Checks if the user has a default subreddit set
-        subreddit = self.set_default_subreddit(subreddit)
-
+        subreddit = set_default_subreddit(subreddit_user_info)
         print(f"Posting to Reddit: {data}")
         print(f"Post ID: {post_id}")
         print(f"Access Token: {access_token}")
@@ -95,7 +103,7 @@ class RedditAPI:
             if serializer.is_valid():
                 self.user.save()
                 serializer.save()
-                self.set_default_subreddit(user_info)
+                set_default_subreddit(user_info)
                 print("User info data saved successfully.")
             else:
                 print(f"Failed to save user info data. "
@@ -163,13 +171,5 @@ class RedditAPI:
             self.user.reddit = False
         # Update user social account status
         self.user.save()
-
-    def set_default_subreddit(user_info):
-        if user_info.get('default_set'):
-            default_subreddit = user_info.get('display_name')
-            prefix = "u_"
-            if default_subreddit.startswith(prefix):
-                return default_subreddit[len(prefix):]
-            return default_subreddit
 
 # def get_
