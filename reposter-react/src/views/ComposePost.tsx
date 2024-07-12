@@ -111,7 +111,8 @@ const ComposePost: React.FC = () => {
             content: post.content || "",
             link: "", // Assuming you have a link to include or it can be an empty string if not
             tags: [], // Assuming you have tags to include or it can be an empty array if not
-            post_service_events: createServiceRequested('PENDING'),
+            // TODO need to standrdize the service_requested and post_service_events
+            service_requested: createServiceRequested('PENDING'),
             status: post.status || "DRAFT",
         };
 
