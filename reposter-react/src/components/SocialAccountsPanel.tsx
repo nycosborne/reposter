@@ -1,4 +1,4 @@
-import React from 'react';
+import React, {useEffect, useState} from 'react';
 import {Card, ListGroup, Container, Row, Col} from 'react-bootstrap';
 import useAppContext from "../context/UseAppContext.tsx";
 import {faLinkedin, faRedditAlien} from '@fortawesome/free-brands-svg-icons';
@@ -40,7 +40,7 @@ redditAuthUrl.search = new URLSearchParams({
         response_type: 'code',
         state: REDDIT_STATE,
         redirect_uri: REDDIT_REDIRECT_URI,
-        duration : 'permanent',
+        duration: 'permanent',
         scope: REDDIT_SCOP
     }
 ).toString();
@@ -58,6 +58,7 @@ const SocialAccountsPanel = ({showLink}: SocialAccountsCardProps): React.JSX.Ele
     const {user} = useAppContext();
     const navigate = useNavigate();
     const location = useLocation();
+
 
     if (!user) {
         return <div>Loading...</div>

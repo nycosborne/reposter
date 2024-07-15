@@ -42,8 +42,8 @@ const RedditRedirectHandler: React.FC = () => {
                     const updatedUser = {...user, linkedin: true};
                     setUser(updatedUser);
                 }
-                navigate(`/dashboard?updated=${Date.now()}`);
-                window.location.reload();
+                navigate(`/dashboard?reddit_updated=${true}`);
+                // window.location.reload();
             }).catch((error) => {
                 console.error('Error:', error);
             });
