@@ -7,20 +7,17 @@ interface AccessTokenResponse {
     message: string;
 }
 
-const getAndSetAccessToken = async (code: string, account_type: string): Promise<AccessTokenResponse> => {
-    const payload: { code: string, account_type: string } = {
-        code: code,
-        account_type: account_type
-    };
+const GetAndSetAccessToken = async (code: string, account_type: string): Promise<AccessTokenResponse> => {
 
-    const {user, setUser} = useAppContext();
+
+    const {user} = useAppContext();
     const navigate = useNavigate();
 
     useEffect(() => {
-        const searchParams = new URLSearchParams(location.search);
-        const code = searchParams.get('code');
-        const state = searchParams.get('state');
-        const message: string = '';
+        const payload: { code: string, account_type: string } = {
+            code: code,
+            account_type: account_type
+        };
         axiosClient.post('/services/passcode/', payload)
             .then(() => {
                 // todo - set the access token in the local storage OR NOT
@@ -30,23 +27,11 @@ const getAndSetAccessToken = async (code: string, account_type: string): Promise
             .catch((error) => {
                 console.log('error', error);
             });
-        // return {message: message};
-        // TODO this should be better
-        // Maybe I should uses a randomly generated string
-        // one off string for each code request
-    }, [user]);
-    // const message: string = '';
-    // axiosClient.post('/services/passcode/', payload)
-    //     .then((response) => {
-    //         // todo - set the access token in the local storage OR NOT
-    //         return response.data;
-    //     })
-    //     .catch((error) => {
-    //         console.log('error', error);
-    //     });
-    // return {message: message};
+    }, [user, navigate, code, account_type]);
+
+    return {message: 'Passed Code!'};
 
 
 };
 
-export default getAndSetAccessToken;
+export default GetAndSetAccessToken;
