@@ -1,4 +1,4 @@
-import React, {useEffect, useState} from 'react';
+import React from 'react';
 import {Card, ListGroup, Container, Row, Col} from 'react-bootstrap';
 import useAppContext from "../context/UseAppContext.tsx";
 import {faLinkedin, faRedditAlien} from '@fortawesome/free-brands-svg-icons';
@@ -6,8 +6,6 @@ import {FontAwesomeIcon} from '@fortawesome/react-fontawesome';
 import {faLinkSlash} from "@fortawesome/free-solid-svg-icons";
 import {IconProp} from '@fortawesome/fontawesome-svg-core';
 import {useNavigate, useLocation} from "react-router-dom";
-import axiosClient from "../axios-client.tsx";
-// import axiosClient from "../axios-client.tsx";
 
 
 // Define the parameters for the LinkedIn OAuth 2.0 request

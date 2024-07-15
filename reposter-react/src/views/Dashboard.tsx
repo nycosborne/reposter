@@ -1,4 +1,4 @@
-import React, {useEffect, useState} from "react";
+import React from "react";
 import {Col, Container, Row} from "react-bootstrap";
 
 import PostPanel from "../components/PostPanel.tsx";

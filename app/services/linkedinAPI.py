@@ -13,8 +13,9 @@ class LinkedInAPI:
         self.user = user
         self.request = request
         self.access_token = (self.user.
-                             usersocialaccountssettings_set.filter(name='linkedin').
-                             order_by('-created_at').first().access_token)
+                             usersocialaccountssettings_set
+                             .filter(name='linkedin')
+                             .order_by('-created_at').first().access_token)
         self.sub = (self.user.
                     linkedinuserinfo_set.order_by('-created_at').
                     first().sub)
