@@ -171,5 +171,4 @@ class RedditAPI:
             self.user.reddit = False
         # Update user social account status
         self.user.save()
-
-# def get_
+        return self.user.reddit
