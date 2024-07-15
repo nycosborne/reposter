@@ -1,4 +1,4 @@
-import React, {useEffect, useState} from 'react';
+import React, {useEffect, useState} from "react";
 import {Col, Container, Row} from "react-bootstrap";
 
 import PostPanel from "../components/PostPanel.tsx";
@@ -13,8 +13,7 @@ const Dashboard: () => React.JSX.Element = () => {
                     <PostPanel/>
                 </Col>
                 <Col>
-                    <SocialAccountsPanel
-                        showLink={false}/>
+                    <SocialAccountsPanel showLink={false}/>
                 </Col>
             </Row>
         </Container>
