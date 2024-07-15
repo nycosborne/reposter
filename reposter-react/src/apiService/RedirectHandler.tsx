@@ -24,7 +24,7 @@ const RedirectHandler: React.FC = () => {
                 const updatedUser = {...user, linkedin: true};
                 setUser(updatedUser);
             }
-            navigate('/dashboard', {replace: true});
+            navigate(`/dashboard?updated=${Date.now()}`);
         } catch (error) {
             console.error('Error:', error);
         } finally {

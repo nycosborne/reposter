@@ -12,7 +12,9 @@ const REDDIT_STATE = import.meta.env.VITE_REDDIT_STATE;
 const RedditRedirectHandler: React.FC = () => {
     const location = useLocation();
     const navigate = useNavigate();
+    const history = useHistory();
     const {user, setUser} = useAppContext();
+
 
     // const [authorizationCode, setAuthorizationCode] = useState<string | null>('');
     // const {user, setUser} = useAppContext();
@@ -40,7 +42,7 @@ const RedditRedirectHandler: React.FC = () => {
                     const updatedUser = {...user, linkedin: true};
                     setUser(updatedUser);
                 }
-                navigate('/dashboard', {replace: true});
+                navigate(`/dashboard?updated=${Date.now()}`);
             }).catch((error) => {
                 console.error('Error:', error);
             });
