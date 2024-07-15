@@ -27,17 +27,7 @@ const getAndSetAccessToken = async (code: string, account_type: string): Promise
             });
     }, [user]);
     return {message: 'Updated user'};
-    // const message: string = '';
-    // axiosClient.post('/services/passcode/', payload)
-    //     .then((response) => {
-    //         // todo - set the access token in the local storage OR NOT
-    //         setUser(response.data);
-    //         return response.data;
-    //     })
-    //     .catch((error) => {
-    //         console.log('error', error);
-    //     });
-    // return {message: message};
+
 };
 
 export default getAndSetAccessToken;
