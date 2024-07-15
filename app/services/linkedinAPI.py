@@ -12,6 +12,13 @@ class LinkedInAPI:
         self.linkedin_redirect_uri = os.getenv('LINKEDIN_REDIRECT_URI')
         self.user = user
         self.request = request
+        self.access_token = (self.user.
+                             usersocialaccountssettings_set
+                             .filter(name='linkedin')
+                             .order_by('-created_at').first().access_token)
+        self.sub = (self.user.
+                    linkedinuserinfo_set.order_by('-created_at').
+                    first().sub)
 
     def post_to_linkedin(self, data, post_id):
         print(f"Posting to LinkedIn: {data}")
@@ -88,6 +95,10 @@ class LinkedInAPI:
             serializer = (
                 servicesSerializers.LinkedinUserInfoSerializer(
                     data=linkedin_user_info))
+            if self.sub:
+                print("User info data already exists.")
+                return self.user.linkedin
+
             if serializer.is_valid():
                 serializer.save()
             else:
@@ -97,6 +108,10 @@ class LinkedInAPI:
             print(f"Failed to obtain user info. "
                   f"Status code: {response.status_code},"
                   f" Response: {response.text}")
+            self.user.linkedin = False
+            return self.user.linkedin
+
+        return self.user.linkedin
 
     def get_access_token(self, code):
         # TODO: need to refactor this

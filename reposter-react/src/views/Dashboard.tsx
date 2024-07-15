@@ -1,5 +1,6 @@
 import React from "react";
 import {Col, Container, Row} from "react-bootstrap";
+
 import PostPanel from "../components/PostPanel.tsx";
 import SocialAccountsPanel from "../components/SocialAccountsPanel.tsx";
 

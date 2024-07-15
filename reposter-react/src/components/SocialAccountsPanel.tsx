@@ -6,7 +6,6 @@ import {FontAwesomeIcon} from '@fortawesome/react-fontawesome';
 import {faLinkSlash} from "@fortawesome/free-solid-svg-icons";
 import {IconProp} from '@fortawesome/fontawesome-svg-core';
 import {useNavigate, useLocation} from "react-router-dom";
-// import axiosClient from "../axios-client.tsx";
 
 
 // Define the parameters for the LinkedIn OAuth 2.0 request
@@ -40,7 +39,7 @@ redditAuthUrl.search = new URLSearchParams({
         response_type: 'code',
         state: REDDIT_STATE,
         redirect_uri: REDDIT_REDIRECT_URI,
-        duration : 'permanent',
+        duration: 'permanent',
         scope: REDDIT_SCOP
     }
 ).toString();
@@ -58,6 +57,7 @@ const SocialAccountsPanel = ({showLink}: SocialAccountsCardProps): React.JSX.Ele
     const {user} = useAppContext();
     const navigate = useNavigate();
     const location = useLocation();
+
 
     if (!user) {
         return <div>Loading...</div>
