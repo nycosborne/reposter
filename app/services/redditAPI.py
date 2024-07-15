@@ -113,18 +113,23 @@ class RedditAPI:
                 self.access_token = (self.user
                                      .usersocialaccountssettings_set
                                      .filter(name='reddit')
-                                     .order_by('-created_at').first().access_token)
+                                     .order_by('-created_at').
+                                     first().access_token)
                 self.subreddit_user_info = (self.user.
-                                            reddituserinfo_set.order_by('-created_at').
+                                            reddituserinfo_set.
+                                            order_by('-created_at').
                                             first().subreddit)
 
             def post_to_reddit(self, data, post_id):
                 # TODO: need to refactor this
                 access_token = (self.user.
-                                usersocialaccountssettings_set.filter(name='reddit').
-                                order_by('-created_at').first().access_token)
+                                usersocialaccountssettings_set.
+                                filter(name='reddit').
+                                order_by('-created_at').
+                                first().access_token)
                 subreddit_user_info = (self.user.
-                                       reddituserinfo_set.order_by('-created_at').
+                                       reddituserinfo_set.
+                                       order_by('-created_at').
                                        first().subreddit)
                 # Checks if the user has a default subreddit set
                 subreddit = set_default_subreddit(subreddit_user_info)
@@ -152,7 +157,8 @@ class RedditAPI:
                 }
 
                 response = requests.post(
-                    'https://oauth.reddit.com/api/submit', headers=headers, data=data)
+                    'https://oauth.reddit.com/api/submit',
+                    headers=headers, data=data)
 
                 post = self.user.post_set.get(id=post_id)
 
@@ -245,9 +251,6 @@ class RedditAPI:
                 }
 
                 print(f"Headers: {headers}")
-                print(f'Client Auth: {client_auth.password}, {client_auth.username}')
-                print(f"Data: {data}")
-                print(f"reddit_redirect_uri: {self.reddit_redirect_uri}")
 
                 response = requests.post(
                     'https://www.reddit.com/api/v1/access_token',
@@ -261,7 +264,8 @@ class RedditAPI:
                     access_token_data['name'] = 'reddit'
                     print(f"Got Access token data!!!!: {access_token_data}")
                     serializer = (
-                        servicesSerializers.UserSocialAccountsSettingsSerializer(
+                        servicesSerializers
+                        .UserSocialAccountsSettingsSerializer(
                             data=access_token_data))
 
                     if serializer.is_valid():
