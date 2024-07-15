@@ -32,31 +32,31 @@ const RedirectHandler: React.FC = () => {
         }
     }
 
-    useEffect(() => {
-        const searchParams = new URLSearchParams(location.search);
-        const code = searchParams.get('code');
-        const state = searchParams.get('state');
+    // useEffect(() => {
+    const searchParams = new URLSearchParams(location.search);
+    const code = searchParams.get('code');
+    const state = searchParams.get('state');
 
-        // TODO this should be better
-        // Maybe I should uses a randomly generated string
-        // one off string for each code request
-        // TODO: set up logging
-        if (state !== LINKEDIN_STATE) {
-            console.error('Invalid state:', state);
-            return;
-        }
-        // if (loading) {
-        //     return;
-        // }
-        // setLoading(true);
-        if (code !== null) {
-            handleAccessToken(code, 'linkedin').then(r => {
-                console.log('Access token:', r);
-            });
-        } else {
-            console.error('Authorization code not found');
-        }
-    });
+    // TODO this should be better
+    // Maybe I should uses a randomly generated string
+    // one off string for each code request
+    // TODO: set up logging
+    if (state !== LINKEDIN_STATE) {
+        console.error('Invalid state:', state);
+        return;
+    }
+    // if (loading) {
+    //     return;
+    // }
+    // setLoading(true);
+    if (code !== null) {
+        handleAccessToken(code, 'linkedin').then(r => {
+            console.log('Access token:', r);
+        });
+    } else {
+        console.error('Authorization code not found');
+    }
+    // });
 
 
     return (
