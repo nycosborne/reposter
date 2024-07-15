@@ -22,6 +22,7 @@ const RedirectHandler: React.FC = () => {
             // Redirect to the dashboard after successfully getting the access token
             if (user) {
                 const updatedUser = {...user, linkedin: true};
+                console.log('Updated user:', updatedUser);
                 setUser(updatedUser);
             }
             navigate('/dashboard');

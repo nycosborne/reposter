@@ -2,6 +2,7 @@ import React, {useEffect} from 'react';
 import {useNavigate, useLocation} from 'react-router-dom';
 import useAppContext from "../context/UseAppContext.tsx";
 import getAndSetAccessToken from "./requestAccessToken.tsx";
+
 //
 //
 // interface AccessTokenResponse {
@@ -25,7 +26,7 @@ const RedditRedirectHandler: React.FC = () => {
     const state: string = searchParams.get('state') || '';
     console.log('code:', code);
 
-    useEffect(() => {
+    // useEffect(() => {
         // TODO this should be better
         // Maybe I should uses a randomly generated string
         // one off string for each code request
@@ -40,9 +41,11 @@ const RedditRedirectHandler: React.FC = () => {
                 // Redirect to the dashboard after successfully getting the access token
                 if (user) {
                     const updatedUser = {...user, linkedin: true};
+                    console.log('Updated user:', updatedUser);
                     setUser(updatedUser);
                 }
                 navigate('/dashboard', { replace: true });
+                // navigate('/dashboard', { replace: true });
                 console.log('reloading window on reddit redirect');
                 window.location.reload();
             }).catch((error) => {
@@ -52,7 +55,7 @@ const RedditRedirectHandler: React.FC = () => {
             console.error('Authorization code not found');
         }
 
-    });
+    // });
 
 
 

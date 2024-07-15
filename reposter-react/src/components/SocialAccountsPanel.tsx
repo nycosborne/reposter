@@ -1,4 +1,4 @@
-import React from 'react';
+import React, {useEffect} from 'react';
 import {Card, ListGroup, Container, Row, Col} from 'react-bootstrap';
 import useAppContext from "../context/UseAppContext.tsx";
 import {faLinkedin, faRedditAlien} from '@fortawesome/free-brands-svg-icons';
@@ -34,6 +34,7 @@ linkedinAuthUrl.search = new URLSearchParams({
     }
 ).toString();
 
+
 redditAuthUrl.search = new URLSearchParams({
         client_id: REDDIT_CLIENT_ID,
         response_type: 'code',
@@ -57,6 +58,13 @@ const SocialAccountsPanel = ({showLink}: SocialAccountsCardProps): React.JSX.Ele
     const {user} = useAppContext();
     const navigate = useNavigate();
     const location = useLocation();
+
+
+    useEffect(() => {
+        // TODO this should be better
+        // Maybe I should uses a randomly generated string
+        // one off string for each code request
+    })
 
 
     if (!user) {
