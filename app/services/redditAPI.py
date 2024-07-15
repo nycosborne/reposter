@@ -21,6 +21,12 @@ class RedditAPI:
         self.reddit_client_secret = os.getenv('REDDIT_CLIENT_SECRET')
         self.reddit_redirect_uri = os.getenv('REDDIT_REDIRECT_URI')
         self.user = user
+        self.access_token = (self.user.
+                             usersocialaccountssettings_set.filter(name='reddit').
+                             order_by('-created_at').first().access_token)
+        self.subreddit_user_info = (self.user.
+                                    reddituserinfo_set.order_by('-created_at').
+                                    first().subreddit)
 
     def post_to_reddit(self, data, post_id):
         # TODO: need to refactor this
@@ -76,6 +82,9 @@ class RedditAPI:
                   f" Response: {response.text}")
             self.user.reddit = False
 
+    def _check_if_token_is_valid(self):
+        return self._get_user_info(self.access_token)
+
     def _get_user_info(self, access_token):
         # TODO: need to refactor this
         from services import serializers as servicesSerializers
@@ -99,7 +108,10 @@ class RedditAPI:
             serializer = (
                 servicesSerializers.RedditUserInfoSerializer(
                     data=user_info))
-
+            if self.subreddit_user_info:
+                self.user.save()
+                print("User info data already exists.")
+                return self.user.reddit
             if serializer.is_valid():
                 self.user.save()
                 serializer.save()
@@ -108,17 +120,25 @@ class RedditAPI:
             else:
                 print(f"Failed to save user info data. "
                       f"Errors: {serializer.errors}")
-                self.user.reddit = False
         else:
             print(f"Failed to obtain user info. "
                   f"Status code: {response.status_code},"
                   f" Response: {response.text}")
             self.user.reddit = False
+            return self.user.reddit
+
+        return self.user.reddit
 
     def get_access_token(self, code):
         # TODO: need to refactor this
         from services import serializers as servicesSerializers
+
+        if self._check_if_token_is_valid():
+            self.user.reddit = True
+            return self.access_token
+
         print(f'Getting access token for code: {code}')
+
         client_auth = requests.auth.HTTPBasicAuth(
             self.reddit_client_id,
             self.reddit_client_secret)

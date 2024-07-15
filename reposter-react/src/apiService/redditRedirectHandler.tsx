@@ -12,7 +12,7 @@ const REDDIT_STATE = import.meta.env.VITE_REDDIT_STATE;
 const RedditRedirectHandler: React.FC = () => {
     const location = useLocation();
     const navigate = useNavigate();
-    const history = useHistory();
+    // const history = useHistory();
     const {user, setUser} = useAppContext();
 
 
@@ -43,78 +43,17 @@ const RedditRedirectHandler: React.FC = () => {
                     setUser(updatedUser);
                 }
                 navigate(`/dashboard?updated=${Date.now()}`);
+                window.location.reload();
             }).catch((error) => {
                 console.error('Error:', error);
             });
         } else {
             console.error('Authorization code not found');
         }
-        // axiosClient.post('/services/passcode/', payload)
-        //     .then((response) => {
-        //         // todo - set the access token in the local storage OR NOT
-        //
-        //         console.log('response from passcode', response.data);
-        //         if (user) {
-        //             const updatedUser = {...user, reddit: true};
-        //             setUser(updatedUser);
-        //         }
-        //         navigate('/dashboard');
-        //     })
-        //     .catch((error) => {
-        //         console.log('error', error);
-        //     });
 
-        // if (code !== null) {
-        //     getToken().then((data) => {
-        //         console.log('Access Token data:', data);
-        //         // Redirect to the dashboard after successfully getting the access token
-        //         if (user) {
-        //             const updatedUser = {...user, reddit: true};
-        //             setUser(updatedUser);
-        //         }
-        //         navigate('/dashboard');
-        //     }).catch((error) => {
-        //         console.error('Error:', error);
-        //     });
-        // } else {
-        //     console.error('Authorization code not found');
-        // }
     });
 
-    // redditAccessToke.search = new URLSearchParams({
-    //         grant_type: 'authorization_code',
-    //         authorization_code: code,
-    //         redirect_uri: REDDIT_REDIRECT_URI
-    //     }
-    // ).toString();
-    // const redditRequestTokeString = redditAccessToke.toString();
 
-    // This function is used to get the access token from Reddit
-    // const getToken = async () => {
-    //     const redditAccessToke = 'https://www.reddit.com/api/v1/access_token';
-    //     const body = new URLSearchParams({
-    //         grant_type: 'authorization_code',
-    //         code: code, // Assuming 'code' is defined and holds the authorization code
-    //         redirect_uri: REDDIT_REDIRECT_URI
-    //     }).toString();
-    //
-    //
-    //     const data = await axios.post(
-    //         redditAccessToke, // Ensure this variable holds the correct URL
-    //         body,
-    //         {
-    //             headers: {
-    //                 Authorization: `Basic ${btoa(`${REDDIT_CLIENT_ID}:${REDDIT_CLIENT_SECRET}`)}`,
-    //                 "Content-Type": "application/x-www-form-urlencoded",
-    //                 'User-Agent': 'reposter/0.0.1 (by u/nycosborne)',
-    //             },
-    //         }
-    //     );
-    //     console.log('body:', body);
-    //     console.log('headers', body);
-    //     console.log('redditRedirect.data:', data);
-    //     return data.data;
-    // };
 
     return (
         <div>
