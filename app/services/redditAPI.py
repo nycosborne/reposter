@@ -144,15 +144,18 @@ class RedditAPI:
         # TODO: need to refactor this
         from services import serializers as servicesSerializers
 
-        user_social_account_setting = self.user.usersocialaccountssettings_set.filter(name='reddit').order_by(
-            '-created_at').first()
+        user_social_account_setting = (self.
+                                       user.
+                                       usersocialaccountssettings_set.
+                                       filter(name='reddit').
+                                       order_by('-created_at').first())
+
         if user_social_account_setting:
             access_token = user_social_account_setting.access_token
             self.user.reddit = True
             print("Access token already exists.")
             return access_token
         else:
-            # Handle the case where there is no access token, e.g., by logging, returning an error, or fetching a new token
             print("No access token found for the user.")
 
         print(f'Getting access token for code: {code}')
