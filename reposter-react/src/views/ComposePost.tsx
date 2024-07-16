@@ -183,8 +183,8 @@ const ComposePost: React.FC = () => {
                     .catch((error) => {
                         console.log('error uploading image', error);
                     });
-                navigate(`/compose/${response.data.id}`);
             }
+            navigate(`/compose/${response.data.id}`);
         }).catch((error) => {
             console.log('error saving post', error);
         });
