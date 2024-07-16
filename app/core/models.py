@@ -66,7 +66,7 @@ class Post(models.Model):
         settings.AUTH_USER_MODEL,
         on_delete=models.CASCADE
     )
-    title = models.CharField(max_length=255)
+    title = models.CharField(max_length=255, blank=True)
     content = models.TextField(blank=True)
     description = models.TextField(blank=True)
     link = models.CharField(max_length=255, blank=True)
