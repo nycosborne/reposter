@@ -1,5 +1,5 @@
 import React, {useEffect, useState} from 'react';
-import {Button, Form} from 'react-bootstrap';
+import {Button, Form, Image} from 'react-bootstrap';
 import axiosClient from "../axios-client.tsx";
 import {useNavigate, useParams} from "react-router-dom";
 import SocialAccountsPostStatusBar from "../components/ui/SocialAccountsPostStatusBar.tsx";
@@ -29,6 +29,7 @@ const ComposePost: React.FC = () => {
         tags?: Tag[];
         status: string;
         image?: string | null;
+        uploaded_image?: File;
         service_requested?: ServiceRequested[];
         post_service_events?: ServiceRequested[];
     }
@@ -105,9 +106,33 @@ const ComposePost: React.FC = () => {
         return services;
     };
 
+    // const savePost = async (event: React.FormEvent): Promise<any> => {
+    //     event.preventDefault();
+    //
+    //     const payload = {
+    //         title: post.title || "",
+    //         description: post.description || "",
+    //         content: post.content || "",
+    //         link: "", // Assuming you have a link to include or it can be an empty string if not
+    //         tags: [], // Assuming you have tags to include or it can be an empty array if not
+    //         service_requested: createServiceRequested('PENDING'),
+    //         status: post.status || "DRAFT",
+    //     };
+    //
+    //     if (post_id) {
+    //         return axiosClient.put(`/post/post/${post_id}/`, payload, {
+    //             headers: {
+    //                 'Content-Type': 'application/json'
+    //             }
+    //         });
+    //     } else {
+    //         return axiosClient.post('/post/post/', payload);
+    //     }
+    // };
+
     const savePost = async (event: React.FormEvent) => {
         event.preventDefault();
-
+        ``
         const payload = {
             title: post.title || "",
             description: post.description || "",
@@ -121,29 +146,68 @@ const ComposePost: React.FC = () => {
 
 
         if (post_id) {
-            axiosClient.put(`/post/post/${post_id}/`, payload, {
+            return axiosClient.put(`/post/post/${post_id}/`, payload, {
                 headers: {
                     'Content-Type': 'application/json'
                 }
-            })
-                .then((response) => {
-                    console.log('Updated successfully', response);
-                    navigate(`/compose/${response.data.id}`);
-                })
-                .catch((error) => {
-                    console.log('error', error);
-                });
-            return;
-        }
-
-        axiosClient.post('/post/post/', payload)
-            .then((response) => {
-                console.log('Successfully created new Post', response);
-                navigate(`/compose/${response.data.id}`);
-            })
-            .catch((error) => {
-                console.log('error', error);
             });
+        } else {
+            return axiosClient.post('/post/post/', payload);
+        }
+    };
+    const selectFile = (event: React.ChangeEvent<HTMLInputElement>) => {
+    if (event.target.files && event.target.files.length > 0) {
+        const file = event.target.files[0];
+        setPost({...post, uploaded_image: file});
+
+    }
+};
+    const savePostImage = async (event: React.FormEvent) => {
+        event.preventDefault();
+        savePost(event).then((response) => {
+            console.log('Successfully saved post', response);
+            const formData = new FormData();
+            const image = post.uploaded_image;
+            console.log('image', image);
+
+            if (image) {
+                formData.append('image', image);
+            }
+
+            if (response) {
+                console.log('image TRUE', image);
+                axiosClient.post(`/post/post/${response.data.id}/upload-image/`, formData, {
+                    headers: {
+                        'Content-Type': 'multipart/form-data'
+                    }
+                }).then((response) => {
+                        console.log('Successfully uploaded image', response);
+                        navigate(`/compose/${response.data.id}`);
+                    })
+                    .catch((error) => {
+                        console.log('error uploading image', error);
+                        navigate(`/compose/${response.data.id}`);
+                    });
+            }
+            setPost(response.data);
+            console.log('DFWRVREVEEV', post);
+            // navigate(`/compose/${response.data.id}`);
+        }).catch((error) => {
+            console.log('error saving post', error);
+        });
+    };
+
+    const savePostText = async (event: React.FormEvent) => {
+        event.preventDefault();
+        savePost(event).then((response) => {
+            console.log('Successfully saved post', response);
+            if (response) {
+                console.log('redirect', response);
+                navigate(`/compose/${response.data.id}`)
+            }
+        }).catch((error) => {
+            console.log('error saving post', error);
+        });
     };
 
     const postToSocialMedia = async (event: React.FormEvent) => {
@@ -171,8 +235,9 @@ const ComposePost: React.FC = () => {
             });
     };
 
+
     return (
-        <Form onSubmit={savePost}>
+        <Form onSubmit={savePostText}>
             <Form.Label>Status : {post.status}</Form.Label>
             <Form.Group className="mb-3">
                 <Form.Label>Title</Form.Label>
@@ -207,6 +272,14 @@ const ComposePost: React.FC = () => {
                         selectedLinkedin={selectedLinkedin}
                     />)
                 }
+            </Form.Group>
+            <Form.Group controlId="formFile" className="mb-3">
+                <Form.Label>Image</Form.Label>
+                <Image src={post.image || ''} fluid/>
+                <Form.Control
+                    type="file"
+                    onChange={selectFile}
+                />
 
             </Form.Group>
 
@@ -221,9 +294,12 @@ const ComposePost: React.FC = () => {
                     </Button>
                 </>
             )}
+
+            <Button variant="primary" onClick={savePostImage}>
+                Save Image
+            </Button>
         </Form>
-    )
-        ;
+    );
 };
 
 export default ComposePost;
