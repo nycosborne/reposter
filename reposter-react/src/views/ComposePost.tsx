@@ -148,19 +148,6 @@ const ComposePost: React.FC = () => {
 
     const postToSocialMedia = async (event: React.FormEvent) => {
         event.preventDefault();
-        // const payload: {
-        //     title: string,
-        //     description: string,
-        //     content: string,
-        //     post_id: string,
-        //     social_accounts: string
-        // } = {
-        //     title: post.title ? post.title : "",
-        //     description: post.description ? post.description : "",
-        //     content: post.content ? post.content : "",
-        //     post_id: post_id ? post_id : "",
-        //     social_accounts: 'reddit'
-        // };
 
         const payload: Post = {
             id: post_id ? parseInt(post_id) : undefined,
@@ -203,13 +190,6 @@ const ComposePost: React.FC = () => {
                     onChange={handleDescriptionChange}
                 />
             </Form.Group>
-            <SocialAccountsPostStatusBar
-                // selectReddit={selectReddit}
-                selectReddit={selectReddit}
-                selectedReddit={selectedReddit}
-                selectLinkedin={selectLinkedin}
-                selectedLinkedin={selectedLinkedin}
-            />
             <Form.Group className="mb-3">
                 <Form.Label>Compose Post</Form.Label>
                 <Form.Control
@@ -218,16 +198,32 @@ const ComposePost: React.FC = () => {
                     value={post.content}
                     onChange={handleContentChange}
                 />
+                {post_id && (
+                    <SocialAccountsPostStatusBar
+                        // selectReddit={selectReddit}
+                        selectReddit={selectReddit}
+                        selectedReddit={selectedReddit}
+                        selectLinkedin={selectLinkedin}
+                        selectedLinkedin={selectedLinkedin}
+                    />)
+                }
+
             </Form.Group>
+
             <Button variant="primary" type="submit">
                 Save Post
             </Button>
-            <span> | </span>
-            <Button variant="primary" onClick={postToSocialMedia}>
-                Post To Social Media
-            </Button>
+            {post_id && (
+                <>
+                    <span> | </span>
+                    <Button variant="primary" onClick={postToSocialMedia}>
+                        Publish To Social Media
+                    </Button>
+                </>
+            )}
         </Form>
-    );
+    )
+        ;
 };
 
 export default ComposePost;
