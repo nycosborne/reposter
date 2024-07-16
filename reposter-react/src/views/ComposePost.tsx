@@ -131,7 +131,7 @@ const ComposePost: React.FC = () => {
 
     const savePost = async (event: React.FormEvent) => {
         event.preventDefault();
-
+        ``
         const payload = {
             title: post.title || "",
             description: post.description || "",
@@ -143,6 +143,7 @@ const ComposePost: React.FC = () => {
             status: post.status || "DRAFT",
         };
 
+
         if (post_id) {
             return axiosClient.put(`/post/post/${post_id}/`, payload, {
                 headers: {
@@ -152,30 +153,6 @@ const ComposePost: React.FC = () => {
         } else {
             return axiosClient.post('/post/post/', payload);
         }
-        // if (post_id) {
-        //     axiosClient.put(`/post/post/${post_id}/`, payload, {
-        //         headers: {
-        //             'Content-Type': 'application/json'
-        //         }
-        //     })
-        //         .then((response) => {
-        //             console.log('Updated successfully', response);
-        //             navigate(`/compose/${response.data.id}`);
-        //         })
-        //         .catch((error) => {
-        //             console.log('error', error);
-        //         });
-        //     return;
-        // }
-        //
-        // axiosClient.post('/post/post/', payload)
-        //     .then((response) => {
-        //         console.log('Successfully created new Post', response);
-        //         navigate(`/compose/${response.data.id}`);
-        //     })
-        //     .catch((error) => {
-        //         console.log('error', error);
-        //     });
     };
     const selectFile = (ev: React.FormEvent) => {
         setPost({...post, image: ev.target.files[0]});
@@ -206,6 +183,20 @@ const ComposePost: React.FC = () => {
                     .catch((error) => {
                         console.log('error uploading image', error);
                     });
+                navigate(`/compose/${response.data.id}`);
+            }
+        }).catch((error) => {
+            console.log('error saving post', error);
+        });
+    };
+
+    const savePostText = async (event: React.FormEvent) => {
+        event.preventDefault();
+        savePost(event).then((response) => {
+            console.log('Successfully saved post', response);
+            if (response) {
+                console.log('redirect', response);
+                navigate(`/compose/${response.data.id}`)
             }
         }).catch((error) => {
             console.log('error saving post', error);
@@ -239,7 +230,7 @@ const ComposePost: React.FC = () => {
 
 
     return (
-        <Form onSubmit={savePost}>
+        <Form onSubmit={savePostText}>
             <Form.Label>Status : {post.status}</Form.Label>
             <Form.Group className="mb-3">
                 <Form.Label>Title</Form.Label>
