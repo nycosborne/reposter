@@ -29,6 +29,7 @@ const ComposePost: React.FC = () => {
         tags?: Tag[];
         status: string;
         image?: string | null;
+        uploaded_image?: File;
         service_requested?: ServiceRequested[];
         post_service_events?: ServiceRequested[];
     }
@@ -154,15 +155,18 @@ const ComposePost: React.FC = () => {
             return axiosClient.post('/post/post/', payload);
         }
     };
-    const selectFile = (ev: React.FormEvent) => {
-        setPost({...post, image: ev.target.files[0]});
+    const selectFile = (event: React.ChangeEvent<HTMLInputElement>) => {
+    if (event.target.files && event.target.files.length > 0) {
+        const file = event.target.files[0];
+        setPost({...post, uploaded_image: file});
     }
+};
     const savePostImage = async (event: React.FormEvent) => {
         event.preventDefault();
         savePost(event).then((response) => {
             console.log('Successfully saved post', response);
             const formData = new FormData();
-            const image = post.image;
+            const image = post.uploaded_image;
             console.log('image', image);
 
             if (image) {
@@ -271,7 +275,7 @@ const ComposePost: React.FC = () => {
                 <Image src={post.image || ''} fluid/>
                 <Form.Control
                     type="file"
-                    onChange={ev => selectFile(ev)}
+                    onChange={selectFile}
                 />
 
             </Form.Group>
