@@ -29,7 +29,7 @@ const ComposePost: React.FC = () => {
         tags?: Tag[];
         status: string;
         image?: string | null;
-        uploaded_image?: File | undefined;
+        uploaded_image?: File
         service_requested?: ServiceRequested[];
         post_service_events?: ServiceRequested[];
     }
@@ -54,40 +54,40 @@ const ComposePost: React.FC = () => {
 
     const {post_id} = useParams();
     useEffect(() => {
-    if (post_id) {
-        axiosClient.get(`/post/post/${post_id}`)
-            .then(({data}) => {
-                console.log('data', data);
-                // Check if data has post_service_events
-                if (data.post_service_events && Array.isArray(data.post_service_events)) {
-                    console.log('data.post_service_events', data.post_service_events);
-                    // Loop over the post_service_events array
-                    data.post_service_events.forEach(function (event: {
-                        service: string;
-                        status: React.SetStateAction<string>;
-                    }) {
-                        console.log('event', event);
-                        if (event.service === 'reddit') {
-                            setSelectedReddit('reddit');
-                        } else if (event.service === 'linkedin') {
-                            setSelectedLinkedin('linkedin');
-                        }
+        if (post_id) {
+            axiosClient.get(`/post/post/${post_id}`)
+                .then(({data}) => {
+                    console.log('data', data);
+                    // Check if data has post_service_events
+                    if (data.post_service_events && Array.isArray(data.post_service_events)) {
+                        console.log('data.post_service_events', data.post_service_events);
+                        // Loop over the post_service_events array
+                        data.post_service_events.forEach(function (event: {
+                            service: string;
+                            status: React.SetStateAction<string>;
+                        }) {
+                            console.log('event', event);
+                            if (event.service === 'reddit') {
+                                setSelectedReddit('reddit');
+                            } else if (event.service === 'linkedin') {
+                                setSelectedLinkedin('linkedin');
+                            }
+                        });
+                    }
+                    setPost({
+                        title: data.title || '',
+                        description: data.description || '',
+                        content: data.content || '',
+                        status: data.status || 'DRAFT',
+                        service_requested: data.service_requested || [],
+                        tags: data.tags || [],
+                        image: data.image || null,
+                        uploaded_image: undefined,  // keep this as undefined initially
+                        post_service_events: data.post_service_events || []
                     });
-                }
-                setPost({
-                    title: data.title || '',
-                    description: data.description || '',
-                    content: data.content || '',
-                    status: data.status || 'DRAFT',
-                    service_requested: data.service_requested || [],
-                    tags: data.tags || [],
-                    image: data.image || null,
-                    uploaded_image: undefined,  // keep this as undefined initially
-                    post_service_events: data.post_service_events || []
                 });
-            });
-    }
-}, [post_id]);
+        }
+    }, [post_id]);
 
     const handleTitleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
         setPost(prevState => ({...prevState, title: e.target.value}));
@@ -138,14 +138,14 @@ const ComposePost: React.FC = () => {
         }
     };
     const selectFile = (event: React.ChangeEvent<HTMLInputElement>) => {
-    if (event.target.files && event.target.files.length > 0) {
-        const file = event.target.files[0];
-        setPost(prevState => ({
-            ...prevState,
-            uploaded_image: file
-        }));
-    }
-};
+        if (event.target.files && event.target.files.length > 0) {
+            const file = event.target.files[0];
+            setPost(prevState => ({
+                ...prevState,
+                uploaded_image: file
+            }));
+        }
+    };
     const savePostImage = async (event: React.FormEvent) => {
         event.preventDefault();
 
@@ -167,8 +167,8 @@ const ComposePost: React.FC = () => {
                 navigate(`/compose/${response.data.id}`);
                 setPost(response.data);
             }).catch((error) => {
-                    console.log('error uploading image', error);
-                });
+                console.log('error uploading image', error);
+            });
             navigate(`/compose/${post_id}`);
 
         } else {
@@ -236,7 +236,6 @@ const ComposePost: React.FC = () => {
             });
     };
 
-
     return (
         <Form onSubmit={savePostText}>
             <Form.Label>Status : {post.status}</Form.Label>
@@ -281,9 +280,7 @@ const ComposePost: React.FC = () => {
                     type="file"
                     onChange={selectFile}
                 />
-
             </Form.Group>
-
             <Button variant="primary" type="submit">
                 Save Post
             </Button>
@@ -295,7 +292,6 @@ const ComposePost: React.FC = () => {
                     </Button>
                 </>
             )}
-
             <Button variant="primary" onClick={savePostImage}>
                 Save Image
             </Button>
