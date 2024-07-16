@@ -29,7 +29,7 @@ const ComposePost: React.FC = () => {
         tags?: Tag[];
         status: string;
         image?: string | null;
-        uploaded_image?: File;
+        uploaded_image?: File | undefined;
         service_requested?: ServiceRequested[];
         post_service_events?: ServiceRequested[];
     }
@@ -54,34 +54,40 @@ const ComposePost: React.FC = () => {
 
     const {post_id} = useParams();
     useEffect(() => {
-        if (post_id) {
-            axiosClient.get(`/post/post/${post_id}`)
-                .then(({data}) => {
-                    console.log('data', data);
-                    // console.log('checkServices :', checkServices(data));
-                    setPost(data);
-                    // Check if data has post_service_events
-                    if (data.post_service_events && Array.isArray(data.post_service_events)) {
-                        console.log('data.post_service_events', data.post_service_events);
-                        // Loop over the post_service_events array
-                        data.post_service_events.forEach(function (event: {
-                            service: string;
-                            status: React.SetStateAction<string>;
-                        }) {
-                            console.log('event', event);
-                            if (event.service === 'reddit') {
-                                setSelectedReddit('reddit');
-                            } else if (event.service === 'linkedin') {
-                                setSelectedLinkedin('linkedin');
-                            }
-                        });
-                    }
-                    // check data if it has post_service_events and if service === reddit or linkedin
+    if (post_id) {
+        axiosClient.get(`/post/post/${post_id}`)
+            .then(({data}) => {
+                console.log('data', data);
+                // Check if data has post_service_events
+                if (data.post_service_events && Array.isArray(data.post_service_events)) {
+                    console.log('data.post_service_events', data.post_service_events);
+                    // Loop over the post_service_events array
+                    data.post_service_events.forEach(function (event: {
+                        service: string;
+                        status: React.SetStateAction<string>;
+                    }) {
+                        console.log('event', event);
+                        if (event.service === 'reddit') {
+                            setSelectedReddit('reddit');
+                        } else if (event.service === 'linkedin') {
+                            setSelectedLinkedin('linkedin');
+                        }
+                    });
+                }
+                setPost({
+                    title: data.title || '',
+                    description: data.description || '',
+                    content: data.content || '',
+                    status: data.status || 'DRAFT',
+                    service_requested: data.service_requested || [],
+                    tags: data.tags || [],
+                    image: data.image || null,
+                    uploaded_image: undefined,  // keep this as undefined initially
+                    post_service_events: data.post_service_events || []
                 });
-
-        }
-    }, [post_id]);
-
+            });
+    }
+}, [post_id]);
 
     const handleTitleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
         setPost(prevState => ({...prevState, title: e.target.value}));
@@ -105,30 +111,6 @@ const ComposePost: React.FC = () => {
         }
         return services;
     };
-
-    // const savePost = async (event: React.FormEvent): Promise<any> => {
-    //     event.preventDefault();
-    //
-    //     const payload = {
-    //         title: post.title || "",
-    //         description: post.description || "",
-    //         content: post.content || "",
-    //         link: "", // Assuming you have a link to include or it can be an empty string if not
-    //         tags: [], // Assuming you have tags to include or it can be an empty array if not
-    //         service_requested: createServiceRequested('PENDING'),
-    //         status: post.status || "DRAFT",
-    //     };
-    //
-    //     if (post_id) {
-    //         return axiosClient.put(`/post/post/${post_id}/`, payload, {
-    //             headers: {
-    //                 'Content-Type': 'application/json'
-    //             }
-    //         });
-    //     } else {
-    //         return axiosClient.post('/post/post/', payload);
-    //     }
-    // };
 
     const savePost = async (event: React.FormEvent) => {
         event.preventDefault();
@@ -158,43 +140,62 @@ const ComposePost: React.FC = () => {
     const selectFile = (event: React.ChangeEvent<HTMLInputElement>) => {
     if (event.target.files && event.target.files.length > 0) {
         const file = event.target.files[0];
-        setPost({...post, uploaded_image: file});
-
+        setPost(prevState => ({
+            ...prevState,
+            uploaded_image: file
+        }));
     }
 };
     const savePostImage = async (event: React.FormEvent) => {
         event.preventDefault();
-        savePost(event).then((response) => {
-            console.log('Successfully saved post', response);
-            const formData = new FormData();
-            const image = post.uploaded_image;
-            console.log('image', image);
 
-            if (image) {
-                formData.append('image', image);
-            }
+        const formData = new FormData();
+        const image = post.uploaded_image;
+        console.log('image', image);
+        if (image) {
 
-            if (response) {
-                console.log('image TRUE', image);
-                axiosClient.post(`/post/post/${response.data.id}/upload-image/`, formData, {
-                    headers: {
-                        'Content-Type': 'multipart/form-data'
-                    }
-                }).then((response) => {
+            formData.append('image', image);
+        }
+
+        if (post_id) {
+            axiosClient.post(`/post/post/${post_id}/upload-image/`, formData, {
+                headers: {
+                    'Content-Type': 'multipart/form-data'
+                }
+            }).then((response) => {
+                console.log('Successfully uploaded image', response);
+                navigate(`/compose/${response.data.id}`);
+                setPost(response.data);
+            }).catch((error) => {
+                    console.log('error uploading image', error);
+                });
+            navigate(`/compose/${post_id}`);
+
+        } else {
+            savePost(event).then((response) => {
+                console.log('Successfully saved post', response);
+                if (response) {
+                    console.log('image TRUE', image);
+                    axiosClient.post(`/post/post/${response.data.id}/upload-image/`, formData, {
+                        headers: {
+                            'Content-Type': 'multipart/form-data'
+                        }
+                    }).then((response) => {
                         console.log('Successfully uploaded image', response);
                         navigate(`/compose/${response.data.id}`);
                     })
-                    .catch((error) => {
-                        console.log('error uploading image', error);
-                        navigate(`/compose/${response.data.id}`);
-                    });
-            }
-            setPost(response.data);
-            console.log('DFWRVREVEEV', post);
-            // navigate(`/compose/${response.data.id}`);
-        }).catch((error) => {
-            console.log('error saving post', error);
-        });
+                        .catch((error) => {
+                            console.log('error uploading image', error);
+                            navigate(`/compose/${response.data.id}`);
+                        });
+                }
+                setPost(response.data);
+                console.log('DFWRVREVEEV', post);
+                // navigate(`/compose/${response.data.id}`);
+            }).catch((error) => {
+                console.log('error saving post', error);
+            });
+        }
     };
 
     const savePostText = async (event: React.FormEvent) => {
@@ -243,7 +244,7 @@ const ComposePost: React.FC = () => {
                 <Form.Label>Title</Form.Label>
                 <Form.Control
                     type="text"
-                    value={post.title}
+                    value={post.title || ''}
                     onChange={handleTitleChange}
                 />
             </Form.Group>
@@ -251,7 +252,7 @@ const ComposePost: React.FC = () => {
                 <Form.Label>Description</Form.Label>
                 <Form.Control
                     type="text"
-                    value={post.description}
+                    value={post.description || ''}
                     onChange={handleDescriptionChange}
                 />
             </Form.Group>
@@ -260,7 +261,7 @@ const ComposePost: React.FC = () => {
                 <Form.Control
                     as="textarea"
                     rows={3}
-                    value={post.content}
+                    value={post.content || ''}
                     onChange={handleContentChange}
                 />
                 {post_id && (
