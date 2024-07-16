@@ -1,5 +1,5 @@
 import React, {useEffect, useState} from 'react';
-import {Button, Form} from 'react-bootstrap';
+import {Button, Form, Image} from 'react-bootstrap';
 import axiosClient from "../axios-client.tsx";
 import {useNavigate, useParams} from "react-router-dom";
 import SocialAccountsPostStatusBar from "../components/ui/SocialAccountsPostStatusBar.tsx";
@@ -95,6 +95,7 @@ const ComposePost: React.FC = () => {
     };
 
     const createServiceRequested = (status?: string): ServiceRequested[] => {
+        console.log('selectedReddit', selectedReddit);
         const services: { service: string; status: string }[] = [];
         if (selectedReddit) {
             services.push({service: 'reddit', status: status ? status : 'PENDING'});
@@ -102,6 +103,7 @@ const ComposePost: React.FC = () => {
         if (selectedLinkedin) {
             services.push({service: 'linkedin', status: status ? status : 'PENDING'});
         }
+        console.log('services', services);
         return services;
     };
 
@@ -114,13 +116,15 @@ const ComposePost: React.FC = () => {
         formData.append('content', post.content || "");
         formData.append('link', ""); // Assuming you have a link to include or it can be an empty string if not
         formData.append('tags', JSON.stringify([])); // Assuming you have tags to include or it can be an empty array if not
-        formData.append('service_requested', JSON.stringify(createServiceRequested('PENDING')));
+        console.log('createServiceRequested', createServiceRequested('PENDING'));
+        formData.append('service_requested', JSON.stringify([{service: 'reddit', status: 'PENDING'}]));
+        // formData.append('service_requested', createServiceRequested('PENDING'));
         formData.append('status', post.status || "DRAFT");
 
         if (selectedFile) {
             formData.append('image', selectedFile);
         }
-
+        console.log('this is the formData: ', formData.get('service_requested'));
         if (post_id) {
             axiosClient.put(`/post/post/${post_id}/`, formData, {
                 headers: {
@@ -211,6 +215,7 @@ const ComposePost: React.FC = () => {
                     onChange={handleDescriptionChange}
                 />
             </Form.Group>
+            <Image src={post.image || ""} fluid/>
             <Form.Group className="mb-3">
                 <Form.Label>Compose Post</Form.Label>
                 <Form.Control
