@@ -159,6 +159,7 @@ const ComposePost: React.FC = () => {
     if (event.target.files && event.target.files.length > 0) {
         const file = event.target.files[0];
         setPost({...post, uploaded_image: file});
+
     }
 };
     const savePostImage = async (event: React.FormEvent) => {
@@ -179,16 +180,18 @@ const ComposePost: React.FC = () => {
                     headers: {
                         'Content-Type': 'multipart/form-data'
                     }
-                })
-                    .then((response) => {
+                }).then((response) => {
                         console.log('Successfully uploaded image', response);
                         navigate(`/compose/${response.data.id}`);
                     })
                     .catch((error) => {
                         console.log('error uploading image', error);
+                        navigate(`/compose/${response.data.id}`);
                     });
             }
-            navigate(`/compose/${response.data.id}`);
+            setPost(response.data);
+            console.log('DFWRVREVEEV', post);
+            // navigate(`/compose/${response.data.id}`);
         }).catch((error) => {
             console.log('error saving post', error);
         });
