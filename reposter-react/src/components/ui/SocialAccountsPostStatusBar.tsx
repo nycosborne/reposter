@@ -24,8 +24,8 @@ const SocialAccountsPostStatusBar = ({
         <Container>
             <Card className="dashboard-panel">
                 <Card.Body>
-                    <Card.Title as="h4" className="header">
-                        Post Status
+                    <Card.Title as="h5" className="header">
+                        Select Platforms
                     </Card.Title>
                     <Container>
                         <Row className="align-items-center">
