@@ -135,12 +135,10 @@ class LinkedInAPI:
             'redirect_uri': self.linkedin_redirect_uri
         }
 
-        # response = requests.post(
-        #     'https://www.linkedin.com/oauth/v2/accessToken',
-        #     headers=headers, data=data
-        # )
-
-        response = self.linkedin_api_request('POST', 'accessToken', data, headers)
+        response = requests.post(
+            'https://www.linkedin.com/oauth/v2/accessToken',
+            headers=headers, data=data
+        )
 
         if response.status_code == 200:
             print("Access token obtained successfully.")
