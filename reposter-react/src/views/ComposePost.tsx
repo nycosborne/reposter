@@ -108,22 +108,23 @@ const ComposePost: React.FC = () => {
     const savePost = async (event: React.FormEvent) => {
         event.preventDefault();
 
-        const payload = {
-            title: post.title || "",
-            description: post.description || "",
-            content: post.content || "",
-            link: "", // Assuming you have a link to include or it can be an empty string if not
-            tags: [], // Assuming you have tags to include or it can be an empty array if not
-            // TODO need to standrdize the service_requested and post_service_events
-            service_requested: createServiceRequested('PENDING'),
-            status: post.status || "DRAFT",
-        };
+        const formData = new FormData();
+        formData.append('title', post.title || "");
+        formData.append('description', post.description || "");
+        formData.append('content', post.content || "");
+        formData.append('link', ""); // Assuming you have a link to include or it can be an empty string if not
+        formData.append('tags', JSON.stringify([])); // Assuming you have tags to include or it can be an empty array if not
+        formData.append('service_requested', JSON.stringify(createServiceRequested('PENDING')));
+        formData.append('status', post.status || "DRAFT");
 
+        if (selectedFile) {
+            formData.append('image', selectedFile);
+        }
 
         if (post_id) {
-            axiosClient.put(`/post/post/${post_id}/`, payload, {
+            axiosClient.put(`/post/post/${post_id}/`, formData, {
                 headers: {
-                    'Content-Type': 'application/json'
+                    'Content-Type': 'multipart/form-data'
                 }
             })
                 .then((response) => {
@@ -136,7 +137,11 @@ const ComposePost: React.FC = () => {
             return;
         }
 
-        axiosClient.post('/post/post/', payload)
+        axiosClient.post('/post/post/', formData, {
+            headers: {
+                'Content-Type': 'multipart/form-data'
+            }
+        })
             .then((response) => {
                 console.log('Successfully created new Post', response);
                 navigate(`/compose/${response.data.id}`);
@@ -149,19 +154,26 @@ const ComposePost: React.FC = () => {
     const postToSocialMedia = async (event: React.FormEvent) => {
         event.preventDefault();
 
-        const payload: Post = {
-            id: post_id ? parseInt(post_id) : undefined,
-            title: post.title || "",
-            description: post.description || "",
-            content: post.content || "",
-            link: "", // Assuming you have a link to include or it can be an empty string if not
-            tags: [], // Assuming you have tags to include or it can be an empty array if not
-            post_service_events: createServiceRequested('SET_TO_PUBLISH'),
-            status: post.status || "DRAFT",
-        };
+        const formData = new FormData();
+        formData.append('id', post_id ? post_id.toString() : '');
+        formData.append('title', post.title || "");
+        formData.append('description', post.description || "");
+        formData.append('content', post.content || "");
+        formData.append('link', ""); // Assuming you have a link to include or it can be an empty string if not
+        formData.append('tags', JSON.stringify([])); // Assuming you have tags to include or it can be an empty array if not
+        // formData.append('post_service_events', JSON.stringify(createServiceRequested('SET_TO_PUBLISH')));
+        formData.append('status', post.status || "DRAFT");
 
-        console.log('payload', payload);
-        axiosClient.post('/services/soc-post/', payload)
+        if (selectedFile) {
+            formData.append('image', selectedFile);
+        }
+
+        console.log('payload', formData);
+        axiosClient.post('/services/soc-post/', formData, {
+            headers: {
+                'Content-Type': 'multipart/form-data'
+            }
+        })
             .then((response) => {
                 console.log('Posted successfully', response);
                 navigate(`/compose/${post_id}`);
@@ -170,6 +182,15 @@ const ComposePost: React.FC = () => {
                 console.log('error 2@#$@#$@#$', error);
             });
     };
+
+    const [selectedFile, setSelectedFile] = useState<File | null>(null);
+
+    const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+        if (e.target.files && e.target.files.length > 0) {
+            setSelectedFile(e.target.files[0]);
+        }
+    };
+
 
     return (
         <Form onSubmit={savePost}>
@@ -208,6 +229,13 @@ const ComposePost: React.FC = () => {
                     />)
                 }
 
+            </Form.Group>
+            <Form.Group className="mb-3">
+                <Form.Label>Image</Form.Label>
+                <Form.Control
+                    type="file"
+                    onChange={handleFileChange}
+                />
             </Form.Group>
 
             <Button variant="primary" type="submit">
