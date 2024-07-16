@@ -17,11 +17,15 @@ class LinkedInAPI:
                     first())
 
     def linkedin_api_request(self, method, endpoint, content=None, headers=None):
-        access_token = self.user.usersocialaccountssettings_set.filter(name='linkedin').order_by(
-            '-created_at').first().access_token
-        sub = (self.user.
-               linkedinuserinfo_set.order_by('-created_at').
-               first().sub)
+        query_result = self.user.usersocialaccountssettings_set.filter(name='linkedin').order_by('-created_at').first()
+        if query_result is None:
+            raise ValueError("No LinkedIn access token found for the user.")
+        access_token = query_result.access_token
+
+        sub_query_result = self.user.linkedinuserinfo_set.order_by('-created_at').first()
+        if sub_query_result is None:
+            raise ValueError("No LinkedIn user info found for the user.")
+        sub = sub_query_result.sub
         url = f'https://api.linkedin.com/v2/{endpoint}'
 
         if not headers:
@@ -33,6 +37,9 @@ class LinkedInAPI:
         payload = None
 
         if endpoint == 'userinfo':
+            headers = {
+                'Authorization': f'Bearer {access_token}'
+            }
             payload = None
 
         # test post payload
