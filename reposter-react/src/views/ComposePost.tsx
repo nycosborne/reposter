@@ -105,7 +105,31 @@ const ComposePost: React.FC = () => {
         return services;
     };
 
-    const savePost = async (event: React.FormEvent): Promise<any> => {
+    // const savePost = async (event: React.FormEvent): Promise<any> => {
+    //     event.preventDefault();
+    //
+    //     const payload = {
+    //         title: post.title || "",
+    //         description: post.description || "",
+    //         content: post.content || "",
+    //         link: "", // Assuming you have a link to include or it can be an empty string if not
+    //         tags: [], // Assuming you have tags to include or it can be an empty array if not
+    //         service_requested: createServiceRequested('PENDING'),
+    //         status: post.status || "DRAFT",
+    //     };
+    //
+    //     if (post_id) {
+    //         return axiosClient.put(`/post/post/${post_id}/`, payload, {
+    //             headers: {
+    //                 'Content-Type': 'application/json'
+    //             }
+    //         });
+    //     } else {
+    //         return axiosClient.post('/post/post/', payload);
+    //     }
+    // };
+
+    const savePost = async (event: React.FormEvent) => {
         event.preventDefault();
 
         const payload = {
@@ -114,6 +138,7 @@ const ComposePost: React.FC = () => {
             content: post.content || "",
             link: "", // Assuming you have a link to include or it can be an empty string if not
             tags: [], // Assuming you have tags to include or it can be an empty array if not
+            // TODO need to standrdize the service_requested and post_service_events
             service_requested: createServiceRequested('PENDING'),
             status: post.status || "DRAFT",
         };
@@ -127,26 +152,49 @@ const ComposePost: React.FC = () => {
         } else {
             return axiosClient.post('/post/post/', payload);
         }
+        // if (post_id) {
+        //     axiosClient.put(`/post/post/${post_id}/`, payload, {
+        //         headers: {
+        //             'Content-Type': 'application/json'
+        //         }
+        //     })
+        //         .then((response) => {
+        //             console.log('Updated successfully', response);
+        //             navigate(`/compose/${response.data.id}`);
+        //         })
+        //         .catch((error) => {
+        //             console.log('error', error);
+        //         });
+        //     return;
+        // }
+        //
+        // axiosClient.post('/post/post/', payload)
+        //     .then((response) => {
+        //         console.log('Successfully created new Post', response);
+        //         navigate(`/compose/${response.data.id}`);
+        //     })
+        //     .catch((error) => {
+        //         console.log('error', error);
+        //     });
     };
-
     const selectFile = (ev: React.FormEvent) => {
         setPost({...post, image: ev.target.files[0]});
     }
     const savePostImage = async (event: React.FormEvent) => {
         event.preventDefault();
-        console.log('savePostImage');
-
         savePost(event).then((response) => {
             console.log('Successfully saved post', response);
             const formData = new FormData();
             const image = post.image;
             console.log('image', image);
+
             if (image) {
                 formData.append('image', image);
             }
 
-            if (post_id) {
-                axiosClient.post(`/post/post/${post_id}/upload-image/`, formData, {
+            if (response) {
+                console.log('image TRUE', image);
+                axiosClient.post(`/post/post/${response.data.id}/upload-image/`, formData, {
                     headers: {
                         'Content-Type': 'multipart/form-data'
                     }
