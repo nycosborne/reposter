@@ -20,40 +20,83 @@ class LinkedInAPI:
                     linkedinuserinfo_set.order_by('-created_at').
                     first())
 
+    def linkedin_api_request(self, method, endpoint, data=None, headers=None):
+        query_result = self.user.usersocialaccountssettings_set.filter(name='linkedin').order_by('-created_at').first()
+        if query_result is None:
+            raise ValueError("No LinkedIn access token found for the user.")
+        access_token = query_result.access_token
+
+        sub_query_result = self.user.linkedinuserinfo_set.order_by('-created_at').first()
+        if sub_query_result is None:
+            raise ValueError("No LinkedIn user info found for the user.")
+        sub = sub_query_result.sub
+        url = f'https://api.linkedin.com/v2/{endpoint}'
+
+        if not headers:
+            headers = {
+                'Content-Type': 'application/json',
+                'Authorization': f'Bearer {access_token}'
+            }
+
+        payload = None
+
+        # test post payload
+        if endpoint == 'ugcPosts':
+            payload = {
+                "author": f"urn:li:person:{sub}",
+                "lifecycleState": "PUBLISHED",
+                "specificContent": {
+                    "com.linkedin.ugc.ShareContent": {
+                        "shareCommentary": {
+                            "text": f"{data}"
+                        },
+                        "shareMediaCategory": "NONE"
+                    }
+                },
+                "visibility": {
+                    "com.linkedin.ugc.MemberNetworkVisibility": "PUBLIC"
+                }
+            }
+
+        response = requests.request(method, url, headers=headers, json=payload)
+        return response
+
     def post_to_linkedin(self, data, post_id):
         print(f"Posting to LinkedIn: {data}")
-        access_token = (self.user.
-                        usersocialaccountssettings_set.filter(name='linkedin').
-                        order_by('-created_at').first().access_token)
-        sub = (self.user.
-               linkedinuserinfo_set.order_by('-created_at').
-               first().sub)
+        # access_token = (self.user.
+        #                 usersocialaccountssettings_set.filter(name='linkedin').
+        #                 order_by('-created_at').first().access_token)
+        # sub = (self.user.
+        #        linkedinuserinfo_set.order_by('-created_at').
+        #        first().sub)
+        #
+        # headers = {
+        #     'Content-Type': 'application/json',
+        #     'Authorization': f'Bearer {access_token}'
+        # }
+        #
+        # payload = {
+        #     "author": f"urn:li:person:{sub}",
+        #     "lifecycleState": "PUBLISHED",
+        #     "specificContent": {
+        #         "com.linkedin.ugc.ShareContent": {
+        #             "shareCommentary": {
+        #                 "text": f"{data['content']}"
+        #             },
+        #             "shareMediaCategory": "NONE"
+        #         }
+        #     },
+        #     "visibility": {
+        #         "com.linkedin.ugc.MemberNetworkVisibility": "PUBLIC"
+        #     }
+        # }
+        #
+        # response = requests.post(
+        #     'https://api.linkedin.com/v2/ugcPosts',
+        #     headers=headers, json=payload
+        # )
 
-        headers = {
-            'Content-Type': 'application/json',
-            'Authorization': f'Bearer {access_token}'
-        }
-
-        payload = {
-            "author": f"urn:li:person:{sub}",
-            "lifecycleState": "PUBLISHED",
-            "specificContent": {
-                "com.linkedin.ugc.ShareContent": {
-                    "shareCommentary": {
-                        "text": f"{data['content']}"
-                    },
-                    "shareMediaCategory": "NONE"
-                }
-            },
-            "visibility": {
-                "com.linkedin.ugc.MemberNetworkVisibility": "PUBLIC"
-            }
-        }
-
-        response = requests.post(
-            'https://api.linkedin.com/v2/ugcPosts',
-            headers=headers, json=payload
-        )
+        response = self.linkedin_api_request('POST', 'ugcPosts', data['content'], None)
 
         if response.status_code == 201:
             print("Post shared successfully.")
