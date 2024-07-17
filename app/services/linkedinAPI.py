@@ -20,40 +20,63 @@ class LinkedInAPI:
                     linkedinuserinfo_set.order_by('-created_at').
                     first())
 
-    def post_to_linkedin(self, data, post_id):
-        print(f"Posting to LinkedIn: {data}")
-        access_token = (self.user.
-                        usersocialaccountssettings_set.filter(name='linkedin').
-                        order_by('-created_at').first().access_token)
-        sub = (self.user.
-               linkedinuserinfo_set.order_by('-created_at').
-               first().sub)
+    def linkedin_api_request(
+            self,
+            method,
+            endpoint,
+            data=None,
+            headers=None,
+            fresh_token=None
+    ):
+        query_result = self.user.usersocialaccountssettings_set.filter(
+            name='linkedin').order_by('-created_at').first()
+        if query_result is None:
+            raise ValueError("No LinkedIn access token found for the user.")
+        access_token = query_result.access_token
 
-        headers = {
-            'Content-Type': 'application/json',
-            'Authorization': f'Bearer {access_token}'
-        }
+        url = f'https://api.linkedin.com/v2/{endpoint}'
 
-        payload = {
-            "author": f"urn:li:person:{sub}",
-            "lifecycleState": "PUBLISHED",
-            "specificContent": {
-                "com.linkedin.ugc.ShareContent": {
-                    "shareCommentary": {
-                        "text": f"{data['content']}"
-                    },
-                    "shareMediaCategory": "NONE"
+        if fresh_token:
+            access_token = fresh_token
+
+        payload = None
+
+        # test post payload
+        if endpoint == 'ugcPosts':
+
+            sub_query_result = self.user.linkedinuserinfo_set.order_by(
+                '-created_at').first()
+            if sub_query_result is None:
+                raise ValueError("No LinkedIn user info found for the user.")
+            sub = sub_query_result.sub
+            payload = {
+                "author": f"urn:li:person:{sub}",
+                "lifecycleState": "PUBLISHED",
+                "specificContent": {
+                    "com.linkedin.ugc.ShareContent": {
+                        "shareCommentary": {
+                            "text": f"{data}"
+                        },
+                        "shareMediaCategory": "NONE"
+                    }
+                },
+                "visibility": {
+                    "com.linkedin.ugc.MemberNetworkVisibility": "PUBLIC"
                 }
-            },
-            "visibility": {
-                "com.linkedin.ugc.MemberNetworkVisibility": "PUBLIC"
             }
-        }
 
-        response = requests.post(
-            'https://api.linkedin.com/v2/ugcPosts',
-            headers=headers, json=payload
-        )
+        if not headers:
+            headers = {
+                'Content-Type': 'application/json',
+                'Authorization': f'Bearer {access_token}'
+            }
+
+        response = requests.request(method, url, headers=headers, json=payload)
+        return response
+
+    def post_to_linkedin(self, data, post_id):
+        response = self.linkedin_api_request(
+            'POST', 'ugcPosts', data['content'])
 
         if response.status_code == 201:
             print("Post shared successfully.")
@@ -75,13 +98,9 @@ class LinkedInAPI:
         # this class should not be rependent on services servicesSerializers
         from services import serializers as servicesSerializers
 
-        headers = {
-            'Authorization': f'Bearer {access_token}'
-        }
-        response = requests.get(
-            'https://api.linkedin.com/v2/userinfo',
-            headers=headers
-        )
+        response = self.linkedin_api_request(
+            'GET', 'userinfo', fresh_token=access_token)
+
         print(f"Response: {response.text}")
 
         if response.status_code == 200:
