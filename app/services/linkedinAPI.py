@@ -164,6 +164,25 @@ class LinkedInAPI:
                   f" Response: {response.text}")
             return False
 
+    def post_image_to_linkedin(self, data, post_id):
+        response = self.linkedin_api_request(
+            'POST', 'v2/assets?action=registerUpload')
+
+        if response.status_code == 201:
+            print("Image uploaded successfully.")
+            image_id = self.image_upload_get_image_id(response, image_path=data['image'])
+            response = self.linkedin_api_request(
+                'POST', 'v2/ugcPosts', text_content=data['content'], image_id=image_id)
+
+            if response.status_code == 201:
+                print("Post shared successfully.")
+                post = self.user.post_set.get(id=post_id)
+                post.status = 'PUBLISHED'
+                post.save()
+                return True
+            else:
+                pass
+
     def _get_user_info(self, access_token):
         # TODO: need to refactor this
         # this class should not be rependent on services servicesSerializers

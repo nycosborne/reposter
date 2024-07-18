@@ -118,27 +118,26 @@ class PostToSocialAccounts(APIView):
         print(f"PostToSocialAccounts request: {request.data}")
         # value, key, posted_to, posted = None
         if post_serializer.is_valid():
-            for key, value in request.data.items():
-                print(f"Key: {key}, Value: {value}")
-            print(f"request.data: {request.data}")
-            print(f"post_service_events: {post_serializer.data}")
+
             post_service_events = standerdize_post_service_events(request.data)
 
             for post_service_event in post_service_events:
-                print(f"Service: {post_service_event['service']},"
-                      f" Status: {post_service_event['status']}")
-
                 if (post_service_event['service'] == 'linkedin' and
                         post_service_event['status'] == 'SET_TO_PUBLISH'):
                     print("Processing LinkedIn service")
                     linkedin_api = LinkedInAPI(request.user, request)
                     print(post_serializer.data, request.data['id'])
-                    linkedin_api.post_to_linkedin(
-                        post_serializer.data, request.data['id'])
-                    # TODO: need to handle update response
-                    # posted = linkedin_api.post_to_linkedin(
-                    #     post_serializer.data, request.data['id'])
-                    # posted_to = 'LinkedIn'
+
+                    if not request.data['image']:
+                        linkedin_api.post_to_linkedin(
+                            post_serializer.data, request.data['id'])
+                    else:
+                        linkedin_api.post_to_linkedin_with_image(
+                            post_serializer.data, request.data['id'])
+                        # TODO: need to handle update response
+                        # posted = linkedin_api.post_to_linkedin(
+                        #     post_serializer.data, request.data['id'])
+                        # posted_to = 'LinkedIn'
 
                 if (post_service_event['service'] == 'reddit' and
                         post_service_event['status'] == 'SET_TO_PUBLISH'):
