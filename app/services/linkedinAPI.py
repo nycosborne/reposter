@@ -29,9 +29,11 @@ class LinkedInAPI:
         access_token = query_result.access_token
 
         upload_data = response.json()
-        upload_url = \
-            upload_data['value']['uploadMechanism']['com.linkedin.digitalmedia.uploading.MediaUploadHttpRequest'][
-                'uploadUrl']
+        upload_url = upload_data[
+            'value'][
+            'uploadMechanism'][
+            'com.linkedin.digitalmedia.uploading.MediaUploadHttpRequest'][
+            'uploadUrl']
         asset_urn = upload_data['value']['asset']
         image_path = image_path.path
         print(f"image path!!!!: {image_path}")
@@ -127,14 +129,18 @@ class LinkedInAPI:
                             "media": [
                                 {
                                     "status": "READY",
-                                    "description": {"text": "Posted by PostSynchrony"},
+                                    "description": {
+                                        "text": "Posted by PostSynchrony"
+                                    },
                                     "media": f"{image_id}",
                                     "title": {"text": "Title of the image"}
                                 }
                             ]
                         }
                     },
-                    "visibility": {"com.linkedin.ugc.MemberNetworkVisibility": "PUBLIC"}
+                    "visibility": {
+                        "com.linkedin.ugc.MemberNetworkVisibility": "PUBLIC"
+                    }
                 }
 
         if not headers:
@@ -147,7 +153,14 @@ class LinkedInAPI:
         return response
 
     def post_to_linkedin(self, data, post_id):
+        image = self.user.post_set.get(id=post_id).image
+        print(f"Image COmpices: {image}")
+        if image:
+            return self.post_image_to_linkedin(data, post_id)
+        else:
+            return self.post_text_to_linkedin(data, post_id)
 
+    def post_text_to_linkedin(self, data, post_id):
 
         response = self.linkedin_api_request(
             'POST', 'v2/ugcPosts', text_content=data['content'])
@@ -156,7 +169,7 @@ class LinkedInAPI:
             post = self.user.post_set.get(id=post_id)
             post.status = 'PUBLISHED'
             post.save()
-            return response
+            return True
         else:
             # TODO: Add error status for posts that failed to post
             # post.status = 'FAILED_TO_POST'
@@ -164,22 +177,24 @@ class LinkedInAPI:
             print(f"Failed to share post. "
                   f"Status code: {response.status_code},"
                   f" Response: {response.text}")
-            return response
+            return False
 
     def post_image_to_linkedin(self, data, post_id):
         image = self.user.post_set.get(id=post_id).image
         # initialize image upload process
         response = self.linkedin_api_request(
-            'POST', 'v2/assets?action=registerUpload')
-        print(f"Image upload response: {response.text}")
+            'POST',
+            'v2/assets?action=registerUpload')
         if response.status_code == 200:
             print("Image uploaded registerUpload.")
             image_id = self.image_upload_get_image_id(response, image)
             response = self.linkedin_api_request(
-                'POST', 'v2/ugcPosts', text_content=data['content'], image_id=image_id)
+                'POST',
+                'v2/ugcPosts',
+                text_content=data['content'],
+                image_id=image_id)
 
             if response.status_code == 201:
-                print("Post shared successfully.")
                 post = self.user.post_set.get(id=post_id)
                 post.status = 'PUBLISHED'
                 post.save()
@@ -194,6 +209,7 @@ class LinkedInAPI:
                   f"Status code: {response.status_code},"
                   f" Response: {response.text}")
             return False
+
     def _get_user_info(self, access_token):
         # TODO: need to refactor this
         # this class should not be rependent on services servicesSerializers
