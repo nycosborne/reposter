@@ -19,6 +19,7 @@ class LinkedInAPI:
         self.sub = (self.user.
                     linkedinuserinfo_set.order_by('-created_at').
                     first())
+        # self.post_image = self.user.post_set.get(id=request.data['id']).image
 
     def image_upload_get_image_id(self, response, image_path):
         query_result = self.user.usersocialaccountssettings_set.filter(
@@ -32,8 +33,8 @@ class LinkedInAPI:
             upload_data['value']['uploadMechanism']['com.linkedin.digitalmedia.uploading.MediaUploadHttpRequest'][
                 'uploadUrl']
         asset_urn = upload_data['value']['asset']
-
-        image_path = "path/to/your/image.jpg"
+        image_path = image_path.path
+        print(f"image path!!!!: {image_path}")
         with open(image_path, "rb") as image_file:
             image_data = image_file.read()
         headers = {
@@ -146,15 +147,16 @@ class LinkedInAPI:
         return response
 
     def post_to_linkedin(self, data, post_id):
+
+
         response = self.linkedin_api_request(
             'POST', 'v2/ugcPosts', text_content=data['content'])
-
         if response.status_code == 201:
             print("Post shared successfully.")
             post = self.user.post_set.get(id=post_id)
             post.status = 'PUBLISHED'
             post.save()
-            return True
+            return response
         else:
             # TODO: Add error status for posts that failed to post
             # post.status = 'FAILED_TO_POST'
@@ -162,15 +164,17 @@ class LinkedInAPI:
             print(f"Failed to share post. "
                   f"Status code: {response.status_code},"
                   f" Response: {response.text}")
-            return False
+            return response
 
     def post_image_to_linkedin(self, data, post_id):
+        image = self.user.post_set.get(id=post_id).image
+        # initialize image upload process
         response = self.linkedin_api_request(
             'POST', 'v2/assets?action=registerUpload')
-
-        if response.status_code == 201:
-            print("Image uploaded successfully.")
-            image_id = self.image_upload_get_image_id(response, image_path=data['image'])
+        print(f"Image upload response: {response.text}")
+        if response.status_code == 200:
+            print("Image uploaded registerUpload.")
+            image_id = self.image_upload_get_image_id(response, image)
             response = self.linkedin_api_request(
                 'POST', 'v2/ugcPosts', text_content=data['content'], image_id=image_id)
 
@@ -181,8 +185,15 @@ class LinkedInAPI:
                 post.save()
                 return True
             else:
-                pass
-
+                print(f"Failed to share post. "
+                      f"Status code: {response.status_code},"
+                      f" Response: {response.text}")
+                return False
+        else:
+            print(f"Failed to upload image. "
+                  f"Status code: {response.status_code},"
+                  f" Response: {response.text}")
+            return False
     def _get_user_info(self, access_token):
         # TODO: need to refactor this
         # this class should not be rependent on services servicesSerializers

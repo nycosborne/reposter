@@ -113,31 +113,22 @@ class PostToSocialAccounts(APIView):
     permission_classes = [IsAuthenticated]
 
     def post(self, request):
-
+        print(f"PostToSocialAccounts.post request.data: {request.data}")
         post_serializer = self.post_serializers_class(data=request.data)
-        print(f"PostToSocialAccounts request: {request.data}")
         # value, key, posted_to, posted = None
         if post_serializer.is_valid():
-
+            # array to select which service to post
             post_service_events = standerdize_post_service_events(request.data)
 
             for post_service_event in post_service_events:
                 if (post_service_event['service'] == 'linkedin' and
                         post_service_event['status'] == 'SET_TO_PUBLISH'):
                     print("Processing LinkedIn service")
+                    print(f"Request.data: {request.data}")
+                    print(f"post_serializer.data: {post_serializer.data}")
                     linkedin_api = LinkedInAPI(request.user, request)
-                    print(post_serializer.data, request.data['id'])
-
-                    if not request.data['image']:
-                        linkedin_api.post_to_linkedin(
-                            post_serializer.data, request.data['id'])
-                    else:
-                        linkedin_api.post_to_linkedin_with_image(
-                            post_serializer.data, request.data['id'])
-                        # TODO: need to handle update response
-                        # posted = linkedin_api.post_to_linkedin(
-                        #     post_serializer.data, request.data['id'])
-                        # posted_to = 'LinkedIn'
+                    linkedin_api.post_image_to_linkedin(
+                        post_serializer.data, request.data['id'])
 
                 if (post_service_event['service'] == 'reddit' and
                         post_service_event['status'] == 'SET_TO_PUBLISH'):
