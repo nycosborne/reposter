@@ -113,32 +113,19 @@ class PostToSocialAccounts(APIView):
     permission_classes = [IsAuthenticated]
 
     def post(self, request):
-
         post_serializer = self.post_serializers_class(data=request.data)
-        print(f"PostToSocialAccounts request: {request.data}")
         # value, key, posted_to, posted = None
         if post_serializer.is_valid():
-            for key, value in request.data.items():
-                print(f"Key: {key}, Value: {value}")
-            print(f"request.data: {request.data}")
-            print(f"post_service_events: {post_serializer.data}")
+            # array to select which service to post
             post_service_events = standerdize_post_service_events(request.data)
-
+            linkedin_post_successful = False
             for post_service_event in post_service_events:
-                print(f"Service: {post_service_event['service']},"
-                      f" Status: {post_service_event['status']}")
-
                 if (post_service_event['service'] == 'linkedin' and
                         post_service_event['status'] == 'SET_TO_PUBLISH'):
                     print("Processing LinkedIn service")
                     linkedin_api = LinkedInAPI(request.user, request)
-                    print(post_serializer.data, request.data['id'])
-                    linkedin_api.post_to_linkedin(
+                    linkedin_post_successful = linkedin_api.post_to_linkedin(
                         post_serializer.data, request.data['id'])
-                    # TODO: need to handle update response
-                    # posted = linkedin_api.post_to_linkedin(
-                    #     post_serializer.data, request.data['id'])
-                    # posted_to = 'LinkedIn'
 
                 if (post_service_event['service'] == 'reddit' and
                         post_service_event['status'] == 'SET_TO_PUBLISH'):
@@ -151,11 +138,17 @@ class PostToSocialAccounts(APIView):
                     #     post_serializer.data, request.data['id'])
                     # posted_to = 'Reddit'
 
-            return Response({
-                "message": f"Post ID {request.data.get('title')}",
-                "error": post_serializer.errors
-            }, status=status.HTTP_400_BAD_REQUEST)
+            if linkedin_post_successful:
+                return Response({
+                    "message": f"Post Title {request.data.get('title')}",
+                }, status=status.HTTP_201_CREATED)
+            else:
+                return Response({
+                    "message": f"Post Title {request.data.get('title')}",
+                }, status=status.HTTP_400_BAD_REQUEST)
 
+            # TODO need to add response for reddit and 207 Multi-Status
+            #  response for one or more post failing to post
         print('Error:', post_serializer.errors)
         return Response(f"Validation failed: {post_serializer.errors}",
                         status=status.HTTP_400_BAD_REQUEST)
