@@ -90,6 +90,19 @@ class PostViewSet(viewsets.ModelViewSet):
             status=status.HTTP_400_BAD_REQUEST,
         )
 
+    @action(methods=['DELETE'], detail=True, url_path='delete-image')
+    def delete_image(self, request, pk=None):
+        """Delete an image from a post."""
+        post = self.get_object()
+        if post.image:  # Assuming 'image' is the field name for the image
+            post.image.delete()  # Delete the image file
+            post.image = None  # Remove the image field reference
+            post.save()  # Save the post instance
+            return Response(status=status.HTTP_204_NO_CONTENT)
+        else:
+            return Response({"message": "No image to delete."},
+                            status=status.HTTP_400_BAD_REQUEST)
+
 
 @extend_schema_view(
     list=extend_schema(

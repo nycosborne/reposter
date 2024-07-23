@@ -34,6 +34,8 @@ const ComposePost: React.FC = () => {
         post_service_events?: ServiceRequested[];
     }
 
+    let file = new File([""], "filename");
+
     const [post, setPost] = useState<Post>({
         title: '',
         description: '',
@@ -139,7 +141,7 @@ const ComposePost: React.FC = () => {
     };
     const selectFile = (event: React.ChangeEvent<HTMLInputElement>) => {
         if (event.target.files && event.target.files.length > 0) {
-            const file = event.target.files[0];
+            file = event.target.files[0];
             setPost(prevState => ({
                 ...prevState,
                 uploaded_image: file
@@ -190,14 +192,27 @@ const ComposePost: React.FC = () => {
                         });
                 }
                 setPost(response.data);
-                console.log('DFWRVREVEEV', post);
-                // navigate(`/compose/${response.data.id}`);
             }).catch((error) => {
                 console.log('error saving post', error);
             });
         }
     };
+    const deletePostImage = () => {
+        setPost(prevState => ({...prevState, image: null}));
+        setPost(prevState => ({
+            ...prevState,
+            uploaded_image: file
+        }));
 
+        axiosClient.delete(`/post/post/${post_id}/delete-image/`).then((
+            response) => {
+                console.log('Successfully deleted image', response);
+            }
+        ).catch((error) => {
+            console.log('error deleting image', error);
+        });
+
+    }
     const savePostText = async (event: React.FormEvent) => {
         event.preventDefault();
         savePost(event).then((response) => {
@@ -236,6 +251,33 @@ const ComposePost: React.FC = () => {
             });
     };
 
+    interface DeletableImageProps {
+        src: string;
+        onDelete: () => void;
+    }
+
+    const DeletableImage: React.FC<DeletableImageProps> = ({src, onDelete}) => {
+        return (
+            <div style={{position: 'relative', display: 'inline-block'}}>
+                <Image src={src} fluid/>
+                <div
+                    style={{
+                        position: 'absolute',
+                        top: 0,
+                        right: 0,
+                        cursor: 'pointer',
+                        color: 'red',
+                        fontWeight: 'bold',
+                        // backgroundColor: 'white',
+                        borderRadius: '50%',
+                    }}
+                    onClick={onDelete}
+                >
+                    X
+                </div>
+            </div>
+        );
+    };
     return (
         <Form onSubmit={savePostText}>
             <Form.Label>Status : {post.status}</Form.Label>
@@ -275,7 +317,10 @@ const ComposePost: React.FC = () => {
             </Form.Group>
             <Form.Group controlId="formFile" className="mb-3">
                 <Form.Label>Image</Form.Label>
-                <Image src={post.image || ''} fluid/>
+                {/*<Image src={post.image || ''} fluid/>*/}
+                <DeletableImage src={post.image || ''}
+                                onDelete={deletePostImage}/>
+                {/*onDelete={() =>  setPost(prevState => ({...prevState, image: null}))}/>*/}
                 <Form.Control
                     type="file"
                     onChange={selectFile}
