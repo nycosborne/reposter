@@ -100,7 +100,9 @@ class PostViewSet(viewsets.ModelViewSet):
             post.save()  # Save the post instance
             return Response(status=status.HTTP_204_NO_CONTENT)
         else:
-            return Response({"message": "No image to delete."}, status=status.HTTP_400_BAD_REQUEST)
+            return Response({"message": "No image to delete."},
+                            status=status.HTTP_400_BAD_REQUEST)
+
 
 @extend_schema_view(
     list=extend_schema(
