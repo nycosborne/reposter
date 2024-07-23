@@ -34,6 +34,8 @@ const ComposePost: React.FC = () => {
         post_service_events?: ServiceRequested[];
     }
 
+    let file = new File([""], "filename");
+
     const [post, setPost] = useState<Post>({
         title: '',
         description: '',
@@ -139,7 +141,7 @@ const ComposePost: React.FC = () => {
     };
     const selectFile = (event: React.ChangeEvent<HTMLInputElement>) => {
         if (event.target.files && event.target.files.length > 0) {
-            const file = event.target.files[0];
+            file = event.target.files[0];
             setPost(prevState => ({
                 ...prevState,
                 uploaded_image: file
@@ -198,29 +200,47 @@ const ComposePost: React.FC = () => {
     const deletePostImage = () => {
         setPost(prevState => ({...prevState, image: null}));
 
-        const formData = new FormData();
-        const image = post.uploaded_image;
-        console.log('image', image);
-        if (image) {
 
-            formData.append('image', image);
-        }
+        setPost(prevState => ({
+            ...prevState,
+            uploaded_image: file
+        }));
 
-        if (post_id) {
-            axiosClient.post(`/post/post/${post_id}/upload-image/`, formData, {
-                headers: {
-                    'Content-Type': 'multipart/form-data'
-                }
-            }).then((response) => {
-                console.log('Successfully uploaded image', response);
-                navigate(`/compose/${response.data.id}`);
-                setPost(response.data);
-            }).catch((error) => {
-                console.log('error uploading image', error);
-            });
-            navigate(`/compose/${post_id}`);
+        axiosClient.delete(`/post/post/${post_id}/delete-image/`).then((
+            response) => {
+                console.log('Successfully deleted image', response);
+            }
+        ).catch((error) => {
+            console.log('error deleting image', error);
 
-        }
+        });
+
+        // const formData = new FormData();
+        // const image = post.uploaded_image;
+        // console.log('image', image);
+        // if (image) {
+        //
+        //     formData.append('image', null);
+        // }
+        //
+        // if (post_id) {
+        //
+        //     console.log('post_id @@#@#$#$', formData);
+        //
+        //     axiosClient.post(`/post/post/${post_id}/upload-image/`, formData, {
+        //         headers: {
+        //             'Content-Type': 'multipart/form-data'
+        //         }
+        //     }).then((response) => {
+        //         console.log('Successfully uploaded image', response);
+        //         navigate(`/compose/${response.data.id}`);
+        //         setPost(response.data);
+        //     }).catch((error) => {
+        //         console.log('error uploading image', error);
+        //     });
+        //     navigate(`/compose/${post_id}`);
+        //
+        // }
     }
     const savePostText = async (event: React.FormEvent) => {
         event.preventDefault();
