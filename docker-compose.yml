@@ -34,6 +34,7 @@ services:
       - REDDIT_REDIRECT_URI=${REDDIT_REDIRECT_URI}
       - REDDIT_STATE=${REDDIT_STATE}
       - REDDIT_SCOPE=${REDDIT_SCOPE}
+      - MAILGUN_SECRET=${MAILGUN_SECRET}
     depends_on:
       - db
 
