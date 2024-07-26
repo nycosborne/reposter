@@ -4,7 +4,6 @@ import axiosClient from "../axios-client.tsx";
 import {useNavigate, useParams} from "react-router-dom";
 import SocialAccountsPostStatusBar from "../components/ui/SocialAccountsPostStatusBar.tsx";
 
-
 const ComposePost: React.FC = () => {
     const navigate = useNavigate();
 
@@ -29,12 +28,10 @@ const ComposePost: React.FC = () => {
         tags?: Tag[];
         status: string;
         image?: string | null;
-        uploaded_image?: File
+        uploaded_image?: File;
         service_requested?: ServiceRequested[];
         post_service_events?: ServiceRequested[];
     }
-
-    let file = new File([""], "filename");
 
     const [post, setPost] = useState<Post>({
         title: '',
@@ -50,6 +47,7 @@ const ComposePost: React.FC = () => {
     const selectReddit = (service: string) => {
         setSelectedReddit(prevService => prevService === service ? '' : service); // Toggle service selection
     };
+
     const selectLinkedin = (service: string) => {
         setSelectedLinkedin(prevService => prevService === service ? '' : service); // Toggle service selection
     };
@@ -60,15 +58,8 @@ const ComposePost: React.FC = () => {
             axiosClient.get(`/post/post/${post_id}`)
                 .then(({data}) => {
                     console.log('data', data);
-                    // Check if data has post_service_events
                     if (data.post_service_events && Array.isArray(data.post_service_events)) {
-                        console.log('data.post_service_events', data.post_service_events);
-                        // Loop over the post_service_events array
-                        data.post_service_events.forEach(function (event: {
-                            service: string;
-                            status: React.SetStateAction<string>;
-                        }) {
-                            console.log('event', event);
+                        data.post_service_events.forEach((event: { service: string; status: string; }) => {
                             if (event.service === 'reddit') {
                                 setSelectedReddit('reddit');
                             } else if (event.service === 'linkedin') {
@@ -106,28 +97,25 @@ const ComposePost: React.FC = () => {
     const createServiceRequested = (status?: string): ServiceRequested[] => {
         const services: { service: string; status: string }[] = [];
         if (selectedReddit) {
-            services.push({service: 'reddit', status: status ? status : 'PENDING'});
+            services.push({service: 'reddit', status: status || 'PENDING'});
         }
         if (selectedLinkedin) {
-            services.push({service: 'linkedin', status: status ? status : 'PENDING'});
+            services.push({service: 'linkedin', status: status || 'PENDING'});
         }
         return services;
     };
 
     const savePost = async (event: React.FormEvent) => {
         event.preventDefault();
-        ``
         const payload = {
             title: post.title || "",
             description: post.description || "",
             content: post.content || "",
             link: "", // Assuming you have a link to include or it can be an empty string if not
             tags: [], // Assuming you have tags to include or it can be an empty array if not
-            // TODO need to standrdize the service_requested and post_service_events
             service_requested: createServiceRequested('PENDING'),
             status: post.status || "DRAFT",
         };
-
 
         if (post_id) {
             return axiosClient.put(`/post/post/${post_id}/`, payload, {
@@ -139,91 +127,72 @@ const ComposePost: React.FC = () => {
             return axiosClient.post('/post/post/', payload);
         }
     };
-    const selectFile = (event: React.ChangeEvent<HTMLInputElement>) => {
+
+    const selectFile = async (event: React.ChangeEvent<HTMLInputElement>) => {
         if (event.target.files && event.target.files.length > 0) {
-            file = event.target.files[0];
-            setPost(prevState => ({
-                ...prevState,
-                uploaded_image: file
-            }));
-        }
-    };
-    const savePostImage = async (event: React.FormEvent) => {
-        event.preventDefault();
+            const file = event.target.files[0];
+            setPost(prevState => ({...prevState, uploaded_image: file}));
 
-        const formData = new FormData();
-        const image = post.uploaded_image;
-        console.log('image', image);
-        if (image) {
+            const formData = new FormData();
+            formData.append('image', file);
 
-            formData.append('image', image);
-        }
-
-        if (post_id) {
-            axiosClient.post(`/post/post/${post_id}/upload-image/`, formData, {
-                headers: {
-                    'Content-Type': 'multipart/form-data'
-                }
-            }).then((response) => {
-                console.log('Successfully uploaded image', response);
-                navigate(`/compose/${response.data.id}`);
-                setPost(response.data);
-            }).catch((error) => {
-                console.log('error uploading image', error);
-            });
-            navigate(`/compose/${post_id}`);
-
-        } else {
-            savePost(event).then((response) => {
-                console.log('Successfully saved post', response);
-                if (response) {
-                    console.log('image TRUE', image);
-                    axiosClient.post(`/post/post/${response.data.id}/upload-image/`, formData, {
+            if (post_id) {
+                try {
+                    const response = await axiosClient.post(`/post/post/${post_id}/upload-image/`, formData, {
                         headers: {
                             'Content-Type': 'multipart/form-data'
                         }
-                    }).then((response) => {
-                        console.log('Successfully uploaded image', response);
-                        navigate(`/compose/${response.data.id}`);
-                    })
-                        .catch((error) => {
-                            console.log('error uploading image', error);
-                            navigate(`/compose/${response.data.id}`);
-                        });
+                    });
+                    console.log('Successfully uploaded image', response);
+                    setPost(prevState => ({...prevState, image: response.data.image}));
+                    navigate(`/compose/${response.data.id}`);
+                } catch (error) {
+                    console.log('error uploading image', error);
                 }
-                setPost(response.data);
+            } else {
+                try {
+                    const response = await savePost(new Event('submit') as unknown as React.FormEvent);
+                    if (response && response.data.id) {
+                        const postId = response.data.id;
+                        const imageResponse = await axiosClient.post(`/post/post/${postId}/upload-image/`, formData, {
+                            headers: {
+                                'Content-Type': 'multipart/form-data'
+                            }
+                        });
+                        console.log('Successfully uploaded image', imageResponse);
+                        setPost(prevState => ({...prevState, image: imageResponse.data.image}));
+                        navigate(`/compose/${postId}`);
+                    }
+                } catch (error) {
+                    console.log('error saving post or uploading image', error);
+                }
+            }
+        }
+    };
+
+    const deletePostImage = () => {
+        setPost(prevState => ({...prevState, image: null, uploaded_image: undefined}));
+
+        if (post_id) {
+            axiosClient.delete(`/post/post/${post_id}/delete-image/`).then((response) => {
+                console.log('Successfully deleted image', response);
             }).catch((error) => {
-                console.log('error saving post', error);
+                console.log('error deleting image', error);
             });
         }
     };
-    const deletePostImage = () => {
-        setPost(prevState => ({...prevState, image: null}));
-        setPost(prevState => ({
-            ...prevState,
-            uploaded_image: file
-        }));
 
-        axiosClient.delete(`/post/post/${post_id}/delete-image/`).then((
-            response) => {
-                console.log('Successfully deleted image', response);
-            }
-        ).catch((error) => {
-            console.log('error deleting image', error);
-        });
-
-    }
     const savePostText = async (event: React.FormEvent) => {
         event.preventDefault();
-        savePost(event).then((response) => {
+        try {
+            const response = await savePost(event);
             console.log('Successfully saved post', response);
             if (response) {
-                console.log('redirect', response);
-                navigate(`/compose/${response.data.id}`)
+                navigate(`/compose/${response.data.id}`);
             }
-        }).catch((error) => {
+        } catch (error) {
             console.log('error saving post', error);
-        });
+        }
     };
 
     const postToSocialMedia = async (event: React.FormEvent) => {
@@ -247,7 +216,7 @@ const ComposePost: React.FC = () => {
                 navigate(`/compose/${post_id}`);
             })
             .catch((error) => {
-                console.log('error 2@#$@#$@#$', error);
+                console.log('error', error);
             });
     };
 
@@ -268,8 +237,6 @@ const ComposePost: React.FC = () => {
                         cursor: 'pointer',
                         color: 'red',
                         fontWeight: 'bold',
-                        // backgroundColor: 'white',
-                        borderRadius: '50%',
                     }}
                     onClick={onDelete}
                 >
@@ -278,6 +245,7 @@ const ComposePost: React.FC = () => {
             </div>
         );
     };
+
     return (
         <Form onSubmit={savePostText}>
             <Form.Label>Status : {post.status}</Form.Label>
@@ -307,7 +275,6 @@ const ComposePost: React.FC = () => {
                 />
                 {post_id && (
                     <SocialAccountsPostStatusBar
-                        // selectReddit={selectReddit}
                         selectReddit={selectReddit}
                         selectedReddit={selectedReddit}
                         selectLinkedin={selectLinkedin}
@@ -317,10 +284,10 @@ const ComposePost: React.FC = () => {
             </Form.Group>
             <Form.Group controlId="formFile" className="mb-3">
                 <Form.Label>Image</Form.Label>
-                {/*<Image src={post.image || ''} fluid/>*/}
-                <DeletableImage src={post.image || ''}
-                                onDelete={deletePostImage}/>
-                {/*onDelete={() =>  setPost(prevState => ({...prevState, image: null}))}/>*/}
+                <DeletableImage
+                    src={post.image || ''}
+                    onDelete={deletePostImage}
+                />
                 <Form.Control
                     type="file"
                     onChange={selectFile}
@@ -337,9 +304,6 @@ const ComposePost: React.FC = () => {
                     </Button>
                 </>
             )}
-            <Button variant="primary" onClick={savePostImage}>
-                Save Image
-            </Button>
         </Form>
     );
 };
