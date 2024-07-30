@@ -235,7 +235,7 @@ const ComposePost: React.FC = () => {
                         top: 0,
                         right: 0,
                         cursor: 'pointer',
-                        color: 'red',
+                        color: 'black',
                         fontWeight: 'bold',
                     }}
                     onClick={onDelete}
@@ -282,16 +282,24 @@ const ComposePost: React.FC = () => {
                     />)
                 }
             </Form.Group>
+
+
+
             <Form.Group controlId="formFile" className="mb-3">
                 <Form.Label>Image</Form.Label>
-                <DeletableImage
-                    src={post.image || ''}
-                    onDelete={deletePostImage}
-                />
+                {post.image && (
+                    <DeletableImage
+                        src={post.image || ''}
+                        onDelete={deletePostImage}
+                    />
+                )}
+
                 <Form.Control
                     type="file"
                     onChange={selectFile}
                 />
+
+
             </Form.Group>
             <Button variant="primary" type="submit">
                 Save Post
