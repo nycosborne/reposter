@@ -6,9 +6,18 @@ div#root {
     background-color: #d8dfed;
 }
 
-.dashboard-panel {
+.post-card-panel {
     box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2);
     margin-top: 25px;
+}
+
+.post-card-panel a {
+    color: gray; /* Link color */
+    text-decoration: none; /* Remove underline */
+}
+
+.post-card-panel a:hover {
+    color: darkgray; /* Darker blue on hover */
 }
 
 .link-icon-container {
@@ -27,4 +36,17 @@ div#root {
 .logout-button {
     margin-top: 4px; /* Adjust as needed */
     margin-bottom: 4px; /* Adjust as needed */
+}
+
+
+.truncate {
+    width: 100%;
+    max-width: 50ch;
+    overflow: hidden;
+    white-space: nowrap;
+    display: inline-block;
+    position: relative;
+    vertical-align: top;
+    mask-image: linear-gradient(to right, black 80%, transparent);
+    -webkit-mask-image: -webkit-linear-gradient(to right, black 80%, transparent);
 }

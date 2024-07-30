@@ -22,7 +22,7 @@ const SocialAccountsPostStatusBar = ({
 
     return (
         <Container>
-            <Card className="dashboard-panel">
+            <Card className="post-card-panel">
                 <Card.Body>
                     <Card.Title as="h5" className="header">
                         Select Platforms
