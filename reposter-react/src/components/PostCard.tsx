@@ -1,13 +1,13 @@
-import React, {useEffect} from 'react';
-import {Card, ListGroup, Container, Row, Col} from 'react-bootstrap';
+import React, { useEffect } from 'react';
+import { Card, ListGroup, Container, Row, Col } from 'react-bootstrap';
 import axiosClient from "../axios-client.tsx";
-import {Link} from 'react-router-dom';
+import { Link } from 'react-router-dom';
 
 interface PostCardProps {
-    dashboard?: boolean
+    dashboard?: boolean;
 }
 
-const PostCard = ({dashboard}: PostCardProps): React.JSX.Element => {
+const PostCard = ({ dashboard }: PostCardProps): React.JSX.Element => {
 
     interface Tag {
         id: number;
@@ -37,6 +37,10 @@ const PostCard = ({dashboard}: PostCardProps): React.JSX.Element => {
             });
     }, []);
 
+    const formatStatus = (status: string): string => {
+        return status.charAt(0).toUpperCase() + status.slice(1).toLowerCase();
+    };
+
     return (
         <Container>
             <Card className="dashboard-panel">
@@ -57,7 +61,7 @@ const PostCard = ({dashboard}: PostCardProps): React.JSX.Element => {
                                                 </Link>
                                             </Col>
                                             <Col>
-                                                <h5>Status: {item.status}</h5>
+                                                <h5>Status: {formatStatus(item.status)}</h5>
                                             </Col>
                                         </Row>
                                     ) : (
