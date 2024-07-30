@@ -47,7 +47,9 @@ function NavBar() {
                                 Hello {user.first_name}
                             </Navbar.Text>
                         }
-                        <Button variant="outline-success" onClick={logout}>Logout</Button>
+
+                        <span className="mx-2"/>
+                        <Button variant="secondary" onClick={logout} size={"sm"} className="logout-button">Logout</Button>
                     </Nav>
                 </Navbar.Collapse>
             </Container>
