@@ -41,9 +41,20 @@ const PostCard = ({ dashboard }: PostCardProps): React.JSX.Element => {
         return status.charAt(0).toUpperCase() + status.slice(1).toLowerCase();
     };
 
+    const getStatusStyle = (status: string): React.CSSProperties => {
+        switch (status.toLowerCase()) {
+            case 'draft':
+                return { color: 'red' };
+            case 'published':
+                return { color: 'green' };
+            default:
+                return { color: 'blue' };
+        }
+    };
+
     return (
         <Container>
-            <Card className="dashboard-panel">
+            <Card className="post-card-panel">
                 <Card.Body>
                     <Card.Title as="h4" className="header">
                         Posts
@@ -54,20 +65,23 @@ const PostCard = ({ dashboard }: PostCardProps): React.JSX.Element => {
                                 <Container>
                                     {dashboard ? (
                                         <Row>
-                                            <Col>
+                                            <Col sm={6}>
                                                 <Link to={`/compose/${item.id}`}>
-                                                    <h6>{item.title}</h6>
-                                                    <p>desc: {item.description}</p>
+                                                    <h5>{item.title}</h5>
+                                                    <p className="truncate">{item.description}</p>
                                                 </Link>
                                             </Col>
-                                            <Col>
-                                                <p>Status: {formatStatus(item.status)}</p>
+                                            <Col sm={4} className="d-flex justify-content-end align-items-center" style={{marginLeft: '55px'}}>
+                                                <span>Status:</span>
+                                                <span style={{ ...getStatusStyle(item.status), marginLeft: '4px' }}>
+                                                    {formatStatus(item.status)}
+                                                </span>
                                             </Col>
                                         </Row>
                                     ) : (
                                         <>
                                             <h6>{item.title}</h6>
-                                            <p>title: {item.content}</p>
+                                            <p className="truncate">title: {item.content}</p>
                                         </>
                                     )}
                                     {item.tags.map(tag => (
