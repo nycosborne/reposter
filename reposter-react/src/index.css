@@ -38,7 +38,6 @@ div#root {
     margin-bottom: 4px; /* Adjust as needed */
 }
 
-
 .truncate {
     width: 100%;
     max-width: 50ch;
@@ -49,4 +48,10 @@ div#root {
     vertical-align: top;
     mask-image: linear-gradient(to right, black 80%, transparent);
     -webkit-mask-image: -webkit-linear-gradient(to right, black 80%, transparent);
+}
+
+.centered-status-bar {
+    display: flex;
+    justify-content: center;
+    align-items: center;
 }

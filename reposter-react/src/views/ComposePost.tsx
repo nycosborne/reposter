@@ -273,19 +273,9 @@ const ComposePost: React.FC = () => {
                     value={post.content || ''}
                     onChange={handleContentChange}
                 />
-                {post_id && (
-                    <SocialAccountsPostStatusBar
-                        selectReddit={selectReddit}
-                        selectedReddit={selectedReddit}
-                        selectLinkedin={selectLinkedin}
-                        selectedLinkedin={selectedLinkedin}
-                    />)
-                }
             </Form.Group>
 
-
-
-            <Form.Group controlId="formFile" className="mb-3">
+            <Form.Group controlId="formFile" className="mb-3 custom-file-group">
                 <Form.Label>Image</Form.Label>
                 {post.image && (
                     <DeletableImage
@@ -293,25 +283,36 @@ const ComposePost: React.FC = () => {
                         onDelete={deletePostImage}
                     />
                 )}
-
                 <Form.Control
                     type="file"
                     onChange={selectFile}
+
                 />
-
-
             </Form.Group>
-            <Button variant="primary" type="submit">
-                Save Post
-            </Button>
-            {post_id && (
-                <>
-                    <span> | </span>
-                    <Button variant="primary" onClick={postToSocialMedia}>
-                        Publish To Social Media
-                    </Button>
-                </>
-            )}
+
+            <div className="d-flex align-items-center mb-3">
+                <Button variant="primary" type="submit">
+                    Save Post
+                </Button>
+                {post_id && (
+                    <>
+                        <span className="mx-2"> | </span>
+                        <Button variant="primary" onClick={postToSocialMedia}>
+                            Publish To Social Media
+                        </Button>
+                        <div className="me-3">
+                            {post_id && (
+                                <SocialAccountsPostStatusBar
+                                    selectReddit={selectReddit}
+                                    selectedReddit={selectedReddit}
+                                    selectLinkedin={selectLinkedin}
+                                    selectedLinkedin={selectedLinkedin}
+                                />
+                            )}
+                        </div>
+                    </>
+                )}
+            </div>
         </Form>
     );
 };
