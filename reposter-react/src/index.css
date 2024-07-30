@@ -23,3 +23,8 @@ div#root {
     margin-top: -8px;
     opacity: 0.5;
 }
+
+.logout-button {
+    margin-top: 4px; /* Adjust as needed */
+    margin-bottom: 4px; /* Adjust as needed */
+}
