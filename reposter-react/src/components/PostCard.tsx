@@ -61,7 +61,7 @@ const PostCard = ({ dashboard }: PostCardProps): React.JSX.Element => {
                                                 </Link>
                                             </Col>
                                             <Col>
-                                                <h5>Status: {formatStatus(item.status)}</h5>
+                                                <p>Status: {formatStatus(item.status)}</p>
                                             </Col>
                                         </Row>
                                     ) : (

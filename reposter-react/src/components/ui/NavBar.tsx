@@ -40,6 +40,7 @@ function NavBar() {
                     <Nav className="me-auto">
                         <Nav.Link as={Link} to="/">Home</Nav.Link>
                         <Nav.Link as={Link} to="/compose">Compose Post</Nav.Link>
+                        <Nav.Link as={Link} to="/posts">Posts</Nav.Link>
                     </Nav>
                     <Nav className="ml-auto">
                         {user &&
