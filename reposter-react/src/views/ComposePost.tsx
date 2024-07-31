@@ -3,6 +3,7 @@ import {Button, Form, Image} from 'react-bootstrap';
 import axiosClient from "../axios-client.tsx";
 import {useNavigate, useParams} from "react-router-dom";
 import SocialAccountsPostStatusBar from "../components/ui/SocialAccountsPostStatusBar.tsx";
+import PostedStatueModal from "../components/ui/PostedStatueModal.tsx";
 
 const ComposePost: React.FC = () => {
     const navigate = useNavigate();
@@ -43,6 +44,7 @@ const ComposePost: React.FC = () => {
 
     const [selectedReddit, setSelectedReddit] = useState<string>('');
     const [selectedLinkedin, setSelectedLinkedin] = useState<string>('');
+    const [showPostedStatusModal, setShowPostedStatusModal] = useState<boolean>(true);
 
     const selectReddit = (service: string) => {
         setSelectedReddit(prevService => prevService === service ? '' : service); // Toggle service selection
@@ -214,9 +216,11 @@ const ComposePost: React.FC = () => {
             .then((response) => {
                 console.log('Posted successfully', response);
                 navigate(`/compose/${post_id}`);
+                setShowPostedStatusModal(true);
             })
             .catch((error) => {
                 console.log('error', error);
+                setShowPostedStatusModal(true);
             });
     };
 
@@ -246,74 +250,83 @@ const ComposePost: React.FC = () => {
         );
     };
 
+    console.log('post.post_service_events', post.post_service_events);
     return (
-        <Form onSubmit={savePostText}>
-            <Form.Label>Status : {post.status}</Form.Label>
-            <Form.Group className="mb-3">
-                <Form.Label>Title</Form.Label>
-                <Form.Control
-                    type="text"
-                    value={post.title || ''}
-                    onChange={handleTitleChange}
-                />
-            </Form.Group>
-            <Form.Group className="mb-3">
-                <Form.Label>Description</Form.Label>
-                <Form.Control
-                    type="text"
-                    value={post.description || ''}
-                    onChange={handleDescriptionChange}
-                />
-            </Form.Group>
-            <Form.Group className="mb-3">
-                <Form.Label>Compose Post</Form.Label>
-                <Form.Control
-                    as="textarea"
-                    rows={3}
-                    value={post.content || ''}
-                    onChange={handleContentChange}
-                />
-            </Form.Group>
-
-            <Form.Group controlId="formFile" className="mb-3 custom-file-group">
-                <Form.Label>Image</Form.Label>
-                {post.image && (
-                    <DeletableImage
-                        src={post.image || ''}
-                        onDelete={deletePostImage}
+        <>
+            <PostedStatueModal
+                show={showPostedStatusModal}
+                onHide={() => setShowPostedStatusModal(false)}
+                status={'Successfully posted to social media to: ' }
+                services = {post.post_service_events}
+            />
+            <Form onSubmit={savePostText}>
+                <Form.Label>Status : {post.status}</Form.Label>
+                <Form.Group className="mb-3">
+                    <Form.Label>Title</Form.Label>
+                    <Form.Control
+                        type="text"
+                        value={post.title || ''}
+                        onChange={handleTitleChange}
                     />
-                )}
-                <Form.Control
-                    type="file"
-                    onChange={selectFile}
+                </Form.Group>
+                <Form.Group className="mb-3">
+                    <Form.Label>Description</Form.Label>
+                    <Form.Control
+                        type="text"
+                        value={post.description || ''}
+                        onChange={handleDescriptionChange}
+                    />
+                </Form.Group>
+                <Form.Group className="mb-3">
+                    <Form.Label>Compose Post</Form.Label>
+                    <Form.Control
+                        as="textarea"
+                        rows={3}
+                        value={post.content || ''}
+                        onChange={handleContentChange}
+                    />
+                </Form.Group>
 
-                />
-            </Form.Group>
+                <Form.Group controlId="formFile" className="mb-3 custom-file-group">
+                    <Form.Label>Image</Form.Label>
+                    {post.image && (
+                        <DeletableImage
+                            src={post.image || ''}
+                            onDelete={deletePostImage}
+                        />
+                    )}
+                    <Form.Control
+                        type="file"
+                        onChange={selectFile}
 
-            <div className="d-flex align-items-center mb-3">
-                <Button variant="primary" type="submit">
-                    Save Post
-                </Button>
-                {post_id && (
-                    <>
-                        <span className="mx-2"> | </span>
-                        <Button variant="primary" onClick={postToSocialMedia}>
-                            Publish To Social Media
-                        </Button>
-                        <div className="me-3">
-                            {post_id && (
-                                <SocialAccountsPostStatusBar
-                                    selectReddit={selectReddit}
-                                    selectedReddit={selectedReddit}
-                                    selectLinkedin={selectLinkedin}
-                                    selectedLinkedin={selectedLinkedin}
-                                />
-                            )}
-                        </div>
-                    </>
-                )}
-            </div>
-        </Form>
+                    />
+                </Form.Group>
+
+                <div className="d-flex align-items-center mb-3">
+                    <Button variant="primary" type="submit">
+                        Save Post
+                    </Button>
+                    {post_id && (
+                        <>
+                            <span className="mx-2"> | </span>
+                            <Button variant="primary" onClick={postToSocialMedia}>
+                                Publish To Social Media
+                            </Button>
+                            <div className="me-3">
+                                {post_id && (
+                                    <SocialAccountsPostStatusBar
+                                        selectReddit={selectReddit}
+                                        selectedReddit={selectedReddit}
+                                        selectLinkedin={selectLinkedin}
+                                        selectedLinkedin={selectedLinkedin}
+                                    />
+                                )}
+                            </div>
+                        </>
+                    )}
+                </div>
+            </Form>
+        </>
     );
 };
 

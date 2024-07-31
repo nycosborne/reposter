@@ -169,6 +169,12 @@ class LinkedInAPI:
             post = self.user.post_set.get(id=post_id)
             post.status = 'PUBLISHED'
             post.save()
+            # TODO: updated post service event with "urn:li:share:7224509306337910784"}
+            # ex: Response text: {"id":"urn:li:share:7224509306337910784"}
+            print(f"Failed to share post. "
+                  f"Status code: {response.status_code},"
+                  f" Response text: {response.text}"
+                  f" full response!!!!!!!!: {response}")
             return True
         else:
             # TODO: Add error status for posts that failed to post
