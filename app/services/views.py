@@ -119,6 +119,8 @@ class PostToSocialAccounts(APIView):
             # array to select which service to post
             post_service_events = standerdize_post_service_events(request.data)
             linkedin_post_successful = False
+            reddit_post_successful = False
+
             for post_service_event in post_service_events:
                 if (post_service_event['service'] == 'linkedin' and
                         post_service_event['status'] == 'SET_TO_PUBLISH'):
@@ -131,12 +133,10 @@ class PostToSocialAccounts(APIView):
                         post_service_event['status'] == 'SET_TO_PUBLISH'):
                     print("Processing Reddit service")
                     reddit_api = RedditAPI(request.user, request)
-                    reddit_api.post_to_reddit(
+                    post_url = reddit_api.post_to_reddit(
                         post_serializer.data, request.data['id'])
-                    # TODO: need to handle update response
-                    # posted = reddit_api.post_to_reddit(
-                    #     post_serializer.data, request.data['id'])
-                    # posted_to = 'Reddit'
+                    if post_url:
+                        reddit_post_successful = True
 
             if linkedin_post_successful:
                 return Response({
@@ -147,8 +147,10 @@ class PostToSocialAccounts(APIView):
                     "message": f"Post Title {request.data.get('title')}",
                 }, status=status.HTTP_400_BAD_REQUEST)
 
-            # TODO need to add response for reddit and 207 Multi-Status
-            #  response for one or more post failing to post
+
+
+
+        # TODO The HTTP 207 Multi-Status
         print('Error:', post_serializer.errors)
         return Response(f"Validation failed: {post_serializer.errors}",
                         status=status.HTTP_400_BAD_REQUEST)

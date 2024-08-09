@@ -44,7 +44,7 @@ const ComposePost: React.FC = () => {
 
     const [selectedReddit, setSelectedReddit] = useState<string>('');
     const [selectedLinkedin, setSelectedLinkedin] = useState<string>('');
-    const [showPostedStatusModal, setShowPostedStatusModal] = useState<boolean>(true);
+    const [showPostedStatusModal, setShowPostedStatusModal] = useState<boolean>(false);
 
     const selectReddit = (service: string) => {
         setSelectedReddit(prevService => prevService === service ? '' : service); // Toggle service selection

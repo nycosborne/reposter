@@ -71,9 +71,10 @@ class RedditAPI:
             post_data = response.json()
             print("Post submitted to reddit successfully.")
             print(f"Post data: {post_data}")
+            url = post_data['json']['data']['url']
             post.status = 'PUBLISHED'
             post.save()
-            return True
+            return url
         else:
             # TODO: Add error status for posts that failed to post
             # post.status = 'FAILED_TO_POST'
